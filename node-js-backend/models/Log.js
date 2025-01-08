@@ -28,7 +28,7 @@ const Log = sequelize.define(
     },
     responseCode: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     responseTime: {
       type: DataTypes.FLOAT,
@@ -58,10 +58,19 @@ const Log = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isAuthenticated: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    requestHeaders: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
   },
   {
-    timestamps: true,
     tableName: "logs",
+    timestamps: true,
   }
 );
 

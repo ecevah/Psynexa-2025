@@ -4,6 +4,7 @@ const Package = require("./Package");
 const Payment = require("./Payment");
 const WorkingArea = require("./WorkingArea");
 const RefreshToken = require("./RefreshToken");
+const Log = require("./Log");
 
 // İlişkileri tanımla
 Client.belongsTo(Psychologist, { foreignKey: "psyc_id" });
@@ -28,4 +29,5 @@ module.exports = {
   Payment,
   WorkingArea,
   RefreshToken,
+  Log,
 };
