@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Media WebSocket Test</title>
+    <style>
+      #messageLog {
+        width: 100%;
+        height: 200px;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        padding: 10px;
+        font-family: monospace;
+      }
+      .message {
+        margin: 5px 0;
+        padding: 5px;
+        border-radius: 4px;
+      }
+      .incoming {
+        background-color: #e3f2fd;
+      }
+      .outgoing {
+        background-color: #f5f5f5;
+      }
+      #videoPreview {
+        width: 320px;
+        height: 240px;
+        border: 1px solid #ccc;
+        margin: 10px 0;
+      }
+      .controls {
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Media WebSocket Test</h2>
+    <div id="messageLog"></div>
+    <video id="videoPreview" autoplay muted></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div class="controls">
+      <button onclick="startCapture()">Start Capture</button>
+      <button onclick="stopCapture()">Stop Capture</button>
+    </div>
+
+    <script>
+      let mediaRecorder;
+      let audioChunks = [];
+      let stream;
+      const clientId = 'client_' + Math.random().toString(36).substr(2, 9);
+      let ws = new WebSocket(`ws://localhost:8000/media-ws/${clientId}`);
+      const messageLog = document.getElementById('messageLog');
+      const videoPreview = document.getElementById('videoPreview');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      function logMessage(message, direction) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${direction}`;
+        msgDiv.textContent = `${direction === 'incoming' ? 'Received' : 'Sent'}: ${message}`;
+        messageLog.appendChild(msgDiv);
+        messageLog.scrollTop = messageLog.scrollHeight;
+      }
+
+      async function startCapture() {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: true,
+            video: { width: 320, height: 240 }
+          });
+          videoPreview.srcObject = stream;
+          
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              audioChunks.push(event.data);
+            }
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            audioChunks = [];
+
+            // Capture current video frame
+            canvas.width = videoPreview.videoWidth;
+            canvas.height = videoPreview.videoHeight;
+            ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+            
+            // Get image as base64
+            const imageBase64 = canvas.toDataURL('image/jpeg').split(',')[1];
+            
+            // Get audio as base64
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = () => {
+              const audioBase64 = reader.result.split(',')[1];
+              
+              // Send both to server
+              const data = {
+                audio: audioBase64,
+                image: imageBase64
+              };
+              
+              ws.send(JSON.stringify(data));
+              logMessage("Media data sent", "outgoing");
+            };
+          };
+
+          mediaRecorder.start();
+          logMessage("Started media capture", "outgoing");
+        } catch (error) {
+          logMessage(`Error starting capture: ${error.message}`, "incoming");
+        }
+      }
+
+      function stopCapture() {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+          stream.getTracks().forEach(track => track.stop());
+          logMessage("Stopped media capture", "outgoing");
+        }
+      }
+
+      ws.onmessage = async (event) => {
+        try {
+          const data = event.data;
+          if (data.startsWith('data:audio')) {
+            logMessage("Received processed audio", "incoming");
+            const audio = new Audio(data);
+            await audio.play();
+          } else {
+            const jsonResponse = JSON.parse(data);
+            if (jsonResponse.error) {
+              logMessage(`Error: ${jsonResponse.error}`, "incoming");
+            } else {
+              logMessage(`Server response: ${JSON.stringify(jsonResponse)}`, "incoming");
+            }
+          }
+        } catch (error) {
+          console.error('Error processing message:', error);
+          logMessage(`Error processing message: ${error.message}`, "incoming");
+        }
+      };
+
+      ws.onclose = () => {
+        logMessage("WebSocket connection closed", "incoming");
+      };
+
+      ws.onerror = (error) => {
+        logMessage(`WebSocket error: ${error.message}`, "incoming");
+      };
+    </script>
+  </body>
+</html>

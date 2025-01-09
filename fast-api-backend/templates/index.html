@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Processing Demo</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        .preview {
+            margin: 20px 0;
+        }
+        #imagePreview {
+            max-width: 300px;
+            margin-top: 10px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        #responseAudio {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .preview {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Audio and Image Processing Demo</h1>
+        
+        <!-- Audio Controls -->
+        <div class="controls">
+            <button id="startRecording">Start Recording</button>
+            <button id="stopRecording" disabled>Stop Recording</button>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="controls">
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <!-- Previews -->
+        <div class="preview">
+            <h3>Image Preview:</h3>
+            <img id="imagePreview" style="display: none;">
+        </div>
+
+        <div class="preview">
+            <h3>Audio Preview:</h3>
+            <audio id="audioPreview" controls style="display: none;"></audio>
+        </div>
+
+        <!-- Process Button -->
+        <div class="controls">
+            <button id="processMedia" disabled>Process Media</button>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let ws;
+        let selectedImage = null;
+
+        // WebSocket bağlantısını kur
+        function connectWebSocket() {
+            ws = new WebSocket('ws://localhost:8000/media-ws');
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+            };
+
+            ws.onmessage = async (event) => {
+                const response = JSON.parse(event.data);
+                
+                if (response.status === 'success') {
+                    showStatus('Processing completed successfully!', 'success');
+                    
+                    // Yeni ses kontrolü için audio element oluştur
+                    const responseAudioElement = document.createElement('audio');
+                    responseAudioElement.controls = true; // Kontrol butonlarını göster
+                    responseAudioElement.src = response.audio;
+                    
+                    // Varsa eski yanıtı kaldır
+                    const oldResponse = document.getElementById('responseAudio');
+                    if (oldResponse) {
+                        oldResponse.remove();
+                    }
+                    
+                    // Yeni yanıtı ekle
+                    responseAudioElement.id = 'responseAudio';
+                    
+                    // Yanıt için başlık ve container oluştur
+                    const responseContainer = document.createElement('div');
+                    responseContainer.className = 'preview';
+                    const responseTitle = document.createElement('h3');
+                    responseTitle.textContent = 'AI Response:';
+                    
+                    responseContainer.appendChild(responseTitle);
+                    responseContainer.appendChild(responseAudioElement);
+                    
+                    // Container'ı sayfaya ekle
+                    const container = document.querySelector('.container');
+                    container.appendChild(responseContainer);
+                    
+                } else {
+                    showStatus('Error: ' + response.error, 'error');
+                }
+            };
+
+            ws.onerror = (error) => {
+                showStatus('WebSocket error occurred', 'error');
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket connection closed');
+            };
+        }
+
+        // Sayfa yüklendiğinde WebSocket bağlantısını kur
+        window.onload = connectWebSocket;
+
+        // Ses kaydı kontrolleri
+        document.getElementById('startRecording').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    document.getElementById('audioPreview').src = audioUrl;
+                    document.getElementById('audioPreview').style.display = 'block';
+                    updateProcessButton();
+                };
+
+                mediaRecorder.start();
+                document.getElementById('startRecording').disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+                showStatus('Recording started...', 'success');
+            } catch (error) {
+                showStatus('Error accessing microphone: ' + error, 'error');
+            }
+        });
+
+        document.getElementById('stopRecording').addEventListener('click', () => {
+            mediaRecorder.stop();
+            document.getElementById('startRecording').disabled = false;
+            document.getElementById('stopRecording').disabled = true;
+            showStatus('Recording stopped', 'success');
+        });
+
+        // Resim yükleme kontrolü
+        document.getElementById('imageInput').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    selectedImage = e.target.result;
+                    updateProcessButton();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Process butonu kontrolü
+        function updateProcessButton() {
+            const hasAudio = audioChunks.length > 0;
+            const hasImage = selectedImage != null;
+            document.getElementById('processMedia').disabled = !(hasAudio && hasImage);
+        }
+
+        // Process butonu işlemi
+        document.getElementById('processMedia').addEventListener('click', async () => {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                showStatus('WebSocket connection is not open', 'error');
+                return;
+            }
+
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioBase64 = await blobToBase64(audioBlob);
+
+            const data = {
+                audio: audioBase64,
+                image: selectedImage,
+                language: 'en'
+            };
+
+            ws.send(JSON.stringify(data));
+            showStatus('Processing media...', 'success');
+        });
+
+        // Yardımcı fonksiyonlar
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = 'status ' + type;
+            statusDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

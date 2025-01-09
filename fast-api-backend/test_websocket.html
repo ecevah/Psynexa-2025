@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video WebSocket - İki Yönlü Görüntü</title>
+    <style>
+        .controls {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .recording {
+            background-color: red;
+            color: white;
+        }
+        .video-displays {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+        .video-display {
+            border: 1px solid #ddd;
+            padding: 15px;
+            width: 45%;
+        }
+        video {
+            width: 100%;
+            max-width: 640px;
+            background-color: #f0f0f0;
+        }
+        #remoteVideoElement {
+            width: 100%;
+            max-width: 640px;
+            height: 480px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="startButton">Kamerayı Başlat</button>
+        <button id="stopButton" disabled>Kamerayı Durdur</button>
+        <div id="status">Bağlantı bekleniyor...</div>
+    </div>
+
+    <div class="video-displays">
+        <div class="video-display">
+            <h3>Gönderilen Görüntü</h3>
+            <video id="localVideo" autoplay muted playsinline></video>
+            <div id="localStatus">Görüntü bekleniyor...</div>
+        </div>
+        <div class="video-display">
+            <h3>Alınan Görüntü</h3>
+            <video id="remoteVideoElement" autoplay playsinline></video>
+            <div id="remoteStatus">Görüntü bekleniyor...</div>
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        let stream;
+        let isStreaming = false;
+        let videoInterval;
+        
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const status = document.getElementById('status');
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideoElement');
+        const localStatus = document.getElementById('localStatus');
+        const remoteStatus = document.getElementById('remoteStatus');
+
+        function initWebSocket() {
+            ws = new WebSocket('ws://localhost:8000/video-ws');
+            
+            ws.onopen = () => {
+                status.textContent = 'WebSocket bağlantısı kuruldu';
+                startButton.disabled = false;
+            };
+            
+            ws.onclose = () => {
+                status.textContent = 'WebSocket bağlantısı kapandı';
+                startButton.disabled = true;
+                stopButton.disabled = true;
+            };
+            
+            ws.onmessage = (event) => {
+                remoteVideo.src = event.data;
+                remoteStatus.textContent = 'Görüntü alınıyor...';
+            };
+        }
+
+        async function startStreaming() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        frameRate: { ideal: 15 }
+                    }
+                });
+                
+                localVideo.srcObject = stream;
+                await localVideo.play();
+                localStatus.textContent = 'Görüntü gönderiliyor...';
+                
+                // Görüntüyü yakalayıp gönderme
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 640;
+                canvas.height = 480;
+
+                videoInterval = setInterval(() => {
+                    if (localVideo.videoWidth > 0) {  // Video hazır olduğundan emin ol
+                        context.drawImage(localVideo, 0, 0, canvas.width, canvas.height);
+                        const frame = canvas.toDataURL('image/jpeg', 0.7);  // Kaliteyi biraz artırdık
+                        
+                        if (ws.readyState === WebSocket.OPEN) {
+                            ws.send(frame);
+                        }
+                    }
+                }, 66); // Yaklaşık 15 FPS
+
+                isStreaming = true;
+                startButton.classList.add('recording');
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                status.textContent = 'Görüntü aktarılıyor...';
+                
+            } catch (err) {
+                console.error('Kamera erişim hatası:', err);
+                status.textContent = 'Kamera erişimi reddedildi';
+            }
+        }
+
+        function stopStreaming() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                clearInterval(videoInterval);
+                isStreaming = false;
+                startButton.classList.remove('recording');
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                status.textContent = 'Görüntü aktarımı durdu';
+                localStatus.textContent = 'Görüntü durduruldu';
+                remoteStatus.textContent = 'Görüntü bekleniyor...';
+                
+                // Video elementlerini temizle
+                localVideo.srcObject = null;
+                remoteVideo.src = '';
+            }
+        }
+
+        // Hata yönetimi
+        localVideo.onerror = (e) => {
+            console.error('Lokal video hatası:', e);
+            localStatus.textContent = 'Video hatası!';
+        };
+
+        remoteVideo.onerror = (e) => {
+            console.error('Uzak video hatası:', e);
+            remoteStatus.textContent = 'Video hatası!';
+        };
+
+        startButton.onclick = startStreaming;
+        stopButton.onclick = stopStreaming;
+        
+        // Sayfa yüklendiğinde WebSocket bağlantısını başlat
+        initWebSocket();
+    </script>
+</body>
+</html> 
