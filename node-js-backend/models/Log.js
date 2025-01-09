@@ -19,11 +19,11 @@ const Log = sequelize.define(
       allowNull: false,
     },
     path: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     clientId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     responseCode: {
@@ -51,7 +51,7 @@ const Log = sequelize.define(
       allowNull: true,
     },
     userAgent: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     ipAddress: {

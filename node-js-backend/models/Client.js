@@ -14,7 +14,7 @@ const Client = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "Psychologists",
+        model: "psychologists",
         key: "id",
       },
     },
@@ -72,7 +72,7 @@ const Client = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "Packages",
+        model: "packages",
         key: "id",
       },
     },
@@ -81,8 +81,9 @@ const Client = sequelize.define(
       defaultValue: false,
     },
     status: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+      type: DataTypes.ENUM("active", "inactive"),
+      allowNull: false,
+      defaultValue: "active",
     },
     reset_token: {
       type: DataTypes.STRING,
@@ -102,6 +103,7 @@ const Client = sequelize.define(
     },
   },
   {
+    tableName: "clients",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",

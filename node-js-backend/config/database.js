@@ -32,7 +32,9 @@ const testConnection = async () => {
     console.log(`🌐 Host: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
     console.log(`👤 User: ${process.env.DB_USER}`);
 
-    const tables = await sequelize.showAllSchemas();
+    // Tüm tabloları listele
+    const queryInterface = sequelize.getQueryInterface();
+    const tables = await queryInterface.showAllTables();
     console.log("📚 Mevcut tablolar:", tables);
     console.log("============================\n");
   } catch (error) {

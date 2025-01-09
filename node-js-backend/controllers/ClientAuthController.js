@@ -170,7 +170,7 @@ class ClientAuthController {
         reset_token_expiry: resetTokenExpiry,
       });
 
-      const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+      const resetUrl = `${req.body.resetUrl}/${resetToken}?userType=client`;
       await emailService.sendPasswordResetEmail(email, resetUrl);
 
       logger.info(`Şifre sıfırlama maili gönderildi: ${email}`);

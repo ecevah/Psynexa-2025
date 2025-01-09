@@ -267,7 +267,7 @@ class PsychologistAuthController {
         reset_token_expiry: resetTokenExpiry,
       });
 
-      const resetUrl = `${process.env.FRONTEND_URL}/psychologist/reset-password/${resetToken}`;
+      const resetUrl = `${req.body.resetUrl}/${resetToken}?userType=psychologist`;
       await emailService.sendPasswordResetEmail(
         email,
         resetUrl,

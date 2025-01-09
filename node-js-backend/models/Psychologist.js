@@ -2,6 +2,74 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const bcrypt = require("bcryptjs");
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Psychologist:
+ *       type: object
+ *       required:
+ *         - name
+ *         - surname
+ *         - username
+ *         - email
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Psikolog ID'si
+ *         name:
+ *           type: string
+ *           description: Psikolog adı
+ *         surname:
+ *           type: string
+ *           description: Psikolog soyadı
+ *         username:
+ *           type: string
+ *           description: Kullanıcı adı
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: E-posta adresi
+ *         date_of_birth:
+ *           type: string
+ *           format: date
+ *           description: Doğum tarihi
+ *         sex:
+ *           type: string
+ *           description: Cinsiyet
+ *         phone:
+ *           type: string
+ *           description: Telefon numarası
+ *         image:
+ *           type: string
+ *           description: Profil fotoğrafı URL'i
+ *         pdf:
+ *           type: string
+ *           description: CV/Diploma PDF URL'i
+ *         experience:
+ *           type: integer
+ *           description: Deneyim yılı
+ *         status:
+ *           type: string
+ *           enum: [active, inactive]
+ *           description: Hesap durumu
+ *         approve_status:
+ *           type: string
+ *           enum: [pending, approved, rejected]
+ *           description: Onay durumu
+ *         approve_description:
+ *           type: string
+ *           description: Onay/red açıklaması
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           description: Oluşturulma tarihi
+ *         updated_at:
+ *           type: string
+ *           format: date-time
+ *           description: Güncellenme tarihi
+ */
+
 const Psychologist = sequelize.define(
   "Psychologist",
   {
@@ -69,8 +137,9 @@ const Psychologist = sequelize.define(
       allowNull: true,
     },
     status: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+      type: DataTypes.ENUM("active", "inactive"),
+      allowNull: false,
+      defaultValue: "active",
     },
     reset_token: {
       type: DataTypes.STRING,
@@ -79,6 +148,23 @@ const Psychologist = sequelize.define(
     reset_token_expiry: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    approve_status: {
+      type: DataTypes.ENUM("pending", "approved", "rejected"),
+      allowNull: false,
+      defaultValue: "pending",
+    },
+    approve_description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    approve_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "staff",
+        key: "id",
+      },
     },
     created_at: {
       type: DataTypes.DATE,
@@ -90,6 +176,7 @@ const Psychologist = sequelize.define(
     },
   },
   {
+    tableName: "psychologists",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",

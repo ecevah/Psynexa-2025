@@ -13,7 +13,7 @@ const WorkingArea = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Psychologists",
+        model: "psychologists",
         key: "id",
       },
     },
@@ -47,6 +47,7 @@ const WorkingArea = sequelize.define(
     },
   },
   {
+    tableName: "working_areas",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",

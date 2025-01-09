@@ -10,12 +10,129 @@ const { upload } = require("../config/multer");
 const auth = require("../middleware/auth");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const { Client, Psychologist } = require("../models");
 
 /**
  * @swagger
  * tags:
  *   name: Authentication
- *   description: User authentication endpoints
+ *   description: User authentication endpoints for clients and psychologists
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         data:
+ *           type: object
+ *           properties:
+ *             token:
+ *               type: string
+ *             user:
+ *               type: object
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         error:
+ *           type: object
+ *           properties:
+ *             message:
+ *               type: string
+ *             status:
+ *               type: integer
+ */
+
+/**
+ * @swagger
+ * /api/auth/client/register:
+ *   post:
+ *     summary: Register a new client
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - name
+ *               - surname
+ *               - username
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               name:
+ *                 type: string
+ *               surname:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *               sex:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Client registered successfully
+ *       400:
+ *         description: Invalid input data
+ *       409:
+ *         description: Email or username already exists
+ */
+
+/**
+ * @swagger
+ * /api/auth/client/login:
+ *   post:
+ *     summary: Login for clients
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 
 /**
@@ -27,14 +144,15 @@ const jwt = require("jsonwebtoken");
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
  *               - email
  *               - password
- *               - firstName
- *               - lastName
+ *               - name
+ *               - surname
+ *               - username
  *             properties:
  *               email:
  *                 type: string
@@ -42,17 +160,34 @@ const jwt = require("jsonwebtoken");
  *               password:
  *                 type: string
  *                 format: password
- *               firstName:
+ *               name:
  *                 type: string
- *               lastName:
+ *               surname:
  *                 type: string
+ *               username:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               pdf:
+ *                 type: string
+ *                 format: binary
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *               sex:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               experience:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Psychologist registered successfully
  *       400:
  *         description: Invalid input data
  *       409:
- *         description: Email already exists
+ *         description: Email or username already exists
  */
 
 /**
@@ -68,12 +203,11 @@ const jwt = require("jsonwebtoken");
  *           schema:
  *             type: object
  *             required:
- *               - email
+ *               - username
  *               - password
  *             properties:
- *               email:
+ *               username:
  *                 type: string
- *                 format: email
  *               password:
  *                 type: string
  *                 format: password
@@ -83,16 +217,201 @@ const jwt = require("jsonwebtoken");
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   type: object
+ *               $ref: '#/components/schemas/LoginResponse'
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /api/auth/client/forgot-password:
+ *   post:
+ *     summary: Request password reset for client
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Password reset email sent
  *       404:
  *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /api/auth/client/reset-password:
+ *   post:
+ *     summary: Reset client password with token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - password
+ *             properties:
+ *               token:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ *       400:
+ *         description: Invalid or expired token
+ */
+
+/**
+ * @swagger
+ * /api/auth/psychologist/forgot-password:
+ *   post:
+ *     summary: Request password reset for psychologist
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Password reset email sent
+ *       404:
+ *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /api/auth/psychologist/reset-password:
+ *   post:
+ *     summary: Reset psychologist password with token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - password
+ *             properties:
+ *               token:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ *       400:
+ *         description: Invalid or expired token
+ */
+
+/**
+ * @swagger
+ * /api/auth/client/profile:
+ *   get:
+ *     summary: Get client profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Client profile data
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Profile not found
+ */
+
+/**
+ * @swagger
+ * /api/auth/psychologist/profile:
+ *   get:
+ *     summary: Get psychologist profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Psychologist profile data
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Profile not found
+ */
+
+/**
+ * @swagger
+ * /api/auth/client/refresh-token:
+ *   post:
+ *     summary: Refresh client access token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: New access token generated
+ *       401:
+ *         description: Invalid refresh token
+ */
+
+/**
+ * @swagger
+ * /api/auth/psychologist/refresh-token:
+ *   post:
+ *     summary: Refresh psychologist access token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: New access token generated
+ *       401:
+ *         description: Invalid refresh token
  */
 
 // Token yenileme ve çıkış route'ları
@@ -125,7 +444,29 @@ router.get(
 // Google OAuth callback
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false }),
+  (req, res, next) => {
+    passport.authenticate("google", {
+      session: false,
+      failureRedirect: `${process.env.FRONTEND_URL}/auth/login?error=true`,
+    })(req, res, (err) => {
+      if (err) {
+        console.error("Google callback error:", err);
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/auth/login?error=${encodeURIComponent(
+            err.message || "Giriş başarısız"
+          )}`
+        );
+      }
+      if (!req.user) {
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/auth/login?error=${encodeURIComponent(
+            "Psikolog hesabı bulunamadı. Lütfen önce normal kayıt olun."
+          )}`
+        );
+      }
+      next();
+    });
+  },
   (req, res) => {
     try {
       const { user, userType } = req.user;
@@ -142,7 +483,12 @@ router.get(
         `${process.env.FRONTEND_URL}/auth/google/callback?token=${token}&userType=${userType}`
       );
     } catch (error) {
-      res.redirect(`${process.env.FRONTEND_URL}/auth/error`);
+      console.error("Token oluşturma hatası:", error);
+      res.redirect(
+        `${process.env.FRONTEND_URL}/auth/login?error=${encodeURIComponent(
+          "Giriş işlemi başarısız oldu"
+        )}`
+      );
     }
   }
 );
@@ -204,5 +550,49 @@ router.put(
   ]),
   psychologistAuthController.updateFiles
 );
+
+// Client profile route
+router.get("/client/profile", auth, async (req, res) => {
+  try {
+    const client = await Client.findByPk(req.user.id, {
+      attributes: {
+        exclude: ["password", "reset_token", "reset_token_expiry"],
+      },
+    });
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        error: { message: "Kullanıcı bulunamadı", status: 404 },
+      });
+    }
+    res.json({ ...client.toJSON(), userType: "client" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, error: { message: error.message, status: 500 } });
+  }
+});
+
+// Psychologist profile route
+router.get("/psychologist/profile", auth, async (req, res) => {
+  try {
+    const psychologist = await Psychologist.findByPk(req.user.id, {
+      attributes: {
+        exclude: ["password", "reset_token", "reset_token_expiry"],
+      },
+    });
+    if (!psychologist) {
+      return res.status(404).json({
+        success: false,
+        error: { message: "Kullanıcı bulunamadı", status: 404 },
+      });
+    }
+    res.json({ ...psychologist.toJSON(), userType: "psychologist" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, error: { message: error.message, status: 500 } });
+  }
+});
 
 module.exports = router;

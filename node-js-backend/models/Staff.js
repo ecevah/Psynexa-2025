@@ -1,0 +1,85 @@
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+
+const Staff = sequelize.define(
+  "Staff",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    identity_number: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    restrictions_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "restrictions",
+        key: "id",
+      },
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+    },
+  },
+  {
+    tableName: "staff",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
+);
+
+module.exports = Staff;
