@@ -39,6 +39,39 @@ router.get("/", WorkingAreaController.getAllWorkingAreas);
 
 /**
  * @swagger
+ * /api/working-areas/psychologist:
+ *   get:
+ *     summary: Get all working areas for the authenticated psychologist
+ *     tags: [Working Areas]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of psychologist's working areas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *       401:
+ *         description: Unauthorized
+ */
+router.get(
+  "/psychologist",
+  auth,
+  WorkingAreaController.getPsychologistWorkingAreas
+);
+
+/**
+ * @swagger
  * /api/working-areas/{id}:
  *   get:
  *     summary: Get a working area by ID
@@ -81,6 +114,10 @@ router.get("/:id", WorkingAreaController.getWorkingArea);
  *                 type: string
  *               description:
  *                 type: string
+ *               experience_years:
+ *                 type: integer
+ *               certificates:
+ *                 type: object
  *     responses:
  *       201:
  *         description: Working area created successfully
@@ -116,6 +153,10 @@ router.post("/", auth, WorkingAreaController.createWorkingArea);
  *                 type: string
  *               description:
  *                 type: string
+ *               experience_years:
+ *                 type: integer
+ *               certificates:
+ *                 type: object
  *     responses:
  *       200:
  *         description: Working area updated successfully
@@ -149,42 +190,5 @@ router.put("/:id", auth, WorkingAreaController.updateWorkingArea);
  *         description: Working area not found
  */
 router.delete("/:id", auth, WorkingAreaController.deleteWorkingArea);
-
-/**
- * @swagger
- * /api/working-areas/psychologist/{psychologistId}:
- *   get:
- *     summary: Get all working areas for a specific psychologist
- *     tags: [Working Areas]
- *     parameters:
- *       - in: path
- *         name: psychologistId
- *         required: true
- *         schema:
- *           type: string
- *         description: Psychologist ID
- *     responses:
- *       200:
- *         description: List of psychologist's working areas
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                   name:
- *                     type: string
- *                   description:
- *                     type: string
- *       404:
- *         description: Psychologist not found
- */
-router.get(
-  "/psychologist/:psychologistId",
-  WorkingAreaController.getPsychologistWorkingAreas
-);
 
 module.exports = router;

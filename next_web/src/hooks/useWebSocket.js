@@ -1,65 +1,43 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export const useWebSocket = (url) => {
-  const [socket, setSocket] = useState(null);
+export function useWebSocket(url, token) {
   const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket(url);
+    if (!url || !token) return;
+
+    // Add token to URL as query parameter
+    const wsUrl = new URL(url);
+    wsUrl.searchParams.append("token", token);
+
+    const ws = new WebSocket(wsUrl.toString());
+    socketRef.current = ws;
 
     ws.onopen = () => {
+      console.log("WebSocket connected");
       setIsConnected(true);
-      console.log("WebSocket Connected");
     };
 
     ws.onclose = () => {
+      console.log("WebSocket disconnected");
       setIsConnected(false);
-      console.log("WebSocket Disconnected");
-      // Yeniden bağlanma mantığı
-      setTimeout(() => {
-        setSocket(new WebSocket(url));
-      }, 3000);
     };
 
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
+      setIsConnected(false);
     };
-
-    ws.onmessage = (event) => {
-      let message;
-      try {
-        message = JSON.parse(event.data);
-      } catch {
-        message = event.data;
-      }
-      setMessages((prev) => [...prev, message]);
-    };
-
-    setSocket(ws);
 
     return () => {
-      ws.close();
-    };
-  }, [url]);
-
-  const sendMessage = useCallback(
-    (message) => {
-      if (socket?.readyState === WebSocket.OPEN) {
-        socket.send(
-          typeof message === "string" ? message : JSON.stringify(message)
-        );
-      } else {
-        console.error("WebSocket is not connected");
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close();
       }
-    },
-    [socket]
-  );
+    };
+  }, [url, token]);
 
   return {
-    socket,
+    socket: socketRef.current,
     isConnected,
-    messages,
-    sendMessage,
   };
-};
+}

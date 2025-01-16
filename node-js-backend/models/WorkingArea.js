@@ -54,4 +54,11 @@ const WorkingArea = sequelize.define(
   }
 );
 
+WorkingArea.associate = (models) => {
+  WorkingArea.belongsTo(models.Psychologist, {
+    foreignKey: "psychologist_id",
+    as: "Psychologist",
+  });
+};
+
 module.exports = WorkingArea;

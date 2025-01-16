@@ -3,14 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import models, auth
 from .database import engine, SessionLocal
 from .routers import auth as auth_router, messages
+from .middleware.websocket_auth import WebSocketAuthMiddleware
 import json
 import base64
 from app.file_sending import speech_to_text_gemini_generation_tts, multimodal_process_gemini_pro
 import tempfile
 import os
 from starlette.websockets import WebSocketDisconnect
-import uuid
-from sqlalchemy.orm import Session
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -25,6 +25,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# WebSocket authentication middleware
+app.add_middleware(BaseHTTPMiddleware, dispatch=WebSocketAuthMiddleware())
 
 # Include routers
 app.include_router(auth_router.router, prefix="/auth", tags=["authentication"])
@@ -69,6 +72,7 @@ def save_message(db: Session, client_id: str, message_type: str, content: str, e
 
 @app.websocket("/audio-ws/{client_id}")
 async def audio_websocket_endpoint(websocket: WebSocket, client_id: str):
+    user = websocket.state.user  # Get authenticated user from middleware
     await manager.connect(websocket, client_id)
     db = SessionLocal()
     
@@ -88,7 +92,8 @@ async def audio_websocket_endpoint(websocket: WebSocket, client_id: str):
                     with open(temp_file_path, 'rb') as audio_file:
                         processed_audio = speech_to_text_gemini_generation_tts(
                             audio_file=audio_file,
-                            client_id=client_id
+                            client_id=client_id,
+                            user_id=user.id  # Pass user ID to the processing function
                         )
                         if hasattr(processed_audio, '__iter__'):
                             processed_audio = b''.join(processed_audio)
@@ -112,6 +117,7 @@ async def audio_websocket_endpoint(websocket: WebSocket, client_id: str):
 
 @app.websocket("/media-ws/{client_id}")
 async def media_websocket_endpoint(websocket: WebSocket, client_id: str):
+    user = websocket.state.user  # Get authenticated user from middleware
     await manager.connect(websocket, client_id)
     db = SessionLocal()
     audio_path = None
@@ -145,6 +151,7 @@ async def media_websocket_endpoint(websocket: WebSocket, client_id: str):
                         audio_file=audio_file,
                         image_url=image_path,
                         client_id=client_id,
+                        user_id=user.id,  # Pass user ID to the processing function
                         language='tr'
                     )
                 

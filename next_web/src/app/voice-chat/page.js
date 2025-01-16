@@ -9,6 +9,7 @@ export default function VoiceChatPage() {
   const [ws, setWs] = useState(null);
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
+  const clientId = useRef("client_" + Math.random().toString(36).substr(2, 9));
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,28 +18,43 @@ export default function VoiceChatPage() {
       return;
     }
 
-    const websocket = new WebSocket(
-      `ws://localhost:8000/audio-ws/${localStorage.getItem("userId")}`
-    );
+    // WebSocket bağlantısı
+    const websocket = new WebSocket(`ws://localhost:8000/audio-ws/${1}`);
 
     websocket.onopen = () => {
-      console.log("WebSocket Connected");
+      addMessageToLog("WebSocket Connected", "incoming");
     };
 
-    websocket.onmessage = (event) => {
-      if (event.data.startsWith("data:audio")) {
-        setMessages((prev) => [...prev, { type: "audio", data: event.data }]);
-      } else {
-        try {
-          const jsonMessage = JSON.parse(event.data);
-          setMessages((prev) => [
-            ...prev,
-            { type: "text", data: jsonMessage.message },
-          ]);
-        } catch (e) {
-          console.error("Error parsing message:", e);
+    websocket.onmessage = async (event) => {
+      try {
+        const data = event.data;
+        if (data.startsWith("data:audio")) {
+          addMessageToLog("Received processed audio", "incoming");
+          setMessages((prev) => [...prev, { type: "audio", data: data }]);
+          // Otomatik ses çalma
+          const audio = new Audio(data);
+          await audio.play();
+        } else {
+          const jsonResponse = JSON.parse(data);
+          if (jsonResponse.error) {
+            addMessageToLog(`Error: ${jsonResponse.error}`, "incoming");
+          }
         }
+      } catch (error) {
+        console.error("Error processing message:", error);
+        addMessageToLog(
+          `Error processing message: ${error.message}`,
+          "incoming"
+        );
       }
+    };
+
+    websocket.onclose = () => {
+      addMessageToLog("WebSocket connection closed", "incoming");
+    };
+
+    websocket.onerror = (error) => {
+      addMessageToLog(`WebSocket error: ${error.message}`, "incoming");
     };
 
     setWs(websocket);
@@ -47,6 +63,17 @@ export default function VoiceChatPage() {
       websocket.close();
     };
   }, []);
+
+  const addMessageToLog = (message, direction) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        type: "text",
+        data: `${direction === "incoming" ? "Received" : "Sent"}: ${message}`,
+        direction: direction,
+      },
+    ]);
+  };
 
   const startRecording = async () => {
     try {
@@ -64,6 +91,7 @@ export default function VoiceChatPage() {
         reader.onloadend = () => {
           if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(reader.result);
+            addMessageToLog("Audio data sent", "outgoing");
           }
         };
         reader.readAsDataURL(audioBlob);
@@ -71,8 +99,13 @@ export default function VoiceChatPage() {
 
       mediaRecorder.current.start();
       setIsRecording(true);
+      addMessageToLog("Recording started", "outgoing");
     } catch (error) {
       console.error("Error accessing microphone:", error);
+      addMessageToLog(
+        `Error accessing microphone: ${error.message}`,
+        "incoming"
+      );
     }
   };
 
@@ -81,30 +114,51 @@ export default function VoiceChatPage() {
       mediaRecorder.current.stop();
       setIsRecording(false);
       mediaRecorder.current.stream.getTracks().forEach((track) => track.stop());
+      addMessageToLog("Recording stopped", "outgoing");
     }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Audio WebSocket Test</h2>
+
+      {/* Message Log */}
+      <div className="w-full h-[200px] border border-gray-300 overflow-y-auto mb-5 p-2.5 font-mono">
         {messages.map((msg, index) => (
-          <div key={index} className="p-3 rounded-lg bg-white">
+          <div
+            key={index}
+            className={`my-1 p-1.5 rounded text-black ${
+              msg.type === "text"
+                ? msg.direction === "incoming"
+                  ? "bg-blue-50"
+                  : "bg-gray-100"
+                : "bg-white"
+            }`}
+          >
             {msg.type === "audio" ? (
               <audio src={msg.data} controls className="w-full" />
             ) : (
-              <p>{msg.data}</p>
+              <p className="text-black">{msg.data}</p>
             )}
           </div>
         ))}
       </div>
-      <div className="p-4 bg-white border-t">
+
+      {/* Control Buttons */}
+      <div className="space-x-4">
         <button
-          onClick={isRecording ? stopRecording : startRecording}
-          className={`px-6 py-3 rounded-full ${
-            isRecording ? "bg-red-500" : "bg-blue-500"
-          } text-white hover:opacity-90`}
+          onClick={startRecording}
+          disabled={isRecording}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
         >
-          {isRecording ? "Kaydı Durdur" : "Kayda Başla"}
+          Start Recording
+        </button>
+        <button
+          onClick={stopRecording}
+          disabled={!isRecording}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+        >
+          Stop Recording
         </button>
       </div>
     </div>

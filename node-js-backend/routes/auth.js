@@ -10,7 +10,7 @@ const { upload } = require("../config/multer");
 const auth = require("../middleware/auth");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const { Client, Psychologist } = require("../models");
+const { Client, Psychologist, WorkingArea } = require("../models");
 
 /**
  * @swagger
@@ -112,10 +112,10 @@ const { Client, Psychologist } = require("../models");
  *           schema:
  *             type: object
  *             required:
- *               - username
+ *               - email
  *               - password
  *             properties:
- *               username:
+ *               email:
  *                 type: string
  *               password:
  *                 type: string
@@ -140,7 +140,7 @@ const { Client, Psychologist } = require("../models");
  * /api/auth/psychologist/register:
  *   post:
  *     summary: Register a new psychologist
- *     tags: [Authentication]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -148,30 +148,24 @@ const { Client, Psychologist } = require("../models");
  *           schema:
  *             type: object
  *             required:
- *               - email
- *               - password
  *               - name
  *               - surname
  *               - username
+ *               - email
+ *               - password
  *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 format: password
  *               name:
  *                 type: string
  *               surname:
  *                 type: string
  *               username:
  *                 type: string
- *               image:
+ *               email:
  *                 type: string
- *                 format: binary
- *               pdf:
+ *                 format: email
+ *               password:
  *                 type: string
- *                 format: binary
+ *                 format: password
  *               date_of_birth:
  *                 type: string
  *                 format: date
@@ -179,23 +173,90 @@ const { Client, Psychologist } = require("../models");
  *                 type: string
  *               phone:
  *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               pdf:
+ *                 type: string
+ *                 format: binary
  *               experience:
  *                 type: integer
+ *               working_areas:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - name
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     experience_years:
+ *                       type: integer
+ *                     certificates:
+ *                       type: object
  *     responses:
  *       201:
  *         description: Psychologist registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     psychologist:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         name:
+ *                           type: string
+ *                         surname:
+ *                           type: string
+ *                         username:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         date_of_birth:
+ *                           type: string
+ *                           format: date
+ *                         sex:
+ *                           type: string
+ *                         phone:
+ *                           type: string
+ *                         image:
+ *                           type: string
+ *                         pdf:
+ *                           type: string
+ *                         experience:
+ *                           type: integer
+ *                         working_areas:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/WorkingArea'
+ *                     accessToken:
+ *                       type: string
+ *                     refreshToken:
+ *                       type: string
  *       400:
- *         description: Invalid input data
- *       409:
- *         description: Email or username already exists
+ *         description: Invalid input or email/username already exists
+ *       500:
+ *         description: Server error
  */
 
 /**
  * @swagger
  * /api/auth/psychologist/login:
  *   post:
- *     summary: Login for psychologists
- *     tags: [Authentication]
+ *     summary: Login as psychologist
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -203,11 +264,12 @@ const { Client, Psychologist } = require("../models");
  *           schema:
  *             type: object
  *             required:
- *               - username
+ *               - email
  *               - password
  *             properties:
- *               username:
+ *               email:
  *                 type: string
+ *                 format: email
  *               password:
  *                 type: string
  *                 format: password
@@ -217,13 +279,53 @@ const { Client, Psychologist } = require("../models");
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/LoginResponse'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     psychologist:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         name:
+ *                           type: string
+ *                         surname:
+ *                           type: string
+ *                         username:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         date_of_birth:
+ *                           type: string
+ *                           format: date
+ *                         sex:
+ *                           type: string
+ *                         phone:
+ *                           type: string
+ *                         image:
+ *                           type: string
+ *                         pdf:
+ *                           type: string
+ *                         experience:
+ *                           type: integer
+ *                         working_areas:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/WorkingArea'
+ *                     accessToken:
+ *                       type: string
+ *                     refreshToken:
+ *                       type: string
  *       401:
  *         description: Invalid credentials
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Server error
  */
 
 /**
@@ -524,6 +626,16 @@ router.post(
     { name: "image", maxCount: 1 },
     { name: "pdf", maxCount: 1 },
   ]),
+  (err, req, res, next) => {
+    if (err) {
+      return res.status(400).json({
+        status: false,
+        message: err.message,
+        data: null,
+      });
+    }
+    next();
+  },
   psychologistAuthController.register
 );
 router.post(
@@ -561,15 +673,21 @@ router.get("/client/profile", auth, async (req, res) => {
     });
     if (!client) {
       return res.status(404).json({
-        success: false,
-        error: { message: "Kullanıcı bulunamadı", status: 404 },
+        status: false,
+        message: "Kullanıcı bulunamadı",
+        data: null,
       });
     }
-    res.json({ ...client.toJSON(), userType: "client" });
+    res.status(200).json({
+      status: true,
+      data: { ...client.toJSON(), userType: "client" },
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, error: { message: error.message, status: 500 } });
+    res.status(500).json({
+      status: false,
+      message: error.message,
+      data: null,
+    });
   }
 });
 
@@ -577,21 +695,41 @@ router.get("/client/profile", auth, async (req, res) => {
 router.get("/psychologist/profile", auth, async (req, res) => {
   try {
     const psychologist = await Psychologist.findByPk(req.user.id, {
+      include: [
+        {
+          model: WorkingArea,
+          as: "WorkingAreas",
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "experience_years",
+            "certificates",
+            "status",
+          ],
+        },
+      ],
       attributes: {
         exclude: ["password", "reset_token", "reset_token_expiry"],
       },
     });
     if (!psychologist) {
       return res.status(404).json({
-        success: false,
-        error: { message: "Kullanıcı bulunamadı", status: 404 },
+        status: false,
+        message: "Kullanıcı bulunamadı",
+        data: null,
       });
     }
-    res.json({ ...psychologist.toJSON(), userType: "psychologist" });
+    res.status(200).json({
+      status: true,
+      data: { ...psychologist.toJSON(), userType: "psychologist" },
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, error: { message: error.message, status: 500 } });
+    res.status(500).json({
+      status: false,
+      message: error.message,
+      data: null,
+    });
   }
 });
 

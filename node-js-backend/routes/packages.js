@@ -1,21 +1,65 @@
 const express = require("express");
 const router = express.Router();
 const PackageController = require("../controllers/PackageController");
-const auth = require("../middleware/auth");
+const staffAuth = require("../middleware/staffAuth");
 
 /**
  * @swagger
  * tags:
  *   name: Packages
- *   description: Package management endpoints
+ *   description: Package management endpoints (Staff Only)
  */
+
+/**
+ * @swagger
+ * /api/packages/active:
+ *   get:
+ *     summary: Get all active packages (Public)
+ *     tags: [Packages]
+ *     responses:
+ *       200:
+ *         description: List of all active packages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       duration:
+ *                         type: integer
+ *                       session_count:
+ *                         type: integer
+ *                       features:
+ *                         type: object
+ *                       status:
+ *                         type: boolean
+ *       500:
+ *         description: Server error
+ */
+router.get("/active", PackageController.getActivePackages);
 
 /**
  * @swagger
  * /api/packages:
  *   get:
- *     summary: Get all packages
+ *     summary: Get all packages (Public)
  *     tags: [Packages]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of all packages
@@ -36,16 +80,18 @@ const auth = require("../middleware/auth");
  *                     type: number
  *                   sessionCount:
  *                     type: integer
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  *       500:
  *         description: Server error
  */
-router.get("/", PackageController.getAllPackages);
+router.get("/", staffAuth, PackageController.getAllPackages);
 
 /**
  * @swagger
  * /api/packages/{id}:
  *   get:
- *     summary: Get a package by ID
+ *     summary: Get a package by ID (Public)
  *     tags: [Packages]
  *     parameters:
  *       - in: path
@@ -68,7 +114,7 @@ router.get("/:id", PackageController.getPackage);
  * @swagger
  * /api/packages:
  *   post:
- *     summary: Create a new package
+ *     summary: Create a new package (Staff Only)
  *     tags: [Packages]
  *     security:
  *       - bearerAuth: []
@@ -98,14 +144,16 @@ router.get("/:id", PackageController.getPackage);
  *         description: Invalid input
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Staff only
  */
-router.post("/", auth, PackageController.createPackage);
+router.post("/", staffAuth, PackageController.createPackage);
 
 /**
  * @swagger
  * /api/packages/{id}:
  *   put:
- *     summary: Update a package
+ *     summary: Update a package (Staff Only)
  *     tags: [Packages]
  *     security:
  *       - bearerAuth: []
@@ -135,16 +183,18 @@ router.post("/", auth, PackageController.createPackage);
  *         description: Package updated successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Staff only
  *       404:
  *         description: Package not found
  */
-router.put("/:id", auth, PackageController.updatePackage);
+router.put("/:id", staffAuth, PackageController.updatePackage);
 
 /**
  * @swagger
  * /api/packages/{id}:
  *   delete:
- *     summary: Delete a package
+ *     summary: Delete a package (Staff Only)
  *     tags: [Packages]
  *     security:
  *       - bearerAuth: []
@@ -159,9 +209,11 @@ router.put("/:id", auth, PackageController.updatePackage);
  *         description: Package deleted successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Staff only
  *       404:
  *         description: Package not found
  */
-router.delete("/:id", auth, PackageController.deletePackage);
+router.delete("/:id", staffAuth, PackageController.deletePackage);
 
 module.exports = router;

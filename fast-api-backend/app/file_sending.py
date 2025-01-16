@@ -16,6 +16,7 @@ import google.generativeai as genai
 from datetime import datetime
 from pytz import timezone
 from app.database import get_db
+from sqlalchemy import text
 
 # Set your API keys. These are crucial for authentication with external services.
 os.environ['GOOGLE_API_KEY'] = "AIzaSyCIvZsOg8M5nzp2jy5U7JT722AmgaSI7VU"  # Replace with your Google API key
@@ -29,21 +30,19 @@ voice_id = "9BWtsMINqrJLrRacOk9x"
 def speech_to_text_gemini_generation_tts(audio_file, client_id: str, language: str = "tr"):
     """
     Transcribes an audio file to text, generates response, and saves to database.
-
-    Parameters:
-    - audio_file: The input audio file
-    - client_id: The client's websocket ID
-    - language: Language of the transcription (default: 'tr')
-
-    Returns:
-    - The generated audio file
     """
     # Get Istanbul timezone for UTC+3
     istanbul_tz = timezone('Europe/Istanbul')
     current_time = datetime.now(istanbul_tz)
 
+    print("Basladi")
+    print(current_time)
+    print(client_id)
+    print(language)
+    print(audio_file)
+    
     # Get database session
-    db = next(get_db())  # get_db bir generator olduğu için next() kullanıyoruz
+    db = next(get_db())
     
     try:
         # Step 1: Use Groq for transcription
@@ -58,20 +57,21 @@ def speech_to_text_gemini_generation_tts(audio_file, client_id: str, language: s
 
         # Step 2: Gemini Flash generation
         gemini_messages = [
-            (
-                "system",
-                "You are a helpful assistant. Speak in english",
-            ),
+            ("system", "You are a helpful assistant. Speak in english"),
             ("human", transcribed_text),
         ]
         gemini_response = gemini_client.invoke(gemini_messages)
         generated_text = gemini_response.content
+        print("Gemini response")
+        print(generated_text)
 
-        # Save to database
-        db.execute("""
+        # Save to database using SQLAlchemy text()
+        query = text("""
             INSERT INTO messages (client_id, text, response, timestamp, type, status, created_at, updated_at)
-            VALUES (:client_id, :text, :response, :timestamp, 'audio', 'completed', :created_at, :updated_at)
-        """, {
+            VALUES (:client_id, :text, :response, :timestamp, 'audio', 'pending', :created_at, :updated_at)
+        """)
+        
+        db.execute(query, {
             'client_id': client_id,
             'text': transcribed_text,
             'response': generated_text,
@@ -88,10 +88,42 @@ def speech_to_text_gemini_generation_tts(audio_file, client_id: str, language: s
             voice=voice_id,
             model="eleven_multilingual_v2"
         )
+
+        # Update status to delivered
+        update_query = text("""
+            UPDATE messages 
+            SET status = 'delivered'
+            WHERE client_id = :client_id 
+            AND timestamp = :timestamp
+        """)
+        db.execute(update_query, {
+            'client_id': client_id,
+            'timestamp': current_time
+        })
+        db.commit()
+
         return audio_data
 
     except Exception as e:
-        db.rollback()
+        db.rollback()  # Roll back any failed transaction
+        try:
+            # Try to save error status
+            error_query = text("""
+                INSERT INTO messages (client_id, text, response, timestamp, type, status, created_at, updated_at)
+                VALUES (:client_id, :text, :response, :timestamp, 'audio', 'failed', :created_at, :updated_at)
+            """)
+            
+            db.execute(error_query, {
+                'client_id': client_id,
+                'text': str(e),
+                'response': 'Error processing audio',
+                'timestamp': current_time,
+                'created_at': current_time,
+                'updated_at': current_time
+            })
+            db.commit()
+        except:
+            db.rollback()
         raise e
     finally:
         db.close()
@@ -99,20 +131,16 @@ def speech_to_text_gemini_generation_tts(audio_file, client_id: str, language: s
 def multimodal_process_gemini_pro(audio_file, image_url: str, client_id: str, language: str = "en"):
     """
     Processes audio and image data using Gemini Vision Pro for multimodal AI applications.
-
-    Parameters:
-    - audio_file: The input audio file.
-    - image_url (str): URL of the input image.
-    - client_id: The client's websocket ID
-    - language (str): Language for transcription and processing. Default is English ('en').
-
-    Returns:
-    - The generated audio file containing processed results.
     """
     # Get Istanbul timezone for UTC+3
     istanbul_tz = timezone('Europe/Istanbul')
     current_time = datetime.now(istanbul_tz)
-
+    print("Basladi")
+    print(current_time)
+    print(client_id)
+    print(language)
+    print(audio_file)
+    print(image_url)
     # Get database session
     db = next(get_db())
 
@@ -128,17 +156,24 @@ def multimodal_process_gemini_pro(audio_file, image_url: str, client_id: str, la
             response_format="verbose_json",
         )
         transcribed_text = transcription.text
+        print("Transcribed text")
+        print(transcribed_text)
 
         genai.configure(api_key="AIzaSyAUuUp27Hpz2JbHi3gWvd_WCSwuuIH-ybo")
         model = genai.GenerativeModel(model_name="gemini-1.5-pro")
 
         response = model.generate_content([transcribed_text, image_file])
+        print("Response")
+        print(response)
 
-        # Save to database
-        db.execute("""
+
+        # Save to database using SQLAlchemy text()
+        query = text("""
             INSERT INTO messages (client_id, text, response, timestamp, type, status, created_at, updated_at)
-            VALUES (:client_id, :text, :response, :timestamp, 'multimodal', 'completed', :created_at, :updated_at)
-        """, {
+            VALUES (:client_id, :text, :response, :timestamp, 'multimodal', 'pending', :created_at, :updated_at)
+        """)
+        
+        db.execute(query, {
             'client_id': client_id,
             'text': transcribed_text,
             'response': response.text,
@@ -155,10 +190,42 @@ def multimodal_process_gemini_pro(audio_file, image_url: str, client_id: str, la
             voice=voice_id,
             model="eleven_multilingual_v2"
         )
+
+        # Update status to delivered
+        update_query = text("""
+            UPDATE messages 
+            SET status = 'delivered'
+            WHERE client_id = :client_id 
+            AND timestamp = :timestamp
+        """)
+        db.execute(update_query, {
+            'client_id': client_id,
+            'timestamp': current_time
+        })
+        db.commit()
+
         return audio_data
 
     except Exception as e:
-        db.rollback()
+        db.rollback()  # Roll back any failed transaction
+        try:
+            # Try to save error status
+            error_query = text("""
+                INSERT INTO messages (client_id, text, response, timestamp, type, status, created_at, updated_at)
+                VALUES (:client_id, :text, :response, :timestamp, 'multimodal', 'failed', :created_at, :updated_at)
+            """)
+            
+            db.execute(error_query, {
+                'client_id': client_id,
+                'text': str(e),
+                'response': 'Error processing multimodal data',
+                'timestamp': current_time,
+                'created_at': current_time,
+                'updated_at': current_time
+            })
+            db.commit()
+        except:
+            db.rollback()
         raise e
     finally:
         db.close()
@@ -190,10 +257,6 @@ def multimodal_process_gemini_pro(audio_file, image_url: str, client_id: str, la
 def predict_normal_chat(text: str, client_id: str):
     """
     Generates a response in Turkish for a given input and saves to database.
-    
-    :param text: The input text for which a response is to be generated.
-    :param client_id: The client's websocket ID
-    :return: A generated Turkish response based on the input text.
     """
     # Get Istanbul timezone and database session
     istanbul_tz = timezone('Europe/Istanbul')
@@ -209,11 +272,13 @@ def predict_normal_chat(text: str, client_id: str):
         gemini_response = gemini_client.invoke(gemini_messages)
         generated_text = gemini_response.content
 
-        # Save to database
-        db.execute("""
+        # Save to database using SQLAlchemy text()
+        query = text("""
             INSERT INTO messages (client_id, text, response, timestamp, type, status, created_at, updated_at)
             VALUES (:client_id, :text, :response, :timestamp, 'text', 'completed', :created_at, :updated_at)
-        """, {
+        """)
+        
+        db.execute(query, {
             'client_id': client_id,
             'text': text,
             'response': generated_text,
@@ -234,11 +299,6 @@ def predict_normal_chat(text: str, client_id: str):
 def predict_vision_chat(text: str, image_url: str, client_id: str):
     """
     Uses a generative AI model to analyze input text and image, and saves to database.
-    
-    :param text: The textual description or query to process.
-    :param image_url: The URL or path to the image file to process.
-    :param client_id: The client's websocket ID
-    :return: The generated textual response.
     """
     # Get Istanbul timezone and database session
     istanbul_tz = timezone('Europe/Istanbul')
@@ -251,11 +311,13 @@ def predict_vision_chat(text: str, image_url: str, client_id: str):
         model = genai.GenerativeModel(model_name="gemini-1.5-pro")
         response = model.generate_content([text, image_file])
         
-        # Save to database
-        db.execute("""
+        # Save to database using SQLAlchemy text()
+        query = text("""
             INSERT INTO messages (client_id, text, response, timestamp, type, status, created_at, updated_at)
             VALUES (:client_id, :text, :response, :timestamp, 'vision', 'completed', :created_at, :updated_at)
-        """, {
+        """)
+        
+        db.execute(query, {
             'client_id': client_id,
             'text': text,
             'response': response.text,

@@ -19,7 +19,7 @@ const RefreshToken = sequelize.define(
       allowNull: false,
     },
     user_type: {
-      type: DataTypes.ENUM("client", "psychologist"),
+      type: DataTypes.ENUM("client", "psychologist", "staff"),
       allowNull: false,
     },
     expires_at: {

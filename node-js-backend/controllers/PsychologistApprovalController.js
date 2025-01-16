@@ -1,4 +1,4 @@
-const { Psychologist, Staff } = require("../models");
+const { Psychologist, Staff, WorkingArea } = require("../models");
 const { Op } = require("sequelize");
 const APIFeatures = require("../utils/APIFeatures");
 
@@ -38,6 +38,18 @@ const updateApprovalStatus = async (req, res) => {
           as: "approver",
           attributes: ["id", "name", "surname"],
         },
+        {
+          model: WorkingArea,
+          as: "WorkingAreas",
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "experience_years",
+            "certificates",
+            "status",
+          ],
+        },
       ],
       attributes: {
         exclude: ["password", "reset_token", "reset_token_expiry"],
@@ -73,6 +85,18 @@ const getPendingPsychologists = async (req, res) => {
           model: Staff,
           as: "approver",
           attributes: ["id", "name", "surname"],
+        },
+        {
+          model: WorkingArea,
+          as: "WorkingAreas",
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "experience_years",
+            "certificates",
+            "status",
+          ],
         },
       ],
       attributes: {
@@ -117,6 +141,18 @@ const getApprovedPsychologists = async (req, res) => {
           as: "approver",
           attributes: ["id", "name", "surname"],
         },
+        {
+          model: WorkingArea,
+          as: "WorkingAreas",
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "experience_years",
+            "certificates",
+            "status",
+          ],
+        },
       ],
       attributes: {
         exclude: ["password", "reset_token", "reset_token_expiry"],
@@ -159,6 +195,18 @@ const getRejectedPsychologists = async (req, res) => {
           model: Staff,
           as: "approver",
           attributes: ["id", "name", "surname"],
+        },
+        {
+          model: WorkingArea,
+          as: "WorkingAreas",
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "experience_years",
+            "certificates",
+            "status",
+          ],
         },
       ],
       attributes: {

@@ -59,10 +59,9 @@ class APIFeatures {
     if (this.queryParams.sort) {
       const sortFields = this.queryParams.sort.split(",");
       this.queryOptions.order = sortFields.map((field) => {
-        if (field.startsWith("-")) {
-          return [field.substring(1), "DESC"];
-        }
-        return [field, "ASC"];
+        const isDesc = field.startsWith("-");
+        const cleanField = isDesc ? field.substring(1) : field;
+        return [cleanField, isDesc ? "DESC" : "ASC"];
       });
     } else {
       this.queryOptions.order = [["created_at", "DESC"]];

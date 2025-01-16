@@ -2,6 +2,18 @@ const { WorkingArea } = require("../models");
 const APIFeatures = require("../utils/APIFeatures");
 const logger = require("../config/logger");
 
+const workingAreaInclude = {
+  model: WorkingArea,
+  attributes: [
+    "id",
+    "name",
+    "description",
+    "experience_years",
+    "certificates",
+    "status",
+  ],
+};
+
 class WorkingAreaController {
   // Tüm çalışma alanlarını getir
   async getAllWorkingAreas(req, res) {
@@ -15,12 +27,16 @@ class WorkingAreaController {
 
       const result = await features.execute();
 
-      res.json(result);
+      res.status(200).json({
+        status: true,
+        message: "Çalışma alanları başarıyla getirildi",
+        data: result,
+      });
     } catch (error) {
       logger.error(`Çalışma alanı listesi getirme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Çalışma alanları getirilirken bir hata oluştu",
+        status: false,
+        message: "Çalışma alanları getirilirken bir hata oluştu",
       });
     }
   }
@@ -32,20 +48,21 @@ class WorkingAreaController {
 
       if (!workingArea) {
         return res.status(404).json({
-          success: false,
-          error: "Çalışma alanı bulunamadı",
+          status: false,
+          message: "Çalışma alanı bulunamadı",
         });
       }
 
-      res.json({
-        success: true,
+      res.status(200).json({
+        status: true,
+        message: "Çalışma alanı başarıyla getirildi",
         data: workingArea,
       });
     } catch (error) {
       logger.error(`Çalışma alanı getirme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Çalışma alanı getirilirken bir hata oluştu",
+        status: false,
+        message: "Çalışma alanı getirilirken bir hata oluştu",
       });
     }
   }
@@ -55,7 +72,7 @@ class WorkingAreaController {
     try {
       const features = new APIFeatures(WorkingArea, {
         ...req.query,
-        psychologist_id: req.params.psychologistId,
+        psychologist_id: req.user.id,
       })
         .filter()
         .sort()
@@ -64,14 +81,18 @@ class WorkingAreaController {
 
       const result = await features.execute();
 
-      res.json(result);
+      res.status(200).json({
+        status: true,
+        message: "Psikolog çalışma alanları başarıyla getirildi",
+        data: result,
+      });
     } catch (error) {
       logger.error(
         `Psikolog çalışma alanları getirme hatası: ${error.message}`
       );
       res.status(500).json({
-        success: false,
-        error: "Psikolog çalışma alanları getirilirken bir hata oluştu",
+        status: false,
+        message: "Psikolog çalışma alanları getirilirken bir hata oluştu",
       });
     }
   }
@@ -79,18 +100,27 @@ class WorkingAreaController {
   // Yeni çalışma alanı oluştur
   async createWorkingArea(req, res) {
     try {
-      const workingArea = await WorkingArea.create(req.body);
+      logger.info("createWorkingArea başladı");
+      logger.info(`User bilgisi: ${JSON.stringify(req.user)}`);
+      logger.info(`Request body: ${JSON.stringify(req.body)}`);
 
+      const workingArea = await WorkingArea.create({
+        ...req.body,
+        psychologist_id: req.user.id,
+      });
+
+      logger.info(`Oluşturulan working area: ${JSON.stringify(workingArea)}`);
       logger.info(`Yeni çalışma alanı oluşturuldu: ${workingArea.name}`);
       res.status(201).json({
-        success: true,
+        status: true,
+        message: "Yeni çalışma alanı başarıyla oluşturuldu",
         data: workingArea,
       });
     } catch (error) {
       logger.error(`Çalışma alanı oluşturma hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Çalışma alanı oluşturulurken bir hata oluştu",
+        status: false,
+        message: "Çalışma alanı oluşturulurken bir hata oluştu",
       });
     }
   }
@@ -98,27 +128,33 @@ class WorkingAreaController {
   // Çalışma alanı güncelle
   async updateWorkingArea(req, res) {
     try {
-      const workingArea = await WorkingArea.findByPk(req.params.id);
+      const workingArea = await WorkingArea.findOne({
+        where: {
+          id: req.params.id,
+          psychologist_id: req.user.id,
+        },
+      });
 
       if (!workingArea) {
         return res.status(404).json({
-          success: false,
-          error: "Çalışma alanı bulunamadı",
+          status: false,
+          message: "Çalışma alanı bulunamadı",
         });
       }
 
       await workingArea.update(req.body);
 
       logger.info(`Çalışma alanı güncellendi: ${workingArea.name}`);
-      res.json({
-        success: true,
+      res.status(200).json({
+        status: true,
+        message: "Çalışma alanı başarıyla güncellendi",
         data: workingArea,
       });
     } catch (error) {
       logger.error(`Çalışma alanı güncelleme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Çalışma alanı güncellenirken bir hata oluştu",
+        status: false,
+        message: "Çalışma alanı güncellenirken bir hata oluştu",
       });
     }
   }
@@ -126,27 +162,32 @@ class WorkingAreaController {
   // Çalışma alanı sil
   async deleteWorkingArea(req, res) {
     try {
-      const workingArea = await WorkingArea.findByPk(req.params.id);
+      const workingArea = await WorkingArea.findOne({
+        where: {
+          id: req.params.id,
+          psychologist_id: req.user.id,
+        },
+      });
 
       if (!workingArea) {
         return res.status(404).json({
-          success: false,
-          error: "Çalışma alanı bulunamadı",
+          status: false,
+          message: "Çalışma alanı bulunamadı",
         });
       }
 
       await workingArea.destroy();
 
       logger.info(`Çalışma alanı silindi: ${workingArea.name}`);
-      res.json({
-        success: true,
+      res.status(200).json({
+        status: true,
         message: "Çalışma alanı başarıyla silindi",
       });
     } catch (error) {
       logger.error(`Çalışma alanı silme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Çalışma alanı silinirken bir hata oluştu",
+        status: false,
+        message: "Çalışma alanı silinirken bir hata oluştu",
       });
     }
   }

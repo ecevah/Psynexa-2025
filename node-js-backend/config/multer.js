@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 
 // Dosya filtreleme
 const fileFilter = (req, file, cb) => {
-  if (file.fieldname === "image") {
+  if (file.fieldname === "photo" || file.fieldname === "image") {
     // Resim dosyaları için kontrol
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);

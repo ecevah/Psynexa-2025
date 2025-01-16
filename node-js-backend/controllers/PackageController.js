@@ -124,6 +124,31 @@ class PackageController {
       });
     }
   }
+
+  // Aktif paketleri getir
+  async getActivePackages(req, res) {
+    try {
+      const features = new APIFeatures(Package, {
+        ...req.query,
+        status: true,
+      })
+        .filter()
+        .search()
+        .sort()
+        .limitFields()
+        .paginate();
+
+      const result = await features.execute();
+
+      res.json(result);
+    } catch (error) {
+      logger.error(`Aktif paket listesi getirme hatası: ${error.message}`);
+      res.status(500).json({
+        success: false,
+        error: "Aktif paketler getirilirken bir hata oluştu",
+      });
+    }
+  }
 }
 
 module.exports = new PackageController();

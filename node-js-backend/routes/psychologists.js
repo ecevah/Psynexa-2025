@@ -12,6 +12,30 @@ const auth = require("../middleware/auth");
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     WorkingArea:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Working area ID
+ *         name:
+ *           type: string
+ *           description: Working area name
+ *         description:
+ *           type: string
+ *           description: Working area description
+ *         experience_years:
+ *           type: integer
+ *           description: Years of experience in this area
+ *         certificates:
+ *           type: object
+ *           description: Certificates related to this area
+ */
+
+/**
+ * @swagger
  * /api/psychologists:
  *   get:
  *     summary: Get all psychologists
@@ -44,6 +68,10 @@ const auth = require("../middleware/auth");
  *                     type: string
  *                   imageUrl:
  *                     type: string
+ *                   working_areas:
+ *                     type: array
+ *                     items:
+ *                       $ref: '#/components/schemas/WorkingArea'
  *       500:
  *         description: Server error
  */
@@ -65,6 +93,38 @@ router.get("/", psychologistController.getAllPsychologists);
  *     responses:
  *       200:
  *         description: Psychologist details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     specialization:
+ *                       type: string
+ *                     experience:
+ *                       type: integer
+ *                     about:
+ *                       type: string
+ *                     imageUrl:
+ *                       type: string
+ *                     working_areas:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/WorkingArea'
  *       404:
  *         description: Psychologist not found
  *       500:
@@ -109,9 +169,56 @@ router.get("/:id", psychologistController.getPsychologist);
  *                 type: string
  *               imageUrl:
  *                 type: string
+ *               working_areas:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - name
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     experience_years:
+ *                       type: integer
+ *                     certificates:
+ *                       type: object
  *     responses:
  *       201:
  *         description: Psychologist created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     specialization:
+ *                       type: string
+ *                     experience:
+ *                       type: integer
+ *                     about:
+ *                       type: string
+ *                     imageUrl:
+ *                       type: string
+ *                     working_areas:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/WorkingArea'
  *       400:
  *         description: Invalid input
  *       401:
@@ -156,9 +263,54 @@ router.post("/", auth, psychologistController.createPsychologist);
  *                 type: string
  *               imageUrl:
  *                 type: string
+ *               working_areas:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     experience_years:
+ *                       type: integer
+ *                     certificates:
+ *                       type: object
  *     responses:
  *       200:
  *         description: Psychologist updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     specialization:
+ *                       type: string
+ *                     experience:
+ *                       type: integer
+ *                     about:
+ *                       type: string
+ *                     imageUrl:
+ *                       type: string
+ *                     working_areas:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/WorkingArea'
  *       401:
  *         description: Unauthorized
  *       404:

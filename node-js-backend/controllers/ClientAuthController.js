@@ -26,7 +26,9 @@ class ClientAuthController {
           deleteFile(req.file.path);
         }
         return res.status(400).json({
-          error: "Bu email veya kullanıcı adı zaten kullanımda",
+          status: false,
+          message: "Bu email veya kullanıcı adı zaten kullanımda",
+          data: null,
         });
       }
 
@@ -66,16 +68,24 @@ class ClientAuthController {
 
       logger.info(`Yeni client kaydı oluşturuldu: ${client.email}`);
       res.status(201).json({
-        client,
-        accessToken,
-        refreshToken,
+        status: true,
+        message: "Kayıt işlemi başarıyla tamamlandı",
+        data: {
+          client,
+          accessToken,
+          refreshToken,
+        },
       });
     } catch (error) {
       if (req.file) {
         deleteFile(req.file.path);
       }
       logger.error(`Kayıt hatası: ${error.message}`);
-      res.status(500).json({ error: "Kayıt işlemi başarısız" });
+      res.status(500).json({
+        status: false,
+        message: "Kayıt işlemi başarısız",
+        data: null,
+      });
     }
   }
 
@@ -86,7 +96,10 @@ class ClientAuthController {
 
       if (!client) {
         if (req.file) deleteFile(req.file.path);
-        return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Kullanıcı bulunamadı",
+        });
       }
 
       // Eski fotoğrafı sil
@@ -101,13 +114,17 @@ class ClientAuthController {
       }
 
       res.json({
+        status: true,
         message: "Profil fotoğrafı güncellendi",
         photo: client.photo,
       });
     } catch (error) {
       if (req.file) deleteFile(req.file.path);
       logger.error(`Fotoğraf güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Fotoğraf güncelleme işlemi başarısız" });
+      res.status(500).json({
+        status: false,
+        message: "Fotoğraf güncelleme işlemi başarısız",
+      });
     }
   }
 
@@ -118,12 +135,20 @@ class ClientAuthController {
       const client = await Client.findOne({ where: { email } });
 
       if (!client) {
-        return res.status(401).json({ error: "Geçersiz email veya şifre" });
+        return res.status(401).json({
+          status: false,
+          message: "Geçersiz email veya şifre",
+          data: null,
+        });
       }
 
       const isMatch = await client.validatePassword(password);
       if (!isMatch) {
-        return res.status(401).json({ error: "Geçersiz email veya şifre" });
+        return res.status(401).json({
+          status: false,
+          message: "Geçersiz email veya şifre",
+          data: null,
+        });
       }
 
       // Token'ları oluştur
@@ -138,15 +163,24 @@ class ClientAuthController {
         refreshTokenExpiry
       );
 
+      // Login response
       logger.info(`Client giriş yaptı: ${client.email}`);
       res.json({
-        client,
-        accessToken,
-        refreshToken,
+        status: true,
+        message: "Giriş başarılı",
+        data: {
+          client,
+          accessToken,
+          refreshToken,
+        },
       });
     } catch (error) {
       logger.error(`Giriş hatası: ${error.message}`);
-      res.status(500).json({ error: "Giriş işlemi başarısız" });
+      res.status(500).json({
+        status: false,
+        message: "Giriş işlemi başarısız",
+        data: null,
+      });
     }
   }
 
@@ -157,9 +191,11 @@ class ClientAuthController {
       const client = await Client.findOne({ where: { email } });
 
       if (!client) {
-        return res
-          .status(404)
-          .json({ error: "Bu email ile kayıtlı kullanıcı bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Bu email ile kayıtlı kullanıcı bulunamadı",
+          data: null,
+        });
       }
 
       const resetToken = crypto.randomBytes(32).toString("hex");
@@ -170,16 +206,22 @@ class ClientAuthController {
         reset_token_expiry: resetTokenExpiry,
       });
 
-      const resetUrl = `${req.body.resetUrl}/${resetToken}?userType=client`;
+      const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password/${resetToken}?userType=client`;
       await emailService.sendPasswordResetEmail(email, resetUrl);
 
       logger.info(`Şifre sıfırlama maili gönderildi: ${email}`);
-      res.json({
+      res.status(200).json({
+        status: true,
         message: "Şifre sıfırlama linki email adresinize gönderildi",
+        data: null,
       });
     } catch (error) {
       logger.error(`Şifre sıfırlama hatası: ${error.message}`);
-      res.status(500).json({ error: "Şifre sıfırlama işlemi başarısız" });
+      res.status(500).json({
+        status: false,
+        message: "Şifre sıfırlama işlemi başarısız",
+        data: null,
+      });
     }
   }
 
@@ -195,22 +237,32 @@ class ClientAuthController {
       });
 
       if (!client) {
-        return res
-          .status(400)
-          .json({ error: "Geçersiz veya süresi dolmuş token" });
+        return res.status(400).json({
+          status: false,
+          message: "Geçersiz veya süresi dolmuş token",
+          data: null,
+        });
       }
 
       await client.update({
-        password: await bcrypt.hash(password, 10),
+        password: password,
         reset_token: null,
         reset_token_expiry: null,
       });
 
       logger.info(`Şifre başarıyla sıfırlandı: ${client.email}`);
-      res.json({ message: "Şifreniz başarıyla güncellendi" });
+      res.status(200).json({
+        status: true,
+        message: "Şifreniz başarıyla güncellendi",
+        data: null,
+      });
     } catch (error) {
       logger.error(`Şifre sıfırlama hatası: ${error.message}`);
-      res.status(500).json({ error: "Şifre sıfırlama işlemi başarısız" });
+      res.status(500).json({
+        status: false,
+        message: "Şifre sıfırlama işlemi başarısız",
+        data: null,
+      });
     }
   }
 
@@ -220,7 +272,9 @@ class ClientAuthController {
       const { refreshToken } = req.body;
 
       if (!refreshToken) {
-        return res.status(400).json({ error: "Refresh token gerekli" });
+        return res
+          .status(400)
+          .json({ status: false, message: "Refresh token gerekli" });
       }
 
       // Refresh token'ı doğrula
@@ -246,7 +300,10 @@ class ClientAuthController {
       });
     } catch (error) {
       logger.error(`Token yenileme hatası: ${error.message}`);
-      res.status(401).json({ error: error.message });
+      res.status(401).json({
+        status: false,
+        message: error.message,
+      });
     }
   }
 
@@ -255,14 +312,36 @@ class ClientAuthController {
     try {
       const { refreshToken } = req.body;
 
-      if (refreshToken) {
-        await tokenService.deleteRefreshToken(refreshToken);
+      if (!refreshToken) {
+        return res.status(400).json({
+          status: false,
+          message: "Refresh token gerekli",
+        });
       }
 
-      res.json({ message: "Başarıyla çıkış yapıldı" });
+      // Refresh token'ı doğrula
+      try {
+        await tokenService.verifyRefreshToken(refreshToken);
+      } catch (error) {
+        return res.status(401).json({
+          status: false,
+          message: "Geçersiz refresh token",
+        });
+      }
+
+      // Refresh token'ı sil
+      await tokenService.deleteRefreshToken(refreshToken);
+
+      res.status(200).json({
+        status: true,
+        message: "Başarıyla çıkış yapıldı",
+      });
     } catch (error) {
       logger.error(`Çıkış hatası: ${error.message}`);
-      res.status(500).json({ error: "Çıkış işlemi başarısız" });
+      res.status(500).json({
+        status: false,
+        message: "Çıkış işlemi başarısız",
+      });
     }
   }
 }

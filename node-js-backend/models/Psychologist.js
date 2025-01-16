@@ -200,4 +200,12 @@ Psychologist.prototype.validatePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
+Psychologist.associate = (models) => {
+  Psychologist.hasMany(models.WorkingArea, {
+    foreignKey: "psychologist_id",
+    as: "WorkingAreas",
+    onDelete: "CASCADE",
+  });
+};
+
 module.exports = Psychologist;

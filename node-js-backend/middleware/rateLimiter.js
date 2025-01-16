@@ -6,7 +6,8 @@ const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 dakika
   max: 100, // IP başına maksimum istek
   message: {
-    error:
+    status: false,
+    message:
       "Çok fazla istek gönderdiniz. Lütfen 15 dakika sonra tekrar deneyin.",
   },
   handler: (req, res, next, options) => {
@@ -20,7 +21,8 @@ const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 saat
   max: 5, // IP başına maksimum deneme
   message: {
-    error:
+    status: false,
+    message:
       "Çok fazla giriş denemesi yaptınız. Lütfen 1 saat sonra tekrar deneyin.",
   },
   handler: (req, res, next, options) => {
@@ -34,7 +36,8 @@ const passwordResetLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 saat
   max: 3, // IP başına maksimum deneme
   message: {
-    error:
+    status: false,
+    message:
       "Çok fazla şifre sıfırlama denemesi yaptınız. Lütfen 1 saat sonra tekrar deneyin.",
   },
   handler: (req, res, next, options) => {

@@ -13,7 +13,7 @@ const Payment = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Clients",
+        model: "clients",
         key: "id",
       },
     },
@@ -21,7 +21,7 @@ const Payment = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Packages",
+        model: "packages",
         key: "id",
       },
     },
@@ -60,6 +60,7 @@ const Payment = sequelize.define(
     },
   },
   {
+    tableName: "payments",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",

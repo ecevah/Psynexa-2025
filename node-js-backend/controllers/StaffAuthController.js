@@ -20,7 +20,7 @@ class StaffAuthController {
     try {
       const {
         name,
-        username,
+        surname,
         email,
         password,
         date_of_birth,
@@ -30,10 +30,10 @@ class StaffAuthController {
         restrictions_id,
       } = req.body;
 
-      // Check if staff with same email or username exists
+      // Check if staff with same email exists
       const existingStaff = await Staff.findOne({
         where: {
-          [Op.or]: [{ email }, { username }],
+          [Op.or]: [{ email }],
         },
       });
 
@@ -41,8 +41,7 @@ class StaffAuthController {
         return res.status(400).json({
           success: false,
           error: {
-            message:
-              "Bu e-posta veya kullanıcı adı ile kayıtlı bir personel zaten var",
+            message: "Bu e-posta ile kayıtlı bir personel zaten var",
             status: 400,
           },
         });
@@ -60,12 +59,16 @@ class StaffAuthController {
         });
       }
 
+      // Hash password before saving
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
       // Create new staff member
       const staff = await Staff.create({
         name,
-        username,
+        surname,
         email,
-        password,
+        password: hashedPassword,
         date_of_birth,
         identity_number,
         phone,
@@ -89,7 +92,7 @@ class StaffAuthController {
           staff: {
             id: staff.id,
             name: staff.name,
-            username: staff.username,
+            surname: staff.surname,
             email: staff.email,
           },
           token,
@@ -114,11 +117,11 @@ class StaffAuthController {
    */
   static async login(req, res) {
     try {
-      const { username, password } = req.body;
+      const { email, password } = req.body;
 
-      // Find staff by username
+      // Find staff by email
       const staff = await Staff.findOne({
-        where: { username },
+        where: { email },
         include: [
           {
             model: Restrictions,
@@ -129,11 +132,8 @@ class StaffAuthController {
 
       if (!staff) {
         return res.status(401).json({
-          success: false,
-          error: {
-            message: "Geçersiz kullanıcı adı veya şifre",
-            status: 401,
-          },
+          status: false,
+          message: "Geçersiz e-posta veya şifre",
         });
       }
 
@@ -141,22 +141,16 @@ class StaffAuthController {
       const isPasswordValid = await bcrypt.compare(password, staff.password);
       if (!isPasswordValid) {
         return res.status(401).json({
-          success: false,
-          error: {
-            message: "Geçersiz kullanıcı adı veya şifre",
-            status: 401,
-          },
+          status: false,
+          message: "Geçersiz e-posta veya şifre",
         });
       }
 
       // Check if staff is active
       if (!staff.status) {
         return res.status(403).json({
-          success: false,
-          error: {
-            message: "Hesabınız aktif değil",
-            status: 403,
-          },
+          status: false,
+          message: "Hesabınız aktif değil",
         });
       }
 
@@ -169,13 +163,13 @@ class StaffAuthController {
         }
       );
 
-      res.json({
-        success: true,
+      res.status(200).json({
+        status: true,
         data: {
           staff: {
             id: staff.id,
             name: staff.name,
-            username: staff.username,
+            surname: staff.surname,
             email: staff.email,
             permissions: staff.Restriction?.permissions || {},
           },
@@ -185,11 +179,8 @@ class StaffAuthController {
     } catch (error) {
       console.error("Staff Login Error:", error);
       res.status(500).json({
-        success: false,
-        error: {
-          message: "Giriş sırasında bir hata oluştu",
-          status: 500,
-        },
+        status: false,
+        message: "Giriş sırasında bir hata oluştu",
       });
     }
   }
