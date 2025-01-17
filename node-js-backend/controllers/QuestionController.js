@@ -11,7 +11,9 @@ class QuestionController {
       // Test'in varlığını kontrol et
       const test = await Test.findByPk(test_id);
       if (!test) {
-        return res.status(404).json({ error: "Test bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Test bulunamadı" });
       }
 
       // Sıradaki queue numarasını bul
@@ -29,10 +31,10 @@ class QuestionController {
       });
 
       logger.info(`Yeni soru oluşturuldu: ${question.id}`);
-      res.status(201).json(question);
+      res.status(201).json({ status: true, data: question });
     } catch (error) {
       logger.error(`Soru oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Soru oluşturulamadı" });
+      res.status(500).json({ status: false, message: "Soru oluşturulamadı" });
     }
   }
 
@@ -46,10 +48,10 @@ class QuestionController {
         order: [["queue", "ASC"]],
       });
 
-      res.json(questions);
+      res.status(200).json({ status: true, data: questions });
     } catch (error) {
       logger.error(`Soru listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Sorular alınamadı" });
+      res.status(500).json({ status: false, message: "Sorular alınamadı" });
     }
   }
 
@@ -61,13 +63,15 @@ class QuestionController {
       const question = await Question.findByPk(id);
 
       if (!question) {
-        return res.status(404).json({ error: "Soru bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Soru bulunamadı" });
       }
 
-      res.json(question);
+      res.status(200).json({ status: true, data: question });
     } catch (error) {
       logger.error(`Soru detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Soru detayı alınamadı" });
+      res.status(500).json({ status: false, message: "Soru detayı alınamadı" });
     }
   }
 
@@ -80,7 +84,9 @@ class QuestionController {
       const question = await Question.findByPk(id);
 
       if (!question) {
-        return res.status(404).json({ error: "Soru bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Soru bulunamadı" });
       }
 
       await question.update({
@@ -89,10 +95,10 @@ class QuestionController {
       });
 
       logger.info(`Soru güncellendi: ${id}`);
-      res.json(question);
+      res.status(200).json({ status: true, data: question });
     } catch (error) {
       logger.error(`Soru güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Soru güncellenemedi" });
+      res.status(500).json({ status: false, message: "Soru güncellenemedi" });
     }
   }
 
@@ -104,7 +110,9 @@ class QuestionController {
       const question = await Question.findByPk(id);
 
       if (!question) {
-        return res.status(404).json({ error: "Soru bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Soru bulunamadı" });
       }
 
       // Silinen sorudan sonraki soruların queue'sunu güncelle
@@ -120,10 +128,10 @@ class QuestionController {
 
       await question.destroy();
       logger.info(`Soru silindi: ${id}`);
-      res.json({ message: "Soru başarıyla silindi" });
+      res.status(200).json({ status: true, message: "Soru başarıyla silindi" });
     } catch (error) {
       logger.error(`Soru silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Soru silinemedi" });
+      res.status(500).json({ status: false, message: "Soru silinemedi" });
     }
   }
 
@@ -139,7 +147,9 @@ class QuestionController {
       });
 
       if (existingQuestions.length !== questions.length) {
-        return res.status(400).json({ error: "Geçersiz soru listesi" });
+        return res
+          .status(400)
+          .json({ status: false, message: "Geçersiz soru listesi" });
       }
 
       // Sıraları güncelle
@@ -150,10 +160,14 @@ class QuestionController {
       );
 
       logger.info(`Soru sıralaması güncellendi: Test ${test_id}`);
-      res.json({ message: "Soru sıralaması güncellendi" });
+      res
+        .status(200)
+        .json({ status: true, message: "Soru sıralaması güncellendi" });
     } catch (error) {
       logger.error(`Soru sıralama hatası: ${error.message}`);
-      res.status(500).json({ error: "Soru sıralaması güncellenemedi" });
+      res
+        .status(500)
+        .json({ status: false, message: "Soru sıralaması güncellenemedi" });
     }
   }
 }

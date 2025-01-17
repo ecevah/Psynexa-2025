@@ -33,13 +33,13 @@ class TestController {
       }
 
       logger.info(`Yeni test oluşturuldu: ${test.id}`);
-      res.status(201).json(test);
+      res.status(201).json({ status: true, data: test });
     } catch (error) {
       if (req.file) {
         deleteFile(req.file.path);
       }
       logger.error(`Test oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Test oluşturulamadı" });
+      res.status(500).json({ status: false, message: "Test oluşturulamadı" });
     }
   }
 
@@ -59,10 +59,10 @@ class TestController {
         ],
       });
 
-      res.json(tests);
+      res.status(200).json({ status: true, data: tests });
     } catch (error) {
       logger.error(`Test listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Testler alınamadı" });
+      res.status(500).json({ status: false, message: "Testler alınamadı" });
     }
   }
 
@@ -90,13 +90,15 @@ class TestController {
       });
 
       if (!test) {
-        return res.status(404).json({ error: "Test bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Test bulunamadı" });
       }
 
-      res.json(test);
+      res.status(200).json({ status: true, data: test });
     } catch (error) {
       logger.error(`Test detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Test detayı alınamadı" });
+      res.status(500).json({ status: false, message: "Test detayı alınamadı" });
     }
   }
 
@@ -110,7 +112,9 @@ class TestController {
 
       if (!test) {
         if (req.file) deleteFile(req.file.path);
-        return res.status(404).json({ error: "Test bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Test bulunamadı" });
       }
 
       if (req.file) {
@@ -136,13 +140,13 @@ class TestController {
       });
 
       logger.info(`Test güncellendi: ${id}`);
-      res.json(test);
+      res.status(200).json({ status: true, data: test });
     } catch (error) {
       if (req.file) {
         deleteFile(req.file.path);
       }
       logger.error(`Test güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Test güncellenemedi" });
+      res.status(500).json({ status: false, message: "Test güncellenemedi" });
     }
   }
 
@@ -154,7 +158,9 @@ class TestController {
       const test = await Test.findByPk(id);
 
       if (!test) {
-        return res.status(404).json({ error: "Test bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Test bulunamadı" });
       }
 
       // Test resmini sil
@@ -164,10 +170,10 @@ class TestController {
 
       await test.destroy();
       logger.info(`Test silindi: ${id}`);
-      res.json({ message: "Test başarıyla silindi" });
+      res.status(200).json({ status: true, message: "Test başarıyla silindi" });
     } catch (error) {
       logger.error(`Test silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Test silinemedi" });
+      res.status(500).json({ status: false, message: "Test silinemedi" });
     }
   }
 }

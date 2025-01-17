@@ -34,6 +34,7 @@ const seriesRoutes = require("./routes/seriesRoutes");
 const assignedTaskRoutes = require("./routes/assignedTaskRoutes");
 const staffRoutes = require("./routes/staffRoutes");
 const restrictionsRoutes = require("./routes/restrictionsRoutes");
+const testJwtBenchRoutes = require("./routes/testJwtBench");
 
 const { apiLimiter } = require("./middleware/rateLimiter");
 const logMiddleware = require("./middleware/logMiddleware");
@@ -92,6 +93,7 @@ app.use("/api/series", seriesRoutes);
 app.use("/api/assigned-tasks", assignedTaskRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/restrictions", restrictionsRoutes);
+app.use("/api/testjwtbench", testJwtBenchRoutes);
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

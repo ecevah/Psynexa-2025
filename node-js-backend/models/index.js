@@ -50,4 +50,11 @@ Object.keys(models).forEach((modelName) => {
   }
 });
 
+// Test ve Question modelleri arasındaki ilişkiyi tanımlayın
+Test.hasMany(Question, { foreignKey: "test_id" });
+Question.belongsTo(Test, { foreignKey: "test_id" });
+
+Response.belongsTo(Question, { foreignKey: "question_id" });
+Question.hasMany(Response, { foreignKey: "question_id" });
+
 module.exports = models;

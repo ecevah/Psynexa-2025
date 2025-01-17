@@ -31,10 +31,16 @@ class MeditationController {
       });
 
       logger.info(`Yeni meditasyon oluşturuldu: ${meditation.id}`);
-      res.status(201).json(meditation);
+      res.status(201).json({
+        status: true,
+        message: "Meditasyon oluşturuldu",
+        data: meditation,
+      });
     } catch (error) {
       logger.error(`Meditasyon oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Meditasyon oluşturulamadı" });
+      res
+        .status(500)
+        .json({ status: false, message: "Meditasyon oluşturulamadı" });
     }
   }
 
@@ -55,7 +61,9 @@ class MeditationController {
       res.json(meditations);
     } catch (error) {
       logger.error(`Meditasyon listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Meditasyonlar alınamadı" });
+      res
+        .status(500)
+        .json({ status: false, message: "Meditasyonlar alınamadı" });
     }
   }
 
@@ -71,7 +79,9 @@ class MeditationController {
       res.json(meditations);
     } catch (error) {
       logger.error(`Meditasyon listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Meditasyonlar alınamadı" });
+      res
+        .status(500)
+        .json({ status: false, message: "Meditasyonlar alınamadı" });
     }
   }
 
@@ -90,13 +100,17 @@ class MeditationController {
       });
 
       if (!meditation) {
-        return res.status(404).json({ error: "Meditasyon bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Meditasyon bulunamadı" });
       }
 
       res.json(meditation);
     } catch (error) {
       logger.error(`Meditasyon detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Meditasyon detayı alınamadı" });
+      res
+        .status(500)
+        .json({ status: false, message: "Meditasyon detayı alınamadı" });
     }
   }
 
@@ -122,7 +136,9 @@ class MeditationController {
       });
 
       if (!meditation) {
-        return res.status(404).json({ error: "Meditasyon bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Meditasyon bulunamadı" });
       }
 
       if (status === "published" && meditation.status !== "published") {
@@ -139,10 +155,16 @@ class MeditationController {
       });
 
       logger.info(`Meditasyon güncellendi: ${id}`);
-      res.json(meditation);
+      res.json({
+        status: true,
+        message: "Meditasyon başarıyla güncellendi",
+        data: meditation,
+      });
     } catch (error) {
       logger.error(`Meditasyon güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Meditasyon güncellenemedi" });
+      res
+        .status(500)
+        .json({ status: false, message: "Meditasyon güncellenemedi" });
     }
   }
 
@@ -157,7 +179,9 @@ class MeditationController {
       });
 
       if (!meditation) {
-        return res.status(404).json({ error: "Meditasyon bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Meditasyon bulunamadı" });
       }
 
       await meditation.update({
@@ -166,10 +190,10 @@ class MeditationController {
       });
 
       logger.info(`Meditasyon arşivlendi: ${id}`);
-      res.json({ message: "Meditasyon başarıyla arşivlendi" });
+      res.json({ status: true, message: "Meditasyon başarıyla arşivlendi" });
     } catch (error) {
       logger.error(`Meditasyon silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Meditasyon silinemedi" });
+      res.status(500).json({ status: false, message: "Meditasyon silinemedi" });
     }
   }
 }

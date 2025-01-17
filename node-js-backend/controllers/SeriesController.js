@@ -26,10 +26,12 @@ class SeriesController {
       }
 
       logger.info(`Yeni seri oluşturuldu: ${series.id}`);
-      res.status(201).json(series);
+      res
+        .status(201)
+        .json({ status: true, message: "Seri oluşturuldu", data: series });
     } catch (error) {
       logger.error(`Seri oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Seri oluşturulamadı" });
+      res.status(500).json({ status: false, message: "Seri oluşturulamadı" });
     }
   }
 
@@ -57,10 +59,10 @@ class SeriesController {
         order: [["created_at", "DESC"]],
       });
 
-      res.json(series);
+      res.json({ status: true, message: "Seriler alındı", data: series });
     } catch (error) {
       logger.error(`Seri listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Seriler alınamadı" });
+      res.status(500).json({ status: false, message: "Seriler alınamadı" });
     }
   }
 
@@ -90,13 +92,15 @@ class SeriesController {
       });
 
       if (!series) {
-        return res.status(404).json({ error: "Seri bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Seri bulunamadı" });
       }
 
-      res.json(series);
+      res.json({ status: true, message: "Seri detayı alındı", data: series });
     } catch (error) {
       logger.error(`Seri detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Seri detayı alınamadı" });
+      res.status(500).json({ status: false, message: "Seri detayı alınamadı" });
     }
   }
 
@@ -112,7 +116,9 @@ class SeriesController {
       });
 
       if (!series) {
-        return res.status(404).json({ error: "Seri bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Seri bulunamadı" });
       }
 
       await series.update({
@@ -139,10 +145,10 @@ class SeriesController {
       }
 
       logger.info(`Seri güncellendi: ${id}`);
-      res.json(series);
+      res.json({ status: true, message: "Seri güncellendi", data: series });
     } catch (error) {
       logger.error(`Seri güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Seri güncellenemedi" });
+      res.status(500).json({ status: false, message: "Seri güncellenemedi" });
     }
   }
 
@@ -157,7 +163,9 @@ class SeriesController {
       });
 
       if (!series) {
-        return res.status(404).json({ error: "Seri bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Seri bulunamadı" });
       }
 
       // İlişkili içerikleri sil
@@ -169,10 +177,10 @@ class SeriesController {
       await series.destroy();
 
       logger.info(`Seri silindi: ${id}`);
-      res.json({ message: "Seri başarıyla silindi" });
+      res.json({ status: true, message: "Seri başarıyla silindi" });
     } catch (error) {
       logger.error(`Seri silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Seri silinemedi" });
+      res.status(500).json({ status: false, message: "Seri silinemedi" });
     }
   }
 
@@ -188,7 +196,9 @@ class SeriesController {
       });
 
       if (!series) {
-        return res.status(404).json({ error: "Seri bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Seri bulunamadı" });
       }
 
       const newContent = await SeriesContent.create({
@@ -198,10 +208,12 @@ class SeriesController {
       });
 
       logger.info(`Seriye içerik eklendi: ${newContent.id}`);
-      res.status(201).json(newContent);
+      res
+        .status(201)
+        .json({ status: true, message: "İçerik eklendi", data: newContent });
     } catch (error) {
       logger.error(`Seriye içerik ekleme hatası: ${error.message}`);
-      res.status(500).json({ error: "İçerik eklenemedi" });
+      res.status(500).json({ status: false, message: "İçerik eklenemedi" });
     }
   }
 
@@ -216,7 +228,9 @@ class SeriesController {
       });
 
       if (!series) {
-        return res.status(404).json({ error: "Seri bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Seri bulunamadı" });
       }
 
       const content = await SeriesContent.findOne({
@@ -224,16 +238,18 @@ class SeriesController {
       });
 
       if (!content) {
-        return res.status(404).json({ error: "İçerik bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "İçerik bulunamadı" });
       }
 
       await content.destroy();
 
       logger.info(`Seriden içerik kaldırıldı: ${content_id}`);
-      res.json({ message: "İçerik başarıyla kaldırıldı" });
+      res.json({ status: true, message: "İçerik başarıyla kaldırıldı" });
     } catch (error) {
       logger.error(`Seriden içerik kaldırma hatası: ${error.message}`);
-      res.status(500).json({ error: "İçerik kaldırılamadı" });
+      res.status(500).json({ status: false, message: "İçerik kaldırılamadı" });
     }
   }
 }
