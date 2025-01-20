@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class Series extends Model {}
-
-Series.init(
+const Series = sequelize.define(
+  "Series",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,24 +17,17 @@ Series.init(
         key: "id",
       },
     },
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM("active", "inactive"),
+      type: DataTypes.ENUM("active", "completed", "archived"),
       defaultValue: "active",
-    },
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    updated_by: {
-      type: DataTypes.INTEGER,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -47,8 +39,6 @@ Series.init(
     },
   },
   {
-    sequelize,
-    modelName: "Series",
     tableName: "series",
     timestamps: true,
     createdAt: "created_at",
@@ -56,13 +46,19 @@ Series.init(
   }
 );
 
-// Associations
-Series.belongsTo(require("./Client"), {
-  foreignKey: "client_id",
-});
+// İlişkileri tanımla
+Series.associate = function (models) {
+  // One-to-One ilişkisi: Series -> Client
+  Series.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
 
-Series.hasMany(require("./SeriesContent"), {
-  foreignKey: "series_id",
-});
+  // One-to-Many ilişkisi: Series -> SeriesContent
+  Series.hasMany(models.SeriesContent, {
+    foreignKey: "series_id",
+    as: "contents",
+  });
+};
 
 module.exports = Series;

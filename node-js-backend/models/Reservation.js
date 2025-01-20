@@ -25,11 +25,23 @@ const Reservation = sequelize.define(
         key: "id",
       },
     },
+    payment_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "payments",
+        key: "id",
+      },
+    },
     date: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false,
     },
-    time: {
+    start_time: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
+    end_time: {
       type: DataTypes.TIME,
       allowNull: false,
     },
@@ -69,5 +81,26 @@ const Reservation = sequelize.define(
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Reservation.associate = function (models) {
+  // One-to-One ilişkisi: Reservation -> Client
+  Reservation.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+
+  // One-to-One ilişkisi: Reservation -> Psychologist
+  Reservation.belongsTo(models.Psychologist, {
+    foreignKey: "psyc_id",
+    as: "psychologist",
+  });
+
+  // One-to-One ilişkisi: Reservation -> Payment
+  Reservation.belongsTo(models.Payment, {
+    foreignKey: "payment_id",
+    as: "payment",
+  });
+};
 
 module.exports = Reservation;

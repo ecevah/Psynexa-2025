@@ -13,29 +13,21 @@ const Reminder = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Clients",
+        model: "clients",
         key: "id",
       },
-    },
-    reminder_time: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false,
     },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
-    frequency: {
-      type: DataTypes.ENUM("once", "daily", "weekly", "monthly"),
-      defaultValue: "once",
+    reminder_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },
     status: {
       type: DataTypes.ENUM("pending", "completed", "cancelled"),
@@ -49,20 +41,22 @@ const Reminder = sequelize.define(
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    updated_by: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
   },
   {
+    tableName: "reminders",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Reminder.associate = function (models) {
+  // One-to-One ilişkisi: Reminder -> Client
+  Reminder.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+};
 
 module.exports = Reminder;

@@ -17,22 +17,21 @@ const Journal = sequelize.define(
         key: "id",
       },
     },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    date: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    emotion: {
+    mood: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM("active", "archived", "deleted"),
-      defaultValue: "active",
+      type: DataTypes.ENUM("private", "shared_with_psychologist"),
+      defaultValue: "private",
     },
     created_at: {
       type: DataTypes.DATE,
@@ -58,5 +57,14 @@ const Journal = sequelize.define(
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Journal.associate = function (models) {
+  // One-to-One ilişkisi: Journal -> Client
+  Journal.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+};
 
 module.exports = Journal;

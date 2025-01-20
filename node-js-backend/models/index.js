@@ -18,6 +18,12 @@ const Journal = require("./Journal");
 const Favorite = require("./Favorite");
 const Staff = require("./Staff");
 const Restrictions = require("./Restrictions");
+const Series = require("./Series");
+const SeriesContent = require("./SeriesContent");
+const BreathingExercise = require("./BreathingExercise");
+const BreathingExerciseItem = require("./BreathingExerciseItem");
+const IterationMeditation = require("./IterationMeditation");
+const IterationMeditationItem = require("./IterationMeditationItem");
 
 // Önce modelleri tanımla
 const models = {
@@ -41,20 +47,19 @@ const models = {
   Favorite,
   Staff,
   Restrictions,
+  Series,
+  SeriesContent,
+  BreathingExercise,
+  BreathingExerciseItem,
+  IterationMeditation,
+  IterationMeditationItem,
 };
 
-// Sonra ilişkileri kur
+// İlişkileri kur
 Object.keys(models).forEach((modelName) => {
   if (models[modelName].associate) {
     models[modelName].associate(models);
   }
 });
-
-// Test ve Question modelleri arasındaki ilişkiyi tanımlayın
-Test.hasMany(Question, { foreignKey: "test_id" });
-Question.belongsTo(Test, { foreignKey: "test_id" });
-
-Response.belongsTo(Question, { foreignKey: "question_id" });
-Question.hasMany(Response, { foreignKey: "question_id" });
 
 module.exports = models;

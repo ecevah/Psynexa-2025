@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class AssignedTask extends Model {}
-
-AssignedTask.init(
+const AssignedTask = sequelize.define(
+  "AssignedTask",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -26,72 +25,37 @@ AssignedTask.init(
         key: "id",
       },
     },
-    iterations_mediation_id: {
+    meditation_id: {
       type: DataTypes.INTEGER,
-      references: {
-        model: "meditation_iterations",
-        key: "id",
-      },
-    },
-    mediation_id: {
-      type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: "meditations",
         key: "id",
       },
     },
-    blog_id: {
+    content_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
-        model: "blogs",
+        model: "series_contents",
         key: "id",
       },
     },
-    article_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "articles",
-        key: "id",
-      },
-    },
-    breathing_exercises_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "breathing_exercises",
-        key: "id",
-      },
-    },
-    test_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "tests",
-        key: "id",
-      },
-    },
-    start_date: {
-      type: DataTypes.DATE,
+    title: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    finish_date: {
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    due_date: {
       type: DataTypes.DATE,
-      allowNull: false,
-    },
-    frequency: {
-      type: DataTypes.INTEGER,
-    },
-    frequency_type: {
-      type: DataTypes.ENUM("daily", "weekly", "monthly"),
+      allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM("active", "completed", "cancelled"),
-      defaultValue: "active",
-    },
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    updated_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ENUM("pending", "completed", "overdue"),
+      defaultValue: "pending",
     },
     created_at: {
       type: DataTypes.DATE,
@@ -103,8 +67,6 @@ AssignedTask.init(
     },
   },
   {
-    sequelize,
-    modelName: "AssignedTask",
     tableName: "assigned_tasks",
     timestamps: true,
     createdAt: "created_at",
@@ -112,41 +74,31 @@ AssignedTask.init(
   }
 );
 
-// Associations
-AssignedTask.belongsTo(require("./Client"), {
-  foreignKey: "client_id",
-});
+// İlişkileri tanımla
+AssignedTask.associate = function (models) {
+  // One-to-One ilişkisi: AssignedTask -> Client
+  AssignedTask.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
 
-AssignedTask.belongsTo(require("./Psychologist"), {
-  foreignKey: "psyc_id",
-});
+  // One-to-One ilişkisi: AssignedTask -> Psychologist
+  AssignedTask.belongsTo(models.Psychologist, {
+    foreignKey: "psyc_id",
+    as: "psychologist",
+  });
 
-AssignedTask.belongsTo(require("./MeditationIterations"), {
-  foreignKey: "iterations_mediation_id",
-});
+  // One-to-One ilişkisi: AssignedTask -> Meditation
+  AssignedTask.belongsTo(models.Meditation, {
+    foreignKey: "meditation_id",
+    as: "meditation",
+  });
 
-AssignedTask.belongsTo(require("./Meditation"), {
-  foreignKey: "mediation_id",
-});
-
-AssignedTask.belongsTo(require("./Blog"), {
-  foreignKey: "blog_id",
-});
-
-AssignedTask.belongsTo(require("./Article"), {
-  foreignKey: "article_id",
-});
-
-AssignedTask.belongsTo(require("./BreathingExercises"), {
-  foreignKey: "breathing_exercises_id",
-});
-
-AssignedTask.belongsTo(require("./Test"), {
-  foreignKey: "test_id",
-});
-
-AssignedTask.hasMany(require("./AssignedTaskResponse"), {
-  foreignKey: "assigned_task_id",
-});
+  // One-to-One ilişkisi: AssignedTask -> SeriesContent
+  AssignedTask.belongsTo(models.SeriesContent, {
+    foreignKey: "content_id",
+    as: "content",
+  });
+};
 
 module.exports = AssignedTask;

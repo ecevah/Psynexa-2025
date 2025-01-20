@@ -201,10 +201,53 @@ Psychologist.prototype.validatePassword = async function (password) {
 };
 
 Psychologist.associate = (models) => {
+  // One-to-Many ilişkisi: Psychologist -> WorkingArea
   Psychologist.hasMany(models.WorkingArea, {
-    foreignKey: "psychologist_id",
-    as: "WorkingAreas",
+    foreignKey: "psyc_id",
+    as: "workingAreas",
     onDelete: "CASCADE",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> Client
+  Psychologist.hasMany(models.Client, {
+    foreignKey: "psyc_id",
+    as: "clients",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> Meditation
+  Psychologist.hasMany(models.Meditation, {
+    foreignKey: "psyc_id",
+    as: "meditations",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> MeditationIterations
+  Psychologist.hasMany(models.IterationMeditation, {
+    foreignKey: "psyc_id",
+    as: "meditationIterations",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> BreathingExercise
+  Psychologist.hasMany(models.BreathingExercise, {
+    foreignKey: "psyc_id",
+    as: "breathingExercises",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> Article
+  Psychologist.hasMany(models.Article, {
+    foreignKey: "psyc_id",
+    as: "articles",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> Blog
+  Psychologist.hasMany(models.Blog, {
+    foreignKey: "psyc_id",
+    as: "blogs",
+  });
+
+  // One-to-Many ilişkisi: Psychologist -> Reservation
+  Psychologist.hasMany(models.Reservation, {
+    foreignKey: "psyc_id",
+    as: "reservations",
   });
 };
 

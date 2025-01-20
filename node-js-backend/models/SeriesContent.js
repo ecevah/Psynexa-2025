@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class SeriesContent extends Model {}
-
-SeriesContent.init(
+const SeriesContent = sequelize.define(
+  "SeriesContent",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,15 +17,17 @@ SeriesContent.init(
         key: "id",
       },
     },
-    iterations_mediation_id: {
+    meditation_iteration_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: "meditation_iterations",
         key: "id",
       },
     },
-    mediation_id: {
+    meditation_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: "meditations",
         key: "id",
@@ -34,6 +35,7 @@ SeriesContent.init(
     },
     blog_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: "blogs",
         key: "id",
@@ -41,32 +43,35 @@ SeriesContent.init(
     },
     article_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: "articles",
         key: "id",
       },
     },
-    breathing_exercises_id: {
+    breathing_exercise_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: "breathing_exercises",
         key: "id",
       },
     },
-    type: {
-      type: DataTypes.ENUM("meditation", "blog", "article", "breathing"),
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    order: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM("active", "inactive"),
-      defaultValue: "active",
-    },
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    updated_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -78,8 +83,6 @@ SeriesContent.init(
     },
   },
   {
-    sequelize,
-    modelName: "SeriesContent",
     tableName: "series_contents",
     timestamps: true,
     createdAt: "created_at",
@@ -87,29 +90,39 @@ SeriesContent.init(
   }
 );
 
-// Associations
-SeriesContent.belongsTo(require("./Series"), {
-  foreignKey: "series_id",
-});
+// İlişkileri tanımla
+SeriesContent.associate = function (models) {
+  // Many-to-One ilişkisi: SeriesContent -> Series
+  SeriesContent.belongsTo(models.Series, {
+    foreignKey: "series_id",
+    as: "series",
+  });
 
-SeriesContent.belongsTo(require("./MeditationIterations"), {
-  foreignKey: "iterations_mediation_id",
-});
+  // One-to-One ilişkiler
+  SeriesContent.belongsTo(models.IterationMeditation, {
+    foreignKey: "meditation_iteration_id",
+    as: "meditationIteration",
+  });
 
-SeriesContent.belongsTo(require("./Meditation"), {
-  foreignKey: "mediation_id",
-});
+  SeriesContent.belongsTo(models.Meditation, {
+    foreignKey: "meditation_id",
+    as: "meditation",
+  });
 
-SeriesContent.belongsTo(require("./Blog"), {
-  foreignKey: "blog_id",
-});
+  SeriesContent.belongsTo(models.Blog, {
+    foreignKey: "blog_id",
+    as: "blog",
+  });
 
-SeriesContent.belongsTo(require("./Article"), {
-  foreignKey: "article_id",
-});
+  SeriesContent.belongsTo(models.Article, {
+    foreignKey: "article_id",
+    as: "article",
+  });
 
-SeriesContent.belongsTo(require("./BreathingExercises"), {
-  foreignKey: "breathing_exercises_id",
-});
+  SeriesContent.belongsTo(models.BreathingExercise, {
+    foreignKey: "breathing_exercise_id",
+    as: "breathingExercise",
+  });
+};
 
 module.exports = SeriesContent;

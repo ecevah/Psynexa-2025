@@ -28,13 +28,14 @@ const reminderRoutes = require("./routes/reminderRoutes");
 const journalRoutes = require("./routes/journalRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-const meditationIterationsRoutes = require("./routes/meditationIterationsRoutes");
 const breathingExercisesRoutes = require("./routes/breathingExercisesRoutes");
 const seriesRoutes = require("./routes/seriesRoutes");
 const assignedTaskRoutes = require("./routes/assignedTaskRoutes");
 const staffRoutes = require("./routes/staffRoutes");
 const restrictionsRoutes = require("./routes/restrictionsRoutes");
 const testJwtBenchRoutes = require("./routes/testJwtBench");
+const iterationMeditationRoutes = require("./routes/iterationMeditationRoutes");
+const iterationMeditationItemRoutes = require("./routes/iterationMeditationItemRoutes");
 
 const { apiLimiter } = require("./middleware/rateLimiter");
 const logMiddleware = require("./middleware/logMiddleware");
@@ -52,6 +53,9 @@ sequelize
   .catch((error) => {
     console.error("❌ Veritabanı bağlantı hatası:", error.message);
   });
+
+// Model ilişkilerini yükle
+require("./models/associations");
 
 // Middleware
 app.use(logger("dev"));
@@ -87,13 +91,14 @@ app.use("/api/reminders", reminderRoutes);
 app.use("/api/journals", journalRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/meditation-iterations", meditationIterationsRoutes);
 app.use("/api/breathing-exercises", breathingExercisesRoutes);
 app.use("/api/series", seriesRoutes);
 app.use("/api/assigned-tasks", assignedTaskRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/restrictions", restrictionsRoutes);
 app.use("/api/testjwtbench", testJwtBenchRoutes);
+app.use("/api/iteration-meditations", iterationMeditationRoutes);
+app.use("/api/iteration-meditation-items", iterationMeditationItemRoutes);
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class Response extends Model {}
-
-Response.init(
+const Response = sequelize.define(
+  "Response",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -26,53 +25,58 @@ Response.init(
         key: "id",
       },
     },
-    question_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "questions",
-        key: "id",
-      },
-    },
-    answer: {
+    answers: {
       type: DataTypes.JSON,
       allowNull: false,
     },
+    score: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    completion_time: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: "Test tamamlama süresi (saniye)",
+    },
+    status: {
+      type: DataTypes.ENUM("started", "completed", "abandoned"),
+      defaultValue: "started",
+    },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
-    },
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "clients",
-        key: "id",
-      },
-    },
-    updated_by: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "clients",
-        key: "id",
-      },
     },
   },
   {
-    sequelize,
-    modelName: "Response",
     tableName: "responses",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Response.associate = function (models) {
+  // One-to-One ilişkisi: Response -> Client
+  Response.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+
+  // One-to-One ilişkisi: Response -> Test
+  Response.belongsTo(models.Test, {
+    foreignKey: "test_id",
+    as: "test",
+  });
+
+  Response.belongsTo(models.Question, {
+    foreignKey: "question_id",
+    as: "question",
+  });
+};
 
 module.exports = Response;

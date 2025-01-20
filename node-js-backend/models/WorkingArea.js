@@ -9,7 +9,7 @@ const WorkingArea = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    psychologist_id: {
+    psyc_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -54,10 +54,12 @@ const WorkingArea = sequelize.define(
   }
 );
 
-WorkingArea.associate = (models) => {
+WorkingArea.associate = function (models) {
+  // Many-to-One ilişkisi: WorkingArea -> Psychologist
   WorkingArea.belongsTo(models.Psychologist, {
-    foreignKey: "psychologist_id",
-    as: "Psychologist",
+    foreignKey: "psyc_id",
+    as: "psychologist",
+    onDelete: "CASCADE",
   });
 };
 

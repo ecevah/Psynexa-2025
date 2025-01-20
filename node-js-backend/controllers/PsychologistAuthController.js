@@ -30,7 +30,6 @@ class PsychologistAuthController {
         return res.status(400).json({
           status: false,
           message: "Bu email veya kullanıcı adı zaten kullanımda",
-          data: null,
         });
       }
 
@@ -75,11 +74,24 @@ class PsychologistAuthController {
       }
 
       // Working Area'ları kaydet
-      if (working_areas && Array.isArray(working_areas)) {
-        const workingAreaPromises = working_areas.map((area) => {
+      if (working_areas) {
+        let workingAreasArray;
+        try {
+          workingAreasArray =
+            typeof working_areas === "string"
+              ? JSON.parse(working_areas)
+              : working_areas;
+          if (!Array.isArray(workingAreasArray)) {
+            throw new Error("Working areas must be an array");
+          }
+        } catch (error) {
+          throw new Error("Invalid working areas format");
+        }
+
+        const workingAreaPromises = workingAreasArray.map((area) => {
           return WorkingArea.create({
             ...area,
-            psychologist_id: psychologist.id,
+            psyc_id: psychologist.id,
           });
         });
         await Promise.all(workingAreaPromises);
@@ -111,6 +123,7 @@ class PsychologistAuthController {
           include: [
             {
               model: WorkingArea,
+              as: "workingAreas",
               attributes: [
                 "id",
                 "name",
@@ -145,8 +158,7 @@ class PsychologistAuthController {
       logger.error(`Kayıt hatası: ${error.message}`);
       res.status(500).json({
         status: false,
-        message: "Kayıt işlemi başarısız",
-        data: null,
+        message: error.message || "Kayıt işlemi başarısız",
       });
     }
   }
@@ -160,7 +172,7 @@ class PsychologistAuthController {
         include: [
           {
             model: WorkingArea,
-            as: "WorkingAreas",
+            as: "workingAreas",
             attributes: [
               "id",
               "name",
@@ -180,7 +192,6 @@ class PsychologistAuthController {
         return res.status(401).json({
           status: false,
           message: "Geçersiz email veya şifre",
-          data: null,
         });
       }
 
@@ -189,7 +200,6 @@ class PsychologistAuthController {
         return res.status(401).json({
           status: false,
           message: "Geçersiz email veya şifre",
-          data: null,
         });
       }
 
@@ -223,7 +233,6 @@ class PsychologistAuthController {
       res.status(500).json({
         status: false,
         message: "Giriş işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -237,7 +246,6 @@ class PsychologistAuthController {
         return res.status(400).json({
           status: false,
           message: "Refresh token gerekli",
-          data: null,
         });
       }
 
@@ -267,7 +275,6 @@ class PsychologistAuthController {
       res.status(401).json({
         status: false,
         message: error.message,
-        data: null,
       });
     }
   }
@@ -284,14 +291,12 @@ class PsychologistAuthController {
       res.json({
         status: true,
         message: "Başarıyla çıkış yapıldı",
-        data: null,
       });
     } catch (error) {
       logger.error(`Çıkış hatası: ${error.message}`);
       res.status(500).json({
         status: false,
         message: "Çıkış işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -310,7 +315,6 @@ class PsychologistAuthController {
         return res.status(404).json({
           status: false,
           message: "Psikolog bulunamadı",
-          data: null,
         });
       }
 
@@ -354,7 +358,6 @@ class PsychologistAuthController {
       res.status(500).json({
         status: false,
         message: "Dosya güncelleme işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -369,7 +372,6 @@ class PsychologistAuthController {
         return res.status(404).json({
           status: false,
           message: "Bu email ile kayıtlı psikolog bulunamadı",
-          data: null,
         });
       }
 
@@ -392,14 +394,12 @@ class PsychologistAuthController {
       res.status(200).json({
         status: true,
         message: "Şifre sıfırlama linki email adresinize gönderildi",
-        data: null,
       });
     } catch (error) {
       logger.error(`Şifre sıfırlama hatası: ${error.message}`);
       res.status(500).json({
         status: false,
         message: "Şifre sıfırlama işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -419,7 +419,6 @@ class PsychologistAuthController {
         return res.status(400).json({
           status: false,
           message: "Geçersiz veya süresi dolmuş token",
-          data: null,
         });
       }
 
@@ -433,14 +432,12 @@ class PsychologistAuthController {
       res.status(200).json({
         status: true,
         message: "Şifreniz başarıyla güncellendi",
-        data: null,
       });
     } catch (error) {
       logger.error(`Şifre sıfırlama hatası: ${error.message}`);
       res.status(500).json({
         status: false,
         message: "Şifre sıfırlama işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -452,7 +449,7 @@ class PsychologistAuthController {
         include: [
           {
             model: WorkingArea,
-            as: "WorkingAreas",
+            as: "workingAreas",
             attributes: [
               "id",
               "name",
@@ -468,37 +465,116 @@ class PsychologistAuthController {
         },
       });
 
-      // Debug için log ekleyelim
-      console.log(
-        "Raw Psychologist Data:",
-        JSON.stringify(psychologist, null, 2)
-      );
+      if (!psychologist) {
+        return res.status(404).json({
+          status: false,
+          message: "Psikolog bulunamadı",
+        });
+      }
+
+      const result = psychologist.toJSON();
+      result.userType = "psychologist";
+
+      return res.json({
+        status: true,
+        message: "Profil bilgileri başarıyla getirildi",
+        data: result,
+      });
+    } catch (error) {
+      logger.error(`Profil getirme hatası: ${error.message}`);
+      return res.status(500).json({
+        status: false,
+        message: "Profil bilgileri getirilirken bir hata oluştu",
+      });
+    }
+  }
+
+  // Get All Psychologists
+  async getAllPsychologists(req, res) {
+    try {
+      const psychologists = await Psychologist.findAll({
+        include: [
+          {
+            model: WorkingArea,
+            as: "workingAreas",
+            attributes: [
+              "id",
+              "name",
+              "description",
+              "experience_years",
+              "certificates",
+              "status",
+            ],
+          },
+        ],
+        attributes: {
+          exclude: ["password", "reset_token", "reset_token_expiry"],
+        },
+        where: {
+          status: "active",
+          approve_status: "approved",
+        },
+      });
+
+      res.json({
+        status: true,
+        message: "Psikologlar başarıyla getirildi",
+        data: psychologists,
+      });
+    } catch (error) {
+      logger.error(`Psikolog listesi getirme hatası: ${error.message}`);
+      res.status(500).json({
+        status: false,
+        message: "Psikologlar getirilemedi",
+      });
+    }
+  }
+
+  // Get Psychologist By ID
+  async getPsychologistById(req, res) {
+    try {
+      const { id } = req.params;
+      const psychologist = await Psychologist.findByPk(id, {
+        include: [
+          {
+            model: WorkingArea,
+            as: "workingAreas",
+            attributes: [
+              "id",
+              "name",
+              "description",
+              "experience_years",
+              "certificates",
+              "status",
+            ],
+          },
+        ],
+        attributes: {
+          exclude: ["password", "reset_token", "reset_token_expiry"],
+        },
+        where: {
+          status: "active",
+          approve_status: "approved",
+        },
+      });
 
       if (!psychologist) {
         return res.status(404).json({
           status: false,
-          message: "Profil bulunamadı",
-          data: null,
+          message: "Psikolog bulunamadı",
         });
       }
 
-      // Raw data'yı kullanalım
-      const responseData = psychologist.toJSON();
-
-      // Debug için bir log daha
-      console.log("Response Data:", JSON.stringify(responseData, null, 2));
-
-      res.status(200).json({
+      res.json({
         status: true,
-        data: responseData,
+        message: "Psikolog bilgileri başarıyla getirildi",
+        data: psychologist,
       });
     } catch (error) {
-      console.error("Full error:", error); // Tam hatayı görelim
-      logger.error(`Profil getirme hatası: ${error.message}`);
+      logger.error(`Psikolog getirme hatası: ${error.message}`);
       res.status(500).json({
         status: false,
-        message: "Profil getirilirken bir hata oluştu",
-        data: null,
+        message: "Psikolog bilgileri getirilemedi",
       });
     }
   }

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { Staff, Restrictions } = require("../models");
+const logger = require("../config/logger");
 
 const staffAuth = async (req, res, next) => {
   try {
@@ -7,11 +8,9 @@ const staffAuth = async (req, res, next) => {
     const token = req.header("Authorization")?.replace("Bearer ", "");
     if (!token) {
       return res.status(401).json({
-        success: false,
-        error: {
-          message: "Yetkilendirme token'ı bulunamadı",
-          status: 401,
-        },
+        status: false,
+        message: "Yetkilendirme token'ı bulunamadı",
+        data: null,
       });
     }
 
@@ -19,11 +18,9 @@ const staffAuth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded.staff_id) {
       return res.status(403).json({
-        success: false,
-        error: {
-          message: "Bu endpoint sadece staff üyeleri için erişilebilir",
-          status: 403,
-        },
+        status: false,
+        message: "Bu endpoint sadece staff üyeleri için erişilebilir",
+        data: null,
       });
     }
 
@@ -33,36 +30,53 @@ const staffAuth = async (req, res, next) => {
       include: [
         {
           model: Restrictions,
-          attributes: ["permissions"],
+          as: "restrictions",
+          attributes: ["id", "name", "permissions", "is_active"],
         },
       ],
     });
 
     if (!staff) {
       return res.status(404).json({
-        success: false,
-        error: {
-          message: "Staff üyesi bulunamadı",
-          status: 404,
-        },
+        status: false,
+        message: "Staff üyesi bulunamadı",
+        data: null,
+      });
+    }
+
+    // Staff'ın aktif olup olmadığını kontrol et
+    if (!staff.status) {
+      return res.status(403).json({
+        status: false,
+        message: "Hesabınız aktif değil",
+        data: null,
       });
     }
 
     // Staff'ın yetkilerini kontrol et
-    const permissions = staff.Restriction?.permissions || [];
+    const permissions = staff.restrictions?.permissions || [];
     const route = req.baseUrl + req.path;
     const method = req.method;
 
-    // Yetki kontrolü
-    const hasPermission = checkPermission(permissions, route, method);
-    if (!hasPermission) {
-      return res.status(403).json({
-        success: false,
-        error: {
+    // Register route'u için yetki kontrolünü bypass et
+    if (route === "/api/staff/auth/register") {
+      if (!permissions.includes("manage_staff")) {
+        return res.status(403).json({
+          status: false,
+          message: "Staff oluşturma yetkiniz bulunmamaktadır",
+          data: null,
+        });
+      }
+    } else {
+      // Diğer route'lar için yetki kontrolü
+      const hasPermission = checkPermission(permissions, route, method);
+      if (!hasPermission) {
+        return res.status(403).json({
+          status: false,
           message: "Bu işlem için yetkiniz bulunmamaktadır",
-          status: 403,
-        },
-      });
+          data: null,
+        });
+      }
     }
 
     // Staff bilgilerini request'e ekle
@@ -71,32 +85,28 @@ const staffAuth = async (req, res, next) => {
 
     next();
   } catch (error) {
+    logger.error(`Staff Auth Hatası: ${error.message}`);
+
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({
-        success: false,
-        error: {
-          message: "Geçersiz token",
-          status: 401,
-        },
+        status: false,
+        message: "Geçersiz token",
+        data: null,
       });
     }
 
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({
-        success: false,
-        error: {
-          message: "Token süresi dolmuş",
-          status: 401,
-        },
+        status: false,
+        message: "Token süresi dolmuş",
+        data: null,
       });
     }
 
     return res.status(500).json({
-      success: false,
-      error: {
-        message: "Sunucu hatası",
-        status: 500,
-      },
+      status: false,
+      message: "Sunucu hatası",
+      data: null,
     });
   }
 };

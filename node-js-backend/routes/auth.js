@@ -631,7 +631,6 @@ router.post(
       return res.status(400).json({
         status: false,
         message: err.message,
-        data: null,
       });
     }
     next();
@@ -675,7 +674,6 @@ router.get("/client/profile", auth, async (req, res) => {
       return res.status(404).json({
         status: false,
         message: "Kullanıcı bulunamadı",
-        data: null,
       });
     }
     res.status(200).json({
@@ -686,7 +684,6 @@ router.get("/client/profile", auth, async (req, res) => {
     res.status(500).json({
       status: false,
       message: error.message,
-      data: null,
     });
   }
 });
@@ -698,7 +695,7 @@ router.get("/psychologist/profile", auth, async (req, res) => {
       include: [
         {
           model: WorkingArea,
-          as: "WorkingAreas",
+          as: "workingAreas",
           attributes: [
             "id",
             "name",
@@ -717,7 +714,6 @@ router.get("/psychologist/profile", auth, async (req, res) => {
       return res.status(404).json({
         status: false,
         message: "Kullanıcı bulunamadı",
-        data: null,
       });
     }
     res.status(200).json({
@@ -728,7 +724,6 @@ router.get("/psychologist/profile", auth, async (req, res) => {
     res.status(500).json({
       status: false,
       message: error.message,
-      data: null,
     });
   }
 });

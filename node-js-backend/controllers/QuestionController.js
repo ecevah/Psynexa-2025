@@ -1,12 +1,20 @@
 const { Question, Test } = require("../models");
 const logger = require("../config/logger");
+const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 
 class QuestionController {
   // Soru oluşturma
   async createQuestion(req, res) {
     try {
       const psychologist_id = req.user.id;
-      const { test_id } = req.body;
+      const {
+        test_id,
+        text,
+        question_type = "multiple_choice",
+        options = [],
+        order,
+      } = req.body;
 
       // Test'in varlığını kontrol et
       const test = await Test.findByPk(test_id);
@@ -16,16 +24,22 @@ class QuestionController {
           .json({ status: false, message: "Test bulunamadı" });
       }
 
-      // Sıradaki queue numarasını bul
-      const lastQuestion = await Question.findOne({
-        where: { test_id },
-        order: [["queue", "DESC"]],
-      });
-      const nextQueue = lastQuestion ? lastQuestion.queue + 1 : 1;
+      // Eğer order belirtilmemişse, sıradaki order numarasını bul
+      let questionOrder = order;
+      if (!questionOrder) {
+        const lastQuestion = await Question.findOne({
+          where: { test_id },
+          order: [["order", "DESC"]],
+        });
+        questionOrder = lastQuestion ? lastQuestion.order + 1 : 1;
+      }
 
       const question = await Question.create({
-        ...req.body,
-        queue: nextQueue,
+        test_id,
+        question_text: text,
+        question_type,
+        options,
+        order: questionOrder,
         created_by: psychologist_id,
         updated_by: psychologist_id,
       });
@@ -45,7 +59,7 @@ class QuestionController {
 
       const questions = await Question.findAll({
         where: { test_id },
-        order: [["queue", "ASC"]],
+        order: [["order", "ASC"]],
       });
 
       res.status(200).json({ status: true, data: questions });
@@ -115,13 +129,13 @@ class QuestionController {
           .json({ status: false, message: "Soru bulunamadı" });
       }
 
-      // Silinen sorudan sonraki soruların queue'sunu güncelle
+      // Silinen sorudan sonraki soruların order'ını güncelle
       await Question.update(
-        { queue: sequelize.literal("queue - 1") },
+        { order: sequelize.literal("order - 1") },
         {
           where: {
             test_id: question.test_id,
-            queue: { [Op.gt]: question.queue },
+            order: { [Op.gt]: question.order },
           },
         }
       );
@@ -139,7 +153,7 @@ class QuestionController {
   async updateQuestionOrder(req, res) {
     try {
       const { test_id } = req.params;
-      const { questions } = req.body; // [{ id: 1, queue: 2 }, { id: 2, queue: 1 }]
+      const { questions } = req.body; // [{ id: 1, order: 2 }, { id: 2, order: 1 }]
 
       // Tüm soruların test_id'ye ait olduğunu kontrol et
       const existingQuestions = await Question.findAll({
@@ -155,7 +169,7 @@ class QuestionController {
       // Sıraları güncelle
       await Promise.all(
         questions.map((q) =>
-          Question.update({ queue: q.queue }, { where: { id: q.id } })
+          Question.update({ order: q.order }, { where: { id: q.id } })
         )
       );
 

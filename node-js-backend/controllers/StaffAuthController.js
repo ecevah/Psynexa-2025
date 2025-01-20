@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { Staff, Restrictions } = require("../models");
 const { Op } = require("sequelize");
+const logger = require("../config/logger");
+const tokenService = require("../services/tokenService");
 
 /**
  * @swagger
@@ -16,7 +18,7 @@ class StaffAuthController {
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
    */
-  static async register(req, res) {
+  async register(req, res) {
     try {
       const {
         name,
@@ -30,7 +32,6 @@ class StaffAuthController {
         restrictions_id,
       } = req.body;
 
-      // Check if staff with same email exists
       const existingStaff = await Staff.findOne({
         where: {
           [Op.or]: [{ email }],
@@ -39,31 +40,28 @@ class StaffAuthController {
 
       if (existingStaff) {
         return res.status(400).json({
-          success: false,
-          error: {
-            message: "Bu e-posta ile kayıtlı bir personel zaten var",
-            status: 400,
-          },
+          status: false,
+          message: "Bu email ile kayıtlı bir personel zaten var",
+          data: null,
         });
       }
 
-      // Check if restrictions_id exists
       const restriction = await Restrictions.findByPk(restrictions_id);
       if (!restriction) {
         return res.status(400).json({
-          success: false,
-          error: {
-            message: "Geçersiz yetki grubu",
-            status: 400,
-          },
+          status: false,
+          message: "Geçersiz yetki grubu",
+          data: null,
         });
       }
 
-      // Hash password before saving
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      // Create new staff member
+      // Staff bilgilerini req.staff'dan al
+      const createdBy = req.staff?.id;
+      const createdType = req.staff?.id ? "staff" : "system";
+
       const staff = await Staff.create({
         name,
         surname,
@@ -75,37 +73,26 @@ class StaffAuthController {
         address,
         restrictions_id,
         status: true,
+        created_by: createdBy,
+        created_type: createdType,
+        updated_by: createdBy,
       });
 
-      // Generate JWT token
-      const token = jwt.sign(
-        { staff_id: staff.id, role: "staff" },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1d",
-        }
-      );
+      const result = staff.toJSON();
+      delete result.password;
 
+      logger.info(`Yeni personel kaydı oluşturuldu: ${staff.email}`);
       res.status(201).json({
-        success: true,
-        data: {
-          staff: {
-            id: staff.id,
-            name: staff.name,
-            surname: staff.surname,
-            email: staff.email,
-          },
-          token,
-        },
+        status: true,
+        message: "Personel kaydı başarıyla oluşturuldu",
+        data: result,
       });
     } catch (error) {
-      console.error("Staff Register Error:", error);
+      logger.error(`Personel kayıt hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: {
-          message: "Personel kaydı sırasında bir hata oluştu",
-          status: 500,
-        },
+        status: false,
+        message: "Personel kaydı sırasında bir hata oluştu",
+        data: null,
       });
     }
   }
@@ -115,17 +102,17 @@ class StaffAuthController {
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
    */
-  static async login(req, res) {
+  async login(req, res) {
     try {
       const { email, password } = req.body;
 
-      // Find staff by email
       const staff = await Staff.findOne({
         where: { email },
         include: [
           {
             model: Restrictions,
-            attributes: ["permissions"],
+            as: "restrictions",
+            attributes: ["id", "name", "permissions", "is_active"],
           },
         ],
       });
@@ -133,20 +120,18 @@ class StaffAuthController {
       if (!staff) {
         return res.status(401).json({
           status: false,
-          message: "Geçersiz e-posta veya şifre",
+          message: "Geçersiz email veya şifre",
         });
       }
 
-      // Check password
-      const isPasswordValid = await bcrypt.compare(password, staff.password);
-      if (!isPasswordValid) {
+      const isMatch = await bcrypt.compare(password, staff.password);
+      if (!isMatch) {
         return res.status(401).json({
           status: false,
-          message: "Geçersiz e-posta veya şifre",
+          message: "Geçersiz email veya şifre",
         });
       }
 
-      // Check if staff is active
       if (!staff.status) {
         return res.status(403).json({
           status: false,
@@ -154,36 +139,39 @@ class StaffAuthController {
         });
       }
 
-      // Generate JWT token
-      const token = jwt.sign(
-        { staff_id: staff.id, role: "staff" },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1d",
-        }
+      // Token'ları oluştur
+      const { accessToken, refreshToken, refreshTokenExpiry } =
+        tokenService.generateTokens(staff.id, "staff");
+
+      // Refresh token'ı kaydet
+      await tokenService.saveRefreshToken(
+        refreshToken,
+        staff.id,
+        "staff",
+        refreshTokenExpiry
       );
 
-      res.status(200).json({
+      const result = staff.toJSON();
+      delete result.password;
+
+      logger.info(`Personel giriş yaptı: ${staff.email}`);
+      res.json({
         status: true,
+        message: "Giriş başarılı",
         data: {
-          staff: {
-            id: staff.id,
-            name: staff.name,
-            surname: staff.surname,
-            email: staff.email,
-            permissions: staff.Restriction?.permissions || {},
-          },
-          token,
+          staff: result,
+          accessToken,
+          refreshToken,
         },
       });
     } catch (error) {
-      console.error("Staff Login Error:", error);
+      logger.error(`Personel giriş hatası: ${error.message}`);
       res.status(500).json({
         status: false,
-        message: "Giriş sırasında bir hata oluştu",
+        message: "Giriş işlemi başarısız",
       });
     }
   }
 }
 
-module.exports = StaffAuthController;
+module.exports = new StaffAuthController();

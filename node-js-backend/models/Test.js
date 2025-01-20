@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class Test extends Model {}
-
-Test.init(
+const Test = sequelize.define(
+  "Test",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -60,13 +59,20 @@ Test.init(
     },
   },
   {
-    sequelize,
-    modelName: "Test",
     tableName: "tests",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Test.associate = function (models) {
+  // One-to-Many ilişkisi: Test -> Question
+  Test.hasMany(models.Question, {
+    foreignKey: "test_id",
+    as: "questions",
+  });
+};
 
 module.exports = Test;

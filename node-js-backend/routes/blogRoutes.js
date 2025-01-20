@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const BlogController = require("../controllers/BlogController");
 const auth = require("../middleware/auth");
+const { upload } = require("../config/multer");
 
 /**
  * @swagger
@@ -51,7 +52,17 @@ const auth = require("../middleware/auth");
  *       201:
  *         description: Blog created successfully
  */
-router.post("/", auth, BlogController.createBlog);
+router.post(
+  "/",
+  auth,
+  upload.fields([
+    { name: "background_image", maxCount: 1 },
+    { name: "vocalization", maxCount: 1 },
+    { name: "sound", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  BlogController.createBlog
+);
 
 /**
  * @swagger

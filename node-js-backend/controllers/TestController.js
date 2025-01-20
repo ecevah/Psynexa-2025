@@ -50,12 +50,20 @@ class TestController {
         include: [
           {
             model: Question,
-            attributes: ["id", "questions", "type", "status", "queue"],
+            as: "questions",
+            attributes: [
+              "id",
+              "question_text",
+              "question_type",
+              "options",
+              "order",
+              "status",
+            ],
           },
         ],
         order: [
           ["created_at", "DESC"],
-          [Question, "queue", "ASC"],
+          [{ model: Question, as: "questions" }, "order", "ASC"],
         ],
       });
 
@@ -76,17 +84,18 @@ class TestController {
         include: [
           {
             model: Question,
+            as: "questions",
             attributes: [
               "id",
-              "questions",
+              "question_text",
+              "question_type",
               "options",
-              "type",
+              "order",
               "status",
-              "queue",
             ],
           },
         ],
-        order: [[Question, "queue", "ASC"]],
+        order: [[{ model: Question, as: "questions" }, "order", "ASC"]],
       });
 
       if (!test) {

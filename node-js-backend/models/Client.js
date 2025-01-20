@@ -127,4 +127,19 @@ Client.prototype.validatePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
+// İlişkileri tanımla
+Client.associate = function (models) {
+  // One-to-Many ilişkisi: Client -> Payment
+  Client.hasMany(models.Payment, {
+    foreignKey: "client_id",
+    as: "payments",
+  });
+
+  // One-to-One ilişkisi: Client -> Package
+  Client.belongsTo(models.Package, {
+    foreignKey: "package_id",
+    as: "package",
+  });
+};
+
 module.exports = Client;

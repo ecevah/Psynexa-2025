@@ -6,17 +6,22 @@ class BlogController {
   async createBlog(req, res) {
     try {
       const psyc_id = req.user.id;
-      const {
-        title,
-        description,
-        content,
-        content_type,
-        bibliography,
-        background_url,
-        vocalization_url,
-        sound_url,
-        content_url,
-      } = req.body;
+      const { title, description, content, content_type, bibliography } =
+        req.body;
+
+      // Dosya URL'lerini hazırla
+      const background_url = req.files["background_image"]
+        ? `/uploads/${req.files["background_image"][0].filename}`
+        : null;
+      const vocalization_url = req.files["vocalization"]
+        ? `/uploads/${req.files["vocalization"][0].filename}`
+        : null;
+      const sound_url = req.files["sound"]
+        ? `/uploads/${req.files["sound"][0].filename}`
+        : null;
+      const content_url = req.files["video"]
+        ? `/uploads/${req.files["video"][0].filename}`
+        : null;
 
       const blog = await Blog.create({
         psyc_id,
@@ -33,10 +38,12 @@ class BlogController {
       });
 
       logger.info(`Yeni blog oluşturuldu: ${blog.id}`);
-      res.status(201).json(blog);
+      res
+        .status(201)
+        .json({ status: true, message: "Blog oluşturuldu", data: blog });
     } catch (error) {
       logger.error(`Blog oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Blog oluşturulamadı" });
+      res.status(500).json({ status: false, message: "Blog oluşturulamadı" });
     }
   }
 
@@ -44,20 +51,23 @@ class BlogController {
   async getBlogs(req, res) {
     try {
       const blogs = await Blog.findAll({
-        where: { status: "published" },
         include: [
           {
             model: Psychologist,
+            as: "psychologist",
             attributes: ["id", "name"],
           },
         ],
-        order: [["published_at", "DESC"]],
+        order: [["created_at", "DESC"]],
       });
 
-      res.json(blogs);
+      logger.info(`${blogs.length} blog listelendi`);
+      res
+        .status(200)
+        .json({ status: true, message: "Bloglar alındı", data: blogs });
     } catch (error) {
       logger.error(`Blog listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Bloglar alınamadı" });
+      res.status(500).json({ status: false, message: "Bloglar alınamadı" });
     }
   }
 
@@ -67,13 +77,22 @@ class BlogController {
       const psyc_id = req.user.id;
       const blogs = await Blog.findAll({
         where: { psyc_id },
+        include: [
+          {
+            model: Psychologist,
+            as: "psychologist",
+            attributes: ["id", "name"],
+          },
+        ],
         order: [["created_at", "DESC"]],
       });
 
-      res.json(blogs);
+      res
+        .status(200)
+        .json({ status: true, message: "Bloglar alındı", data: blogs });
     } catch (error) {
       logger.error(`Blog listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Bloglar alınamadı" });
+      res.status(500).json({ status: false, message: "Bloglar alınamadı" });
     }
   }
 
@@ -86,19 +105,24 @@ class BlogController {
         include: [
           {
             model: Psychologist,
+            as: "psychologist",
             attributes: ["id", "name"],
           },
         ],
       });
 
       if (!blog) {
-        return res.status(404).json({ error: "Blog bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Blog bulunamadı" });
       }
 
-      res.json(blog);
+      res
+        .status(200)
+        .json({ status: true, message: "Blog detayı alındı", data: blog });
     } catch (error) {
       logger.error(`Blog detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Blog detayı alınamadı" });
+      res.status(500).json({ status: false, message: "Blog detayı alınamadı" });
     }
   }
 
@@ -125,7 +149,9 @@ class BlogController {
       });
 
       if (!blog) {
-        return res.status(404).json({ error: "Blog bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Blog bulunamadı" });
       }
 
       if (status === "published" && blog.status !== "published") {
@@ -142,10 +168,12 @@ class BlogController {
       });
 
       logger.info(`Blog güncellendi: ${id}`);
-      res.json(blog);
+      res
+        .status(200)
+        .json({ status: true, message: "Blog güncellendi", data: blog });
     } catch (error) {
       logger.error(`Blog güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Blog güncellenemedi" });
+      res.status(500).json({ status: false, message: "Blog güncellenemedi" });
     }
   }
 
@@ -160,7 +188,9 @@ class BlogController {
       });
 
       if (!blog) {
-        return res.status(404).json({ error: "Blog bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Blog bulunamadı" });
       }
 
       await blog.update({
@@ -169,10 +199,12 @@ class BlogController {
       });
 
       logger.info(`Blog arşivlendi: ${id}`);
-      res.json({ message: "Blog başarıyla arşivlendi" });
+      res
+        .status(200)
+        .json({ status: true, message: "Blog başarıyla arşivlendi" });
     } catch (error) {
       logger.error(`Blog silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Blog silinemedi" });
+      res.status(500).json({ status: false, message: "Blog silinemedi" });
     }
   }
 }

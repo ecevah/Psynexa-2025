@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const MeditationController = require("../controllers/MeditationController");
 const auth = require("../middleware/auth");
+const { upload } = require("../config/multer");
 
 /**
  * @swagger
@@ -9,6 +10,20 @@ const auth = require("../middleware/auth");
  *   name: Meditations
  *   description: Meditation management endpoints
  */
+
+/**
+ * @swagger
+ * /api/meditations/my:
+ *   get:
+ *     summary: Get all meditations for the logged-in psychologist
+ *     tags: [Meditations]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of psychologist's meditations
+ */
+router.get("/my", auth, MeditationController.getPsychologistMeditations);
 
 /**
  * @swagger
@@ -21,40 +36,57 @@ const auth = require("../middleware/auth");
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
  *               - title
  *               - content
+ *               - duration
  *             properties:
  *               title:
  *                 type: string
  *               description:
  *                 type: string
+ *               duration:
+ *                 type: integer
+ *                 description: Duration in minutes
  *               content:
  *                 type: string
- *               bibliography:
+ *                 description: Text content of the meditation
+ *               background_image:
  *                 type: string
- *               background_url:
+ *                 format: binary
+ *               vocalization:
  *                 type: string
- *               vocalization_url:
+ *                 format: binary
+ *               sound:
  *                 type: string
- *               sound_url:
+ *                 format: binary
+ *               video:
  *                 type: string
- *               content_url:
- *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Meditation created successfully
  */
-router.post("/", auth, MeditationController.createMeditation);
+router.post(
+  "/",
+  auth,
+  upload.fields([
+    { name: "background_image", maxCount: 1 },
+    { name: "vocalization", maxCount: 1 },
+    { name: "sound", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  MeditationController.createMeditation
+);
 
 /**
  * @swagger
  * /api/meditations:
  *   get:
- *     summary: Get all published meditations
+ *     summary: Get all active meditations
  *     tags: [Meditations]
  *     security:
  *       - BearerAuth: []
@@ -63,24 +95,6 @@ router.post("/", auth, MeditationController.createMeditation);
  *         description: List of meditations
  */
 router.get("/", auth, MeditationController.getMeditations);
-
-/**
- * @swagger
- * /api/meditations/psychologist:
- *   get:
- *     summary: Get all meditations for psychologist
- *     tags: [Meditations]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: List of meditations
- */
-router.get(
-  "/psychologist",
-  auth,
-  MeditationController.getPsychologistMeditations
-);
 
 /**
  * @swagger
@@ -119,7 +133,7 @@ router.get("/:id", auth, MeditationController.getMeditation);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -127,26 +141,42 @@ router.get("/:id", auth, MeditationController.getMeditation);
  *                 type: string
  *               description:
  *                 type: string
+ *               duration:
+ *                 type: integer
+ *                 description: Duration in minutes
  *               content:
  *                 type: string
+ *                 description: Text content of the meditation
  *               status:
  *                 type: string
- *                 enum: [draft, published, archived]
- *               bibliography:
+ *                 enum: [active, inactive]
+ *               background_image:
  *                 type: string
- *               background_url:
+ *                 format: binary
+ *               vocalization:
  *                 type: string
- *               vocalization_url:
+ *                 format: binary
+ *               sound:
  *                 type: string
- *               sound_url:
+ *                 format: binary
+ *               video:
  *                 type: string
- *               content_url:
- *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Meditation updated successfully
  */
-router.put("/:id", auth, MeditationController.updateMeditation);
+router.put(
+  "/:id",
+  auth,
+  upload.fields([
+    { name: "background_image", maxCount: 1 },
+    { name: "vocalization", maxCount: 1 },
+    { name: "sound", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  MeditationController.updateMeditation
+);
 
 /**
  * @swagger

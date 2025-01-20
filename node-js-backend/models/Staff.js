@@ -68,9 +68,16 @@ const Staff = sequelize.define(
     },
     created_by: {
       type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    created_type: {
+      type: DataTypes.ENUM("staff", "system"),
+      allowNull: false,
+      defaultValue: "staff",
     },
     updated_by: {
       type: DataTypes.INTEGER,
+      allowNull: true,
     },
   },
   {

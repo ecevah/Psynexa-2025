@@ -67,4 +67,19 @@ const Payment = sequelize.define(
   }
 );
 
+// İlişkileri tanımla
+Payment.associate = function (models) {
+  // Many-to-One ilişkisi: Payment -> Client
+  Payment.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+
+  // Many-to-One ilişkisi: Payment -> Package
+  Payment.belongsTo(models.Package, {
+    foreignKey: "package_id",
+    as: "package",
+  });
+};
+
 module.exports = Payment;

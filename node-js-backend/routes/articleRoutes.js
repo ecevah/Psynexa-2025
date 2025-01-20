@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const ArticleController = require("../controllers/ArticleController");
 const auth = require("../middleware/auth");
+const { upload } = require("../config/multer");
 
 /**
  * @swagger
@@ -51,7 +52,17 @@ const auth = require("../middleware/auth");
  *       201:
  *         description: Article created successfully
  */
-router.post("/", auth, ArticleController.createArticle);
+router.post(
+  "/",
+  auth,
+  upload.fields([
+    { name: "background_image", maxCount: 1 },
+    { name: "vocalization", maxCount: 1 },
+    { name: "sound", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  ArticleController.createArticle
+);
 
 /**
  * @swagger

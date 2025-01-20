@@ -6,17 +6,22 @@ class ArticleController {
   async createArticle(req, res) {
     try {
       const psyc_id = req.user.id;
-      const {
-        title,
-        description,
-        content,
-        content_type,
-        bibliography,
-        background_url,
-        vocalization_url,
-        sound_url,
-        content_url,
-      } = req.body;
+      const { title, description, content, content_type, bibliography } =
+        req.body;
+
+      // Dosya URL'lerini hazırla
+      const background_url = req.files["background_image"]
+        ? `/uploads/${req.files["background_image"][0].filename}`
+        : null;
+      const vocalization_url = req.files["vocalization"]
+        ? `/uploads/${req.files["vocalization"][0].filename}`
+        : null;
+      const sound_url = req.files["sound"]
+        ? `/uploads/${req.files["sound"][0].filename}`
+        : null;
+      const content_url = req.files["video"]
+        ? `/uploads/${req.files["video"][0].filename}`
+        : null;
 
       const article = await Article.create({
         psyc_id,
@@ -33,10 +38,12 @@ class ArticleController {
       });
 
       logger.info(`Yeni makale oluşturuldu: ${article.id}`);
-      res.status(201).json(article);
+      res
+        .status(201)
+        .json({ status: true, message: "Makale oluşturuldu", data: article });
     } catch (error) {
       logger.error(`Makale oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Makale oluşturulamadı" });
+      res.status(500).json({ status: false, message: "Makale oluşturulamadı" });
     }
   }
 
@@ -44,20 +51,23 @@ class ArticleController {
   async getArticles(req, res) {
     try {
       const articles = await Article.findAll({
-        where: { status: "published" },
         include: [
           {
             model: Psychologist,
+            as: "psychologist",
             attributes: ["id", "name"],
           },
         ],
-        order: [["published_at", "DESC"]],
+        order: [["created_at", "DESC"]],
       });
 
-      res.json(articles);
+      logger.info(`${articles.length} makale listelendi`);
+      res
+        .status(200)
+        .json({ status: true, message: "Makaleler alındı", data: articles });
     } catch (error) {
       logger.error(`Makale listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Makaleler alınamadı" });
+      res.status(500).json({ status: false, message: "Makaleler alınamadı" });
     }
   }
 
@@ -67,13 +77,22 @@ class ArticleController {
       const psyc_id = req.user.id;
       const articles = await Article.findAll({
         where: { psyc_id },
+        include: [
+          {
+            model: Psychologist,
+            as: "psychologist",
+            attributes: ["id", "name"],
+          },
+        ],
         order: [["created_at", "DESC"]],
       });
 
-      res.json(articles);
+      res
+        .status(200)
+        .json({ status: true, message: "Makaleler alındı", data: articles });
     } catch (error) {
       logger.error(`Makale listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Makaleler alınamadı" });
+      res.status(500).json({ status: false, message: "Makaleler alınamadı" });
     }
   }
 
@@ -86,19 +105,26 @@ class ArticleController {
         include: [
           {
             model: Psychologist,
+            as: "psychologist",
             attributes: ["id", "name"],
           },
         ],
       });
 
       if (!article) {
-        return res.status(404).json({ error: "Makale bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Makale bulunamadı" });
       }
 
-      res.json(article);
+      res
+        .status(200)
+        .json({ status: true, message: "Makale detayı alındı", data: article });
     } catch (error) {
       logger.error(`Makale detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Makale detayı alınamadı" });
+      res
+        .status(500)
+        .json({ status: false, message: "Makale detayı alınamadı" });
     }
   }
 
@@ -114,10 +140,6 @@ class ArticleController {
         content_type,
         status,
         bibliography,
-        background_url,
-        vocalization_url,
-        sound_url,
-        content_url,
       } = req.body;
 
       const article = await Article.findOne({
@@ -125,8 +147,28 @@ class ArticleController {
       });
 
       if (!article) {
-        return res.status(404).json({ error: "Makale bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Makale bulunamadı" });
       }
+
+      // Dosya URL'lerini hazırla
+      const background_url =
+        req.files && req.files["background_image"]
+          ? `/uploads/${req.files["background_image"][0].filename}`
+          : article.background_url;
+      const vocalization_url =
+        req.files && req.files["vocalization"]
+          ? `/uploads/${req.files["vocalization"][0].filename}`
+          : article.vocalization_url;
+      const sound_url =
+        req.files && req.files["sound"]
+          ? `/uploads/${req.files["sound"][0].filename}`
+          : article.sound_url;
+      const content_url =
+        req.files && req.files["video"]
+          ? `/uploads/${req.files["video"][0].filename}`
+          : article.content_url;
 
       if (status === "published" && article.status !== "published") {
         req.body.published_at = new Date();
@@ -137,15 +179,26 @@ class ArticleController {
       }
 
       await article.update({
-        ...req.body,
+        title,
+        description,
+        content,
+        content_type,
+        status,
+        bibliography,
+        background_url,
+        vocalization_url,
+        sound_url,
+        content_url,
         updated_by: psyc_id,
       });
 
       logger.info(`Makale güncellendi: ${id}`);
-      res.json(article);
+      res
+        .status(200)
+        .json({ status: true, message: "Makale güncellendi", data: article });
     } catch (error) {
       logger.error(`Makale güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Makale güncellenemedi" });
+      res.status(500).json({ status: false, message: "Makale güncellenemedi" });
     }
   }
 
@@ -160,7 +213,9 @@ class ArticleController {
       });
 
       if (!article) {
-        return res.status(404).json({ error: "Makale bulunamadı" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Makale bulunamadı" });
       }
 
       await article.update({
@@ -169,10 +224,12 @@ class ArticleController {
       });
 
       logger.info(`Makale arşivlendi: ${id}`);
-      res.json({ message: "Makale başarıyla arşivlendi" });
+      res
+        .status(200)
+        .json({ status: true, message: "Makale başarıyla arşivlendi" });
     } catch (error) {
       logger.error(`Makale silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Makale silinemedi" });
+      res.status(500).json({ status: false, message: "Makale silinemedi" });
     }
   }
 }

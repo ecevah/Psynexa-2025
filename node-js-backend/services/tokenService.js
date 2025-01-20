@@ -7,7 +7,10 @@ class TokenService {
   generateTokens(userId, userType) {
     // Access Token oluştur
     const accessToken = jwt.sign(
-      { id: userId, type: userType },
+      {
+        [userType === "staff" ? "staff_id" : "id"]: userId,
+        type: userType,
+      },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "15m" }
     );

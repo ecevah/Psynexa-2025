@@ -28,7 +28,6 @@ class ClientAuthController {
         return res.status(400).json({
           status: false,
           message: "Bu email veya kullanıcı adı zaten kullanımda",
-          data: null,
         });
       }
 
@@ -84,7 +83,6 @@ class ClientAuthController {
       res.status(500).json({
         status: false,
         message: "Kayıt işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -138,7 +136,6 @@ class ClientAuthController {
         return res.status(401).json({
           status: false,
           message: "Geçersiz email veya şifre",
-          data: null,
         });
       }
 
@@ -147,7 +144,6 @@ class ClientAuthController {
         return res.status(401).json({
           status: false,
           message: "Geçersiz email veya şifre",
-          data: null,
         });
       }
 
@@ -179,7 +175,6 @@ class ClientAuthController {
       res.status(500).json({
         status: false,
         message: "Giriş işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -194,7 +189,6 @@ class ClientAuthController {
         return res.status(404).json({
           status: false,
           message: "Bu email ile kayıtlı kullanıcı bulunamadı",
-          data: null,
         });
       }
 
@@ -213,14 +207,12 @@ class ClientAuthController {
       res.status(200).json({
         status: true,
         message: "Şifre sıfırlama linki email adresinize gönderildi",
-        data: null,
       });
     } catch (error) {
       logger.error(`Şifre sıfırlama hatası: ${error.message}`);
       res.status(500).json({
         status: false,
         message: "Şifre sıfırlama işlemi başarısız",
-        data: null,
       });
     }
   }
@@ -240,7 +232,6 @@ class ClientAuthController {
         return res.status(400).json({
           status: false,
           message: "Geçersiz veya süresi dolmuş token",
-          data: null,
         });
       }
 
@@ -254,14 +245,12 @@ class ClientAuthController {
       res.status(200).json({
         status: true,
         message: "Şifreniz başarıyla güncellendi",
-        data: null,
       });
     } catch (error) {
       logger.error(`Şifre sıfırlama hatası: ${error.message}`);
       res.status(500).json({
         status: false,
         message: "Şifre sıfırlama işlemi başarısız",
-        data: null,
       });
     }
   }

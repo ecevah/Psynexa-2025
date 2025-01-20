@@ -54,4 +54,19 @@ const Package = sequelize.define(
   }
 );
 
+// İlişkileri tanımla
+Package.associate = function (models) {
+  // One-to-One ilişkisi: Package -> Client
+  Package.hasOne(models.Client, {
+    foreignKey: "package_id",
+    as: "client",
+  });
+
+  // One-to-Many ilişkisi: Package -> Payment
+  Package.hasMany(models.Payment, {
+    foreignKey: "package_id",
+    as: "payments",
+  });
+};
+
 module.exports = Package;

@@ -20,10 +20,18 @@ const Favorite = sequelize.define(
     series_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: "series",
+        key: "id",
+      },
     },
     content_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: "series_contents",
+        key: "id",
+      },
     },
     meditation_id: {
       type: DataTypes.INTEGER,
@@ -33,13 +41,21 @@ const Favorite = sequelize.define(
         key: "id",
       },
     },
-    breathing_exercises_id: {
+    breathing_exercise_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: "breathing_exercises",
+        key: "id",
+      },
     },
-    meditation_iterations_id: {
+    meditation_iteration_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: "meditation_iterations",
+        key: "id",
+      },
     },
     type: {
       type: DataTypes.ENUM(
@@ -83,5 +99,44 @@ const Favorite = sequelize.define(
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Favorite.associate = function (models) {
+  // One-to-One ilişkisi: Favorite -> Client
+  Favorite.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+
+  // One-to-One ilişkisi: Favorite -> Series
+  Favorite.belongsTo(models.Series, {
+    foreignKey: "series_id",
+    as: "series",
+  });
+
+  // One-to-One ilişkisi: Favorite -> SeriesContent
+  Favorite.belongsTo(models.SeriesContent, {
+    foreignKey: "content_id",
+    as: "content",
+  });
+
+  // One-to-One ilişkisi: Favorite -> Meditation
+  Favorite.belongsTo(models.Meditation, {
+    foreignKey: "meditation_id",
+    as: "meditation",
+  });
+
+  // One-to-One ilişkisi: Favorite -> BreathingExercise
+  Favorite.belongsTo(models.BreathingExercise, {
+    foreignKey: "breathing_exercise_id",
+    as: "breathingExercise",
+  });
+
+  // One-to-One ilişkisi: Favorite -> MeditationIterations
+  Favorite.belongsTo(models.IterationMeditation, {
+    foreignKey: "meditation_iteration_id",
+    as: "meditationIteration",
+  });
+};
 
 module.exports = Favorite;

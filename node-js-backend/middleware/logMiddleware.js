@@ -38,28 +38,21 @@ const logMiddleware = async (req, res, next) => {
     }
 
     const logData = {
-      timestamp: new Date(),
-      method: req.method,
-      path: req.originalUrl,
-      responseCode: responseCode || res.statusCode,
-      responseTime: Date.now() - startTime,
-      requestBody: req.method !== "GET" ? req.body : null,
-      requestParams: Object.keys(req.params).length ? req.params : null,
-      requestQuery: Object.keys(req.query).length ? req.query : null,
-      responseBody: responseBody,
-      userAgent: req.get("user-agent"),
-      ipAddress: req.ip || req.connection.remoteAddress,
-      isAuthenticated: !!userInfo.id,
+      client_id: userInfo.type === "client" ? userInfo.id : null,
+      staff_id: userInfo.type === "staff" ? userInfo.id : null,
+      psyc_id: userInfo.type === "psychologist" ? userInfo.id : null,
+      action: `${req.method} ${req.originalUrl}`,
+      description: JSON.stringify({
+        requestBody: req.method !== "GET" ? req.body : null,
+        requestParams: Object.keys(req.params).length ? req.params : null,
+        requestQuery: Object.keys(req.query).length ? req.query : null,
+        responseBody: responseBody,
+        responseCode: responseCode || res.statusCode,
+        responseTime: Date.now() - startTime,
+      }),
+      ip_address: req.ip || req.connection.remoteAddress,
+      user_agent: req.get("user-agent"),
     };
-
-    // Kullanıcı tipine göre ilgili ID'yi set et
-    if (userInfo.type === "client") {
-      logData.client_id = userInfo.id;
-    } else if (userInfo.type === "psychologist") {
-      logData.psychologist_id = userInfo.id;
-    } else if (userInfo.type === "staff") {
-      logData.staff_id = userInfo.id;
-    }
 
     return logData;
   };

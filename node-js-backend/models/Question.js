@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class Question extends Model {}
-
-Question.init(
+const Question = sequelize.define(
+  "Question",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -23,25 +22,31 @@ Question.init(
       allowNull: false,
     },
     question_type: {
-      type: DataTypes.ENUM("multiple_choice", "open_ended", "likert_scale"),
+      type: DataTypes.ENUM("multiple_choice", "open_ended", "scale"),
       allowNull: false,
     },
     options: {
       type: DataTypes.JSON,
       allowNull: true,
     },
+    correct_answer: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     order: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
     created_by: {
@@ -62,13 +67,24 @@ Question.init(
     },
   },
   {
-    sequelize,
-    modelName: "Question",
     tableName: "questions",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Question.associate = function (models) {
+  // Many-to-One ilişkisi: Question -> Test
+  Question.belongsTo(models.Test, {
+    foreignKey: "test_id",
+    as: "test",
+  });
+  Question.hasMany(models.Response, {
+    foreignKey: "question_id",
+    as: "responses",
+  });
+};
 
 module.exports = Question;

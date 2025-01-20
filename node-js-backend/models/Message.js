@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-class Message extends Model {}
-
-Message.init(
+const Message = sequelize.define(
+  "Message",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -14,52 +13,56 @@ Message.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Clients",
+        model: "clients",
         key: "id",
       },
     },
-    text: {
+    psyc_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "psychologists",
+        key: "id",
+      },
+    },
+    content: {
       type: DataTypes.TEXT,
       allowNull: false,
-    },
-    response: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    timestamp: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "text",
     },
     status: {
-      type: DataTypes.ENUM("pending", "sent", "delivered", "read", "failed"),
-      allowNull: false,
-      defaultValue: "pending",
+      type: DataTypes.ENUM("sent", "delivered", "read"),
+      defaultValue: "sent",
     },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
   },
   {
-    sequelize,
-    modelName: "Message",
     tableName: "messages",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Message.associate = function (models) {
+  // One-to-One ilişkisi: Message -> Client
+  Message.belongsTo(models.Client, {
+    foreignKey: "client_id",
+    as: "client",
+  });
+
+  // One-to-One ilişkisi: Message -> Psychologist
+  Message.belongsTo(models.Psychologist, {
+    foreignKey: "psyc_id",
+    as: "psychologist",
+  });
+};
 
 module.exports = Message;

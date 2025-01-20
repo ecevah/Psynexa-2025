@@ -90,4 +90,11 @@ const Article = sequelize.define(
   }
 );
 
+Article.associate = function (models) {
+  Article.belongsTo(models.Psychologist, {
+    foreignKey: "psyc_id",
+    as: "psychologist",
+  });
+};
+
 module.exports = Article;

@@ -29,21 +29,10 @@ const Meditation = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    published_at: {
-      type: DataTypes.DATE,
+    duration: {
+      type: DataTypes.INTEGER,
       allowNull: true,
-    },
-    draft_update_date: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    status: {
-      type: DataTypes.ENUM("draft", "published", "archived"),
-      defaultValue: "draft",
-    },
-    bibliography: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+      comment: "Duration in minutes",
     },
     background_url: {
       type: DataTypes.STRING,
@@ -60,6 +49,10 @@ const Meditation = sequelize.define(
     content_url: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    status: {
+      type: DataTypes.ENUM("active", "inactive"),
+      defaultValue: "active",
     },
     created_at: {
       type: DataTypes.DATE,
@@ -85,5 +78,14 @@ const Meditation = sequelize.define(
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+Meditation.associate = function (models) {
+  // One-to-One ilişkisi: Meditation -> Psychologist
+  Meditation.belongsTo(models.Psychologist, {
+    foreignKey: "psyc_id",
+    as: "psychologist",
+  });
+};
 
 module.exports = Meditation;

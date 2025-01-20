@@ -36,10 +36,42 @@ const RefreshToken = sequelize.define(
     },
   },
   {
+    tableName: "refresh_tokens",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
+// İlişkileri tanımla
+RefreshToken.associate = function (models) {
+  // Polymorphic ilişkiler
+  RefreshToken.belongsTo(models.Client, {
+    foreignKey: "user_id",
+    constraints: false,
+    as: "client",
+    scope: {
+      user_type: "client",
+    },
+  });
+
+  RefreshToken.belongsTo(models.Psychologist, {
+    foreignKey: "user_id",
+    constraints: false,
+    as: "psychologist",
+    scope: {
+      user_type: "psychologist",
+    },
+  });
+
+  RefreshToken.belongsTo(models.Staff, {
+    foreignKey: "user_id",
+    constraints: false,
+    as: "staff",
+    scope: {
+      user_type: "staff",
+    },
+  });
+};
 
 module.exports = RefreshToken;
