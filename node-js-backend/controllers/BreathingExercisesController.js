@@ -1,6 +1,6 @@
 const {
-  BreathingExercises,
-  BreathingExercisesIteration,
+  BreathingExercise,
+  BreathingExerciseItem,
   Psychologist,
 } = require("../models");
 const logger = require("../config/logger");
@@ -12,75 +12,97 @@ class BreathingExercisesController {
       const psyc_id = req.user.id;
       const {
         title,
-        content_type,
-        background_sound,
         description,
-        status,
-        iterations,
+        duration,
+        items,
+        content_type = "text",
+        background_sound,
       } = req.body;
 
-      const exercise = await BreathingExercises.create({
+      if (!Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({
+          status: false,
+          message: "En az bir egzersiz öğesi gereklidir",
+        });
+      }
+
+      const exercise = await BreathingExercise.create({
         psyc_id,
         title,
+        description,
+        duration,
         content_type,
         background_sound,
-        description,
-        status,
+        status: "active",
         created_by: psyc_id,
       });
 
-      if (iterations && iterations.length > 0) {
-        const iterationsToCreate = iterations.map((iteration) => ({
-          ...iteration,
-          breathing_exercises_id: exercise.id,
-          created_by: psyc_id,
-        }));
+      const itemsToCreate = items.map((item) => ({
+        ...item,
+        breathing_exercise_id: exercise.id,
+        status: true,
+      }));
 
-        await BreathingExercisesIteration.bulkCreate(iterationsToCreate);
-      }
+      await BreathingExerciseItem.bulkCreate(itemsToCreate);
+
+      const result = await BreathingExercise.findByPk(exercise.id, {
+        include: [
+          {
+            model: BreathingExerciseItem,
+            as: "items",
+            order: [["order", "ASC"]],
+          },
+        ],
+      });
 
       logger.info(`Yeni nefes egzersizi oluşturuldu: ${exercise.id}`);
-      res.status(201).json(exercise);
+      res.status(201).json({
+        status: true,
+        message: "Nefes egzersizi başarıyla oluşturuldu",
+        data: result,
+      });
     } catch (error) {
       logger.error(`Nefes egzersizi oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Nefes egzersizi oluşturulamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Nefes egzersizi oluşturulamadı",
+      });
     }
   }
 
   // Tüm nefes egzersizlerini getir
   async getBreathingExercises(req, res) {
     try {
-      const exercises = await BreathingExercises.findAll({
+      const exercises = await BreathingExercise.findAll({
         where: { status: "active" },
         include: [
           {
             model: Psychologist,
-            attributes: ["id", "name"],
+            as: "psychologist",
+            attributes: ["id", "name", "surname"],
           },
           {
-            model: BreathingExercisesIteration,
-            attributes: [
-              "id",
-              "title",
-              "description",
-              "media_url",
-              "description_sound",
-              "order",
-              "timer",
-              "status",
-            ],
+            model: BreathingExerciseItem,
+            as: "items",
+            where: { status: true },
+            required: false,
+            order: [["order", "ASC"]],
           },
         ],
-        order: [
-          ["created_at", "DESC"],
-          [BreathingExercisesIteration, "order", "ASC"],
-        ],
+        order: [["created_at", "DESC"]],
       });
 
-      res.json(exercises);
+      res.json({
+        status: true,
+        message: "Nefes egzersizleri başarıyla getirildi",
+        data: exercises,
+      });
     } catch (error) {
       logger.error(`Nefes egzersizi listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Nefes egzersizleri alınamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Nefes egzersizleri alınamadı",
+      });
     }
   }
 
@@ -88,33 +110,31 @@ class BreathingExercisesController {
   async getPsychologistBreathingExercises(req, res) {
     try {
       const psyc_id = req.user.id;
-      const exercises = await BreathingExercises.findAll({
+      const exercises = await BreathingExercise.findAll({
         where: { psyc_id },
         include: [
           {
-            model: BreathingExercisesIteration,
-            attributes: [
-              "id",
-              "title",
-              "description",
-              "media_url",
-              "description_sound",
-              "order",
-              "timer",
-              "status",
-            ],
+            model: BreathingExerciseItem,
+            as: "items",
+            where: { status: true },
+            required: false,
+            order: [["order", "ASC"]],
           },
         ],
-        order: [
-          ["created_at", "DESC"],
-          [BreathingExercisesIteration, "order", "ASC"],
-        ],
+        order: [["created_at", "DESC"]],
       });
 
-      res.json(exercises);
+      res.json({
+        status: true,
+        message: "Psikolog nefes egzersizleri başarıyla getirildi",
+        data: exercises,
+      });
     } catch (error) {
       logger.error(`Nefes egzersizi listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Nefes egzersizleri alınamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Nefes egzersizleri alınamadı",
+      });
     }
   }
 
@@ -122,37 +142,42 @@ class BreathingExercisesController {
   async getBreathingExercise(req, res) {
     try {
       const { id } = req.params;
-      const exercise = await BreathingExercises.findOne({
+      const exercise = await BreathingExercise.findOne({
         where: { id },
         include: [
           {
             model: Psychologist,
-            attributes: ["id", "name"],
+            as: "psychologist",
+            attributes: ["id", "name", "surname"],
           },
           {
-            model: BreathingExercisesIteration,
-            attributes: [
-              "id",
-              "title",
-              "description",
-              "media_url",
-              "description_sound",
-              "order",
-              "timer",
-              "status",
-            ],
+            model: BreathingExerciseItem,
+            as: "items",
+            where: { status: true },
+            required: false,
+            order: [["order", "ASC"]],
           },
         ],
       });
 
       if (!exercise) {
-        return res.status(404).json({ error: "Nefes egzersizi bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Nefes egzersizi bulunamadı",
+        });
       }
 
-      res.json(exercise);
+      res.json({
+        status: true,
+        message: "Nefes egzersizi başarıyla getirildi",
+        data: exercise,
+      });
     } catch (error) {
       logger.error(`Nefes egzersizi detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Nefes egzersizi detayı alınamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Nefes egzersizi detayı alınamadı",
+      });
     }
   }
 
@@ -161,53 +186,66 @@ class BreathingExercisesController {
     try {
       const { id } = req.params;
       const psyc_id = req.user.id;
-      const {
-        title,
-        content_type,
-        background_sound,
-        description,
-        status,
-        iterations,
-      } = req.body;
+      const { title, description, duration, items } = req.body;
 
-      const exercise = await BreathingExercises.findOne({
+      const exercise = await BreathingExercise.findOne({
         where: { id, psyc_id },
       });
 
       if (!exercise) {
-        return res.status(404).json({ error: "Nefes egzersizi bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Nefes egzersizi bulunamadı",
+        });
       }
 
       await exercise.update({
         title,
-        content_type,
-        background_sound,
         description,
-        status,
-        updated_by: psyc_id,
+        duration,
       });
 
-      if (iterations && iterations.length > 0) {
-        // Mevcut iterasyonları sil
-        await BreathingExercisesIteration.destroy({
-          where: { breathing_exercises_id: id },
-        });
+      if (items && items.length > 0) {
+        // Mevcut öğeleri pasife çek
+        await BreathingExerciseItem.update(
+          { status: false },
+          { where: { breathing_exercise_id: id } }
+        );
 
-        // Yeni iterasyonları ekle
-        const iterationsToCreate = iterations.map((iteration) => ({
-          ...iteration,
-          breathing_exercises_id: id,
-          created_by: psyc_id,
+        // Yeni öğeleri ekle
+        const itemsToCreate = items.map((item) => ({
+          ...item,
+          breathing_exercise_id: id,
+          status: true,
         }));
 
-        await BreathingExercisesIteration.bulkCreate(iterationsToCreate);
+        await BreathingExerciseItem.bulkCreate(itemsToCreate);
       }
 
+      const result = await BreathingExercise.findByPk(id, {
+        include: [
+          {
+            model: BreathingExerciseItem,
+            as: "items",
+            where: { status: true },
+            required: false,
+            order: [["order", "ASC"]],
+          },
+        ],
+      });
+
       logger.info(`Nefes egzersizi güncellendi: ${id}`);
-      res.json(exercise);
+      res.json({
+        status: true,
+        message: "Nefes egzersizi başarıyla güncellendi",
+        data: result,
+      });
     } catch (error) {
       logger.error(`Nefes egzersizi güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Nefes egzersizi güncellenemedi" });
+      res.status(500).json({
+        status: false,
+        message: "Nefes egzersizi güncellenemedi",
+      });
     }
   }
 
@@ -217,27 +255,37 @@ class BreathingExercisesController {
       const { id } = req.params;
       const psyc_id = req.user.id;
 
-      const exercise = await BreathingExercises.findOne({
+      const exercise = await BreathingExercise.findOne({
         where: { id, psyc_id },
       });
 
       if (!exercise) {
-        return res.status(404).json({ error: "Nefes egzersizi bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Nefes egzersizi bulunamadı",
+        });
       }
 
-      // İlişkili iterasyonları sil
-      await BreathingExercisesIteration.destroy({
-        where: { breathing_exercises_id: id },
-      });
+      // Egzersizi pasife çek
+      await exercise.update({ status: "inactive" });
 
-      // Nefes egzersizini sil
-      await exercise.destroy();
+      // Öğeleri pasife çek
+      await BreathingExerciseItem.update(
+        { status: false },
+        { where: { breathing_exercise_id: id } }
+      );
 
       logger.info(`Nefes egzersizi silindi: ${id}`);
-      res.json({ message: "Nefes egzersizi başarıyla silindi" });
+      res.json({
+        status: true,
+        message: "Nefes egzersizi başarıyla silindi",
+      });
     } catch (error) {
       logger.error(`Nefes egzersizi silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Nefes egzersizi silinemedi" });
+      res.status(500).json({
+        status: false,
+        message: "Nefes egzersizi silinemedi",
+      });
     }
   }
 }

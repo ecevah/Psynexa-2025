@@ -21,7 +21,7 @@ const SeriesContent = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "meditation_iterations",
+        model: "iteration_meditations",
         key: "id",
       },
     },
@@ -72,6 +72,14 @@ const SeriesContent = sequelize.define(
     status: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,

@@ -7,104 +7,104 @@ const logger = require("../config/logger");
 const { deleteFile } = require("../config/multer");
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
+const path = require("path");
+const fs = require("fs");
 
 class IterationMeditationController {
   async create(req, res) {
-    const transaction = await sequelize.transaction();
     try {
+      const { id, type } = req.user;
       const { title, description, items } = req.body;
-      const psyc_id = req.user?.id;
-      const create_by = req.user?.id;
-      const create_role = req.user?.type;
 
-      if (!psyc_id) {
-        return res.status(401).json({
+      if (type !== "psychologist") {
+        return res.status(403).json({
           status: false,
-          message: "Unauthorized access",
+          message: "Bu işlemi sadece psikologlar yapabilir",
         });
       }
 
-      const parsedItems = JSON.parse(items);
-      if (!Array.isArray(parsedItems) || parsedItems.length === 0) {
+      let parsedItems;
+      try {
+        parsedItems = JSON.parse(items);
+      } catch (error) {
         return res.status(400).json({
           status: false,
-          message: "At least one item is required",
+          message: "Geçersiz items formatı",
         });
       }
 
-      const meditation = await IterationMeditation.create(
-        {
-          psyc_id,
-          title,
-          description,
-          background_sound_url:
-            req.files?.background_sound?.[0]?.path?.replace("public/", "") ||
-            null,
-          create_by,
-          create_role,
-        },
-        { transaction }
-      );
+      const meditation = await IterationMeditation.create({
+        psyc_id: id,
+        title,
+        description,
+        background_sound_url: req.files?.background_sound
+          ? `/uploads/${req.files.background_sound[0].filename}`
+          : null,
+        status: "active",
+        create_by: id,
+        create_role: type,
+      });
 
-      const itemPromises = parsedItems.map(async (item, index) => {
-        const mediaFile = req.files[`item_media_${index + 1}`]?.[0];
-        const descSoundFile =
-          req.files[`item_description_sound_${index + 1}`]?.[0];
+      if (req.files?.background_sound) {
+        const backgroundSound = req.files.background_sound[0];
+        const backgroundSoundPath = path.join(
+          __dirname,
+          "..",
+          "public",
+          "uploads",
+          backgroundSound.filename
+        );
+        await fs.promises.rename(backgroundSound.path, backgroundSoundPath);
+      }
 
-        return IterationMeditationItem.create(
-          {
+      const files = req.files?.files || [];
+      const fileArray = Array.isArray(files) ? files : [files];
+
+      const createdItems = await Promise.all(
+        parsedItems.map(async (item, index) => {
+          const file = fileArray[index];
+          let mediaUrl = null;
+
+          if (file) {
+            const filePath = path.join(
+              __dirname,
+              "..",
+              "public",
+              "uploads",
+              file.filename
+            );
+            await fs.promises.rename(file.path, filePath);
+            mediaUrl = `/uploads/${file.filename}`;
+          }
+
+          return IterationMeditationItem.create({
             meditation_id: meditation.id,
             title: item.title,
             description: item.description,
-            media_url: mediaFile?.path?.replace("public/", "") || null,
-            description_sound_url:
-              descSoundFile?.path?.replace("public/", "") || null,
+            media_url: mediaUrl,
             order: item.order,
             timer: item.timer,
             content_type: item.content_type,
-            create_by,
-            create_role,
-          },
-          { transaction }
-        );
-      });
+            status: "active",
+            create_by: id,
+            create_role: type,
+          });
+        })
+      );
 
-      await Promise.all(itemPromises);
-      await transaction.commit();
-
-      const result = await IterationMeditation.findByPk(meditation.id, {
-        include: [
-          {
-            model: IterationMeditationItem,
-            as: "items",
-            order: [["order", "ASC"]],
-          },
-        ],
-      });
-
-      logger.info(`New iteration meditation created: ${meditation.id}`);
-      res.status(201).json({
+      return res.status(201).json({
         status: true,
-        message: "Iteration meditation created successfully",
-        data: result,
+        message: "Meditasyon başarıyla oluşturuldu",
+        data: {
+          meditation,
+          items: createdItems,
+        },
       });
     } catch (error) {
-      await transaction.rollback();
       logger.error("Error in create:", error);
-
-      if (req.files) {
-        Object.values(req.files).forEach((fileArray) => {
-          fileArray.forEach((file) => {
-            if (file?.path) {
-              deleteFile(file.path);
-            }
-          });
-        });
-      }
-
-      res.status(500).json({
+      return res.status(500).json({
         status: false,
-        message: "Failed to create iteration meditation",
+        message: "Meditasyon oluşturulurken bir hata oluştu",
       });
     }
   }
@@ -243,6 +243,17 @@ class IterationMeditationController {
         });
       }
 
+      if (
+        meditation.psyc_id !== req.user?.id ||
+        update_role !== "psychologist"
+      ) {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "You can only update your own meditations",
+        });
+      }
+
       const updateData = {
         title,
         description,
@@ -370,6 +381,17 @@ class IterationMeditationController {
         });
       }
 
+      if (
+        meditation.psyc_id !== req.user?.id ||
+        req.user?.type !== "psychologist"
+      ) {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "You can only delete your own meditations",
+        });
+      }
+
       // Delete all associated files
       if (meditation.background_sound_url) {
         deleteFile(`public/${meditation.background_sound_url}`);
@@ -408,10 +430,10 @@ class IterationMeditationController {
       const { page = 1, limit = 10 } = req.query;
       const offset = (page - 1) * limit;
 
-      if (!psyc_id) {
-        return res.status(401).json({
+      if (!psyc_id || req.user?.type !== "psychologist") {
+        return res.status(403).json({
           status: false,
-          message: "Unauthorized access",
+          message: "Only psychologists can access this endpoint",
         });
       }
 

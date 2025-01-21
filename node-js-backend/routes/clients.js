@@ -7,60 +7,123 @@ const auth = require("../middleware/auth");
  * @swagger
  * tags:
  *   name: Clients
- *   description: Client management endpoints
+ *   description: Danışan yönetimi
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Client:
+ *       type: object
+ *       required:
+ *         - name
+ *         - surname
+ *         - email
+ *       properties:
+ *         id:
+ *           type: integer
+ *         name:
+ *           type: string
+ *         surname:
+ *           type: string
+ *         email:
+ *           type: string
+ *           format: email
+ *         phone:
+ *           type: string
+ *         date_of_birth:
+ *           type: string
+ *           format: date
+ *         sex:
+ *           type: string
+ *           enum: [male, female, other]
+ *         photo:
+ *           type: string
+ *         package_id:
+ *           type: integer
+ *         psyc_id:
+ *           type: integer
+ *         casual_mode:
+ *           type: boolean
+ *         status:
+ *           type: string
+ *           enum: [active, inactive]
  */
 
 /**
  * @swagger
  * /api/clients:
  *   get:
- *     summary: Get all clients
+ *     summary: Tüm danışanları getir (Staff ve Psikolog)
  *     tags: [Clients]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Sayfa numarası
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Sayfa başına kayıt sayısı
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Arama terimi (isim, soyisim, email, telefon)
  *     responses:
  *       200:
- *         description: List of all clients
+ *         description: Başarılı
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                   firstName:
- *                     type: string
- *                   lastName:
- *                     type: string
- *                   email:
- *                     type: string
- *       500:
- *         description: Server error
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Client'
  */
-router.get("/", ClientController.getAllClients);
+router.get("/", auth, ClientController.getAllClients);
 
 /**
  * @swagger
  * /api/clients/{id}:
  *   get:
- *     summary: Get a client by ID
+ *     summary: Danışan detaylarını getir
  *     tags: [Clients]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
- *         description: Client ID
+ *           type: integer
  *     responses:
  *       200:
- *         description: Client details
- *       404:
- *         description: Client not found
- *       500:
- *         description: Server error
+ *         description: Başarılı
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Client'
  */
-router.get("/:id", ClientController.getClient);
+router.get("/:id", auth, ClientController.getClient);
 
 /**
  * @swagger
@@ -102,16 +165,16 @@ router.post("/", auth, ClientController.createClient);
  * @swagger
  * /api/clients/{id}:
  *   put:
- *     summary: Update a client
+ *     summary: Danışan bilgilerini güncelle
  *     tags: [Clients]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -119,19 +182,43 @@ router.post("/", auth, ClientController.createClient);
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
+ *               name:
  *                 type: string
- *               lastName:
+ *               surname:
  *                 type: string
  *               email:
  *                 type: string
+ *               phone:
+ *                 type: string
+ *               date_of_birth:
+ *                 type: string
+ *                 format: date
+ *               sex:
+ *                 type: string
+ *               photo:
+ *                 type: string
+ *               package_id:
+ *                 type: integer
+ *               psyc_id:
+ *                 type: integer
+ *               casual_mode:
+ *                 type: boolean
+ *               status:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Client updated successfully
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Client not found
+ *         description: Başarılı
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Client'
  */
 router.put("/:id", auth, ClientController.updateClient);
 
@@ -139,23 +226,28 @@ router.put("/:id", auth, ClientController.updateClient);
  * @swagger
  * /api/clients/{id}:
  *   delete:
- *     summary: Delete a client
+ *     summary: Danışanı sil (Soft Delete - Staff only)
  *     tags: [Clients]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: integer
  *     responses:
  *       200:
- *         description: Client deleted successfully
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Client not found
+ *         description: Başarılı
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.delete("/:id", auth, ClientController.deleteClient);
 

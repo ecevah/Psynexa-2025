@@ -19,7 +19,7 @@ const Message = sequelize.define(
     },
     psyc_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "psychologists",
         key: "id",
@@ -28,6 +28,14 @@ const Message = sequelize.define(
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    type: {
+      type: DataTypes.ENUM("text", "image"),
+      defaultValue: "text",
+    },
+    response: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM("sent", "delivered", "read"),

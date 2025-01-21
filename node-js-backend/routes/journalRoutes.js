@@ -25,14 +25,17 @@ const auth = require("../middleware/auth");
  *           schema:
  *             type: object
  *             required:
+ *               - title
  *               - content
  *             properties:
+ *               title:
+ *                 type: string
  *               content:
  *                 type: string
  *               date:
  *                 type: string
  *                 format: date
- *               emotion:
+ *               mood:
  *                 type: string
  *     responses:
  *       201:
@@ -44,7 +47,7 @@ router.post("/", auth, JournalController.createJournal);
  * @swagger
  * /api/journals:
  *   get:
- *     summary: Get all active journal entries
+ *     summary: Get all journal entries
  *     tags: [Journals]
  *     security:
  *       - BearerAuth: []
@@ -95,12 +98,14 @@ router.get("/:id", auth, JournalController.getJournal);
  *           schema:
  *             type: object
  *             properties:
+ *               title:
+ *                 type: string
  *               content:
  *                 type: string
  *               date:
  *                 type: string
  *                 format: date
- *               emotion:
+ *               mood:
  *                 type: string
  *     responses:
  *       200:
@@ -130,9 +135,9 @@ router.delete("/:id", auth, JournalController.deleteJournal);
 
 /**
  * @swagger
- * /api/journals/{id}/archive:
+ * /api/journals/{id}/toggle-share:
  *   put:
- *     summary: Archive a journal entry
+ *     summary: Toggle journal sharing status
  *     tags: [Journals]
  *     security:
  *       - BearerAuth: []
@@ -144,8 +149,17 @@ router.delete("/:id", auth, JournalController.deleteJournal);
  *           type: integer
  *     responses:
  *       200:
- *         description: Journal entry archived successfully
+ *         description: Journal sharing status toggled successfully
  */
-router.put("/:id/archive", auth, JournalController.archiveJournal);
+router.put("/:id/toggle-share", auth, JournalController.toggleShareJournal);
+
+// Eski archive endpoint'i için yönlendirme
+router.put("/:id/archive", auth, (req, res) => {
+  res.status(301).json({
+    status: false,
+    message:
+      "Bu endpoint artık kullanılmıyor. Lütfen /api/journals/{id}/toggle-share endpoint'ini kullanın.",
+  });
+});
 
 module.exports = router;

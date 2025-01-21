@@ -29,6 +29,14 @@ const Series = sequelize.define(
       type: DataTypes.ENUM("active", "completed", "archived"),
       defaultValue: "active",
     },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

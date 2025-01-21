@@ -5,39 +5,73 @@ class ReminderController {
   // Yeni hatırlatıcı oluştur
   async createReminder(req, res) {
     try {
-      const client_id = req.user.id;
+      const user = req.user;
+
+      // Sadece danışanlar hatırlatıcı oluşturabilir
+      if (user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Sadece danışanlar hatırlatıcı oluşturabilir",
+        });
+      }
+
       const { reminder_time, content, title, frequency } = req.body;
 
       const reminder = await Reminder.create({
-        client_id,
+        client_id: user.id,
         reminder_time,
         content,
         title,
         frequency,
-        created_by: client_id,
+        created_by: user.id,
       });
 
       logger.info(`Yeni hatırlatıcı oluşturuldu: ${reminder.id}`);
-      res.status(201).json(reminder);
+      res.status(201).json({
+        status: true,
+        message: "Hatırlatıcı başarıyla oluşturuldu",
+        data: reminder,
+      });
     } catch (error) {
       logger.error(`Hatırlatıcı oluşturma hatası: ${error.message}`);
-      res.status(500).json({ error: "Hatırlatıcı oluşturulamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Hatırlatıcı oluşturulamadı",
+        error: error.message,
+      });
     }
   }
 
   // Danışanın hatırlatıcılarını getir
   async getReminders(req, res) {
     try {
-      const client_id = req.user.id;
+      const user = req.user;
+
+      // Sadece danışanlar hatırlatıcıları görebilir
+      if (user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Sadece danışanlar hatırlatıcıları görebilir",
+        });
+      }
+
       const reminders = await Reminder.findAll({
-        where: { client_id, active: true },
+        where: { client_id: user.id, active: true },
         order: [["reminder_time", "ASC"]],
       });
 
-      res.json(reminders);
+      res.json({
+        status: true,
+        message: "Hatırlatıcılar başarıyla getirildi",
+        data: reminders,
+      });
     } catch (error) {
       logger.error(`Hatırlatıcı listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Hatırlatıcılar alınamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Hatırlatıcılar alınamadı",
+        error: error.message,
+      });
     }
   }
 
@@ -45,20 +79,39 @@ class ReminderController {
   async getReminder(req, res) {
     try {
       const { id } = req.params;
-      const client_id = req.user.id;
+      const user = req.user;
+
+      // Sadece danışanlar hatırlatıcı detayını görebilir
+      if (user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Sadece danışanlar hatırlatıcı detayını görebilir",
+        });
+      }
 
       const reminder = await Reminder.findOne({
-        where: { id, client_id },
+        where: { id, client_id: user.id },
       });
 
       if (!reminder) {
-        return res.status(404).json({ error: "Hatırlatıcı bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Hatırlatıcı bulunamadı",
+        });
       }
 
-      res.json(reminder);
+      res.json({
+        status: true,
+        message: "Hatırlatıcı detayı başarıyla getirildi",
+        data: reminder,
+      });
     } catch (error) {
       logger.error(`Hatırlatıcı detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Hatırlatıcı detayı alınamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Hatırlatıcı detayı alınamadı",
+        error: error.message,
+      });
     }
   }
 
@@ -66,16 +119,28 @@ class ReminderController {
   async updateReminder(req, res) {
     try {
       const { id } = req.params;
-      const client_id = req.user.id;
+      const user = req.user;
+
+      // Sadece danışanlar hatırlatıcı güncelleyebilir
+      if (user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Sadece danışanlar hatırlatıcı güncelleyebilir",
+        });
+      }
+
       const { reminder_time, content, title, frequency, active, status } =
         req.body;
 
       const reminder = await Reminder.findOne({
-        where: { id, client_id },
+        where: { id, client_id: user.id },
       });
 
       if (!reminder) {
-        return res.status(404).json({ error: "Hatırlatıcı bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Hatırlatıcı bulunamadı",
+        });
       }
 
       await reminder.update({
@@ -85,14 +150,22 @@ class ReminderController {
         frequency,
         active,
         status,
-        updated_by: client_id,
+        updated_by: user.id,
       });
 
       logger.info(`Hatırlatıcı güncellendi: ${id}`);
-      res.json(reminder);
+      res.json({
+        status: true,
+        message: "Hatırlatıcı başarıyla güncellendi",
+        data: reminder,
+      });
     } catch (error) {
       logger.error(`Hatırlatıcı güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Hatırlatıcı güncellenemedi" });
+      res.status(500).json({
+        status: false,
+        message: "Hatırlatıcı güncellenemedi",
+        error: error.message,
+      });
     }
   }
 
@@ -100,27 +173,45 @@ class ReminderController {
   async deleteReminder(req, res) {
     try {
       const { id } = req.params;
-      const client_id = req.user.id;
+      const user = req.user;
+
+      // Sadece danışanlar hatırlatıcı silebilir
+      if (user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Sadece danışanlar hatırlatıcı silebilir",
+        });
+      }
 
       const reminder = await Reminder.findOne({
-        where: { id, client_id },
+        where: { id, client_id: user.id },
       });
 
       if (!reminder) {
-        return res.status(404).json({ error: "Hatırlatıcı bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Hatırlatıcı bulunamadı",
+        });
       }
 
       await reminder.update({
         active: false,
         status: "cancelled",
-        updated_by: client_id,
+        updated_by: user.id,
       });
 
       logger.info(`Hatırlatıcı silindi: ${id}`);
-      res.json({ message: "Hatırlatıcı başarıyla silindi" });
+      res.json({
+        status: true,
+        message: "Hatırlatıcı başarıyla silindi",
+      });
     } catch (error) {
       logger.error(`Hatırlatıcı silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Hatırlatıcı silinemedi" });
+      res.status(500).json({
+        status: false,
+        message: "Hatırlatıcı silinemedi",
+        error: error.message,
+      });
     }
   }
 
@@ -128,26 +219,45 @@ class ReminderController {
   async completeReminder(req, res) {
     try {
       const { id } = req.params;
-      const client_id = req.user.id;
+      const user = req.user;
+
+      // Sadece danışanlar hatırlatıcı tamamlayabilir
+      if (user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Sadece danışanlar hatırlatıcı tamamlayabilir",
+        });
+      }
 
       const reminder = await Reminder.findOne({
-        where: { id, client_id },
+        where: { id, client_id: user.id },
       });
 
       if (!reminder) {
-        return res.status(404).json({ error: "Hatırlatıcı bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Hatırlatıcı bulunamadı",
+        });
       }
 
       await reminder.update({
         status: "completed",
-        updated_by: client_id,
+        updated_by: user.id,
       });
 
       logger.info(`Hatırlatıcı tamamlandı: ${id}`);
-      res.json({ message: "Hatırlatıcı başarıyla tamamlandı" });
+      res.json({
+        status: true,
+        message: "Hatırlatıcı başarıyla tamamlandı",
+        data: reminder,
+      });
     } catch (error) {
       logger.error(`Hatırlatıcı tamamlama hatası: ${error.message}`);
-      res.status(500).json({ error: "Hatırlatıcı tamamlanamadı" });
+      res.status(500).json({
+        status: false,
+        message: "Hatırlatıcı tamamlanamadı",
+        error: error.message,
+      });
     }
   }
 }

@@ -1,8 +1,9 @@
-const { DataTypes } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const IterationMeditation = sequelize.define(
-  "IterationMeditation",
+class IterationMeditation extends Model {}
+
+IterationMeditation.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -16,30 +17,25 @@ const IterationMeditation = sequelize.define(
         model: "psychologists",
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     background_sound_url: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    vocalization_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    sound_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    content_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+    status: {
+      type: DataTypes.ENUM("active", "inactive"),
+      allowNull: false,
+      defaultValue: "active",
     },
     create_by: {
       type: DataTypes.INTEGER,
@@ -67,25 +63,13 @@ const IterationMeditation = sequelize.define(
     },
   },
   {
+    sequelize,
+    modelName: "IterationMeditation",
     tableName: "iteration_meditations",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
-
-IterationMeditation.associate = function (models) {
-  // One-to-Many relationship with IterationMeditationItem
-  IterationMeditation.hasMany(models.IterationMeditationItem, {
-    foreignKey: "meditation_id",
-    as: "items",
-  });
-
-  // Belongs-to relationship with Psychologist
-  IterationMeditation.belongsTo(models.Psychologist, {
-    foreignKey: "psyc_id",
-    as: "psychologist",
-  });
-};
 
 module.exports = IterationMeditation;

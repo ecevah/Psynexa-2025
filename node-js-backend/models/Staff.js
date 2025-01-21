@@ -9,6 +9,11 @@ const Staff = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -47,8 +52,8 @@ const Staff = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+      type: DataTypes.ENUM("active", "inactive", "deleted"),
+      defaultValue: "active",
     },
     restrictions_id: {
       type: DataTypes.INTEGER,

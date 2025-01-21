@@ -13,6 +13,12 @@ module.exports = {
           model: "clients",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       content: {
         type: Sequelize.TEXT,
@@ -20,24 +26,15 @@ module.exports = {
       },
       date: {
         type: Sequelize.DATEONLY,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
+        allowNull: true,
       },
-      emotion: {
+      mood: {
         type: Sequelize.STRING,
         allowNull: true,
       },
       status: {
-        type: Sequelize.ENUM("active", "archived", "deleted"),
-        defaultValue: "active",
-      },
-      created_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
-      },
-      updated_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        type: Sequelize.ENUM("private", "shared_with_psychologist"),
+        defaultValue: "private",
       },
       created_by: {
         type: Sequelize.INTEGER,
@@ -46,6 +43,16 @@ module.exports = {
       updated_by: {
         type: Sequelize.INTEGER,
         allowNull: true,
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
     });
   },

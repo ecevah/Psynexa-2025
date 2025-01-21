@@ -21,6 +21,15 @@ const BreathingExercise = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    content_type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "text",
+    },
+    background_sound: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
@@ -33,6 +42,14 @@ const BreathingExercise = sequelize.define(
     status: {
       type: DataTypes.ENUM("active", "inactive"),
       defaultValue: "active",
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,

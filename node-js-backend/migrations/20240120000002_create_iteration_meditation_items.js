@@ -15,6 +15,7 @@ module.exports = {
           model: "iteration_meditations",
           key: "id",
         },
+        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       title: {
@@ -33,6 +34,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      background_sound_url: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      vocalization_url: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      sound_url: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      content_url: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       order: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -45,6 +62,11 @@ module.exports = {
       content_type: {
         type: Sequelize.ENUM("text", "audio", "video", "image"),
         allowNull: false,
+      },
+      status: {
+        type: Sequelize.ENUM("active", "inactive"),
+        allowNull: false,
+        defaultValue: "active",
       },
       create_by: {
         type: Sequelize.INTEGER,

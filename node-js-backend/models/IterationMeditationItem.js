@@ -1,8 +1,9 @@
-const { DataTypes } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const IterationMeditationItem = sequelize.define(
-  "IterationMeditationItem",
+class IterationMeditationItem extends Model {}
+
+IterationMeditationItem.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -16,6 +17,8 @@ const IterationMeditationItem = sequelize.define(
         model: "iteration_meditations",
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     title: {
       type: DataTypes.STRING,
@@ -62,6 +65,11 @@ const IterationMeditationItem = sequelize.define(
       type: DataTypes.ENUM("text", "audio", "video", "image"),
       allowNull: false,
     },
+    status: {
+      type: DataTypes.ENUM("active", "inactive"),
+      allowNull: false,
+      defaultValue: "active",
+    },
     create_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -88,19 +96,13 @@ const IterationMeditationItem = sequelize.define(
     },
   },
   {
+    sequelize,
+    modelName: "IterationMeditationItem",
     tableName: "iteration_meditation_items",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
-
-IterationMeditationItem.associate = function (models) {
-  // Many-to-One relationship with IterationMeditation
-  IterationMeditationItem.belongsTo(models.IterationMeditation, {
-    foreignKey: "meditation_id",
-    as: "meditation",
-  });
-};
 
 module.exports = IterationMeditationItem;

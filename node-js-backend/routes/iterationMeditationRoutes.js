@@ -4,8 +4,26 @@ const IterationMeditationController = require("../controllers/IterationMeditatio
 const auth = require("../middleware/auth");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
-// Multer configuration for file uploads
+// Yükleme dizinlerini oluştur
+const createUploadDirs = () => {
+  const dirs = [
+    "public/audios",
+    "public/videos",
+    "public/images",
+    "public/uploads",
+  ];
+  dirs.forEach((dir) => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  });
+};
+
+createUploadDirs();
+
+// Multer yapılandırması
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let uploadPath = "public/";
@@ -41,7 +59,36 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+  if (
+    file.fieldname === "background_sound" ||
+    file.fieldname.startsWith("item_description_sound_")
+  ) {
+    if (!file.mimetype.startsWith("audio/")) {
+      return cb(new Error("Only audio files are allowed!"), false);
+    }
+  } else if (file.fieldname.startsWith("item_media_")) {
+    const contentType = req.body.content_type;
+    if (contentType === "audio" && !file.mimetype.startsWith("audio/")) {
+      return cb(new Error("Invalid audio file type!"), false);
+    }
+    if (contentType === "video" && !file.mimetype.startsWith("video/")) {
+      return cb(new Error("Invalid video file type!"), false);
+    }
+    if (contentType === "image" && !file.mimetype.startsWith("image/")) {
+      return cb(new Error("Invalid image file type!"), false);
+    }
+  }
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB limit
+  },
+});
 
 // Routes
 router.post("/", auth, upload.any(), IterationMeditationController.create);

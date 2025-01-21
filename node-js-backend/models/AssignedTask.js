@@ -1,8 +1,9 @@
-const { DataTypes } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const AssignedTask = sequelize.define(
-  "AssignedTask",
+class AssignedTask extends Model {}
+
+AssignedTask.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -33,11 +34,43 @@ const AssignedTask = sequelize.define(
         key: "id",
       },
     },
-    content_id: {
+    iteration_meditation_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "series_contents",
+        model: "iteration_meditations",
+        key: "id",
+      },
+    },
+    breathing_exercise_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "breathing_exercises",
+        key: "id",
+      },
+    },
+    blog_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "blogs",
+        key: "id",
+      },
+    },
+    article_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "articles",
+        key: "id",
+      },
+    },
+    test_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "tests",
         key: "id",
       },
     },
@@ -49,13 +82,33 @@ const AssignedTask = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    due_date: {
+    start_date: {
       type: DataTypes.DATE,
+      allowNull: false,
+    },
+    finish_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    frequency: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    frequency_type: {
+      type: DataTypes.ENUM("daily", "weekly", "monthly"),
       allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM("pending", "completed", "overdue"),
-      defaultValue: "pending",
+      type: DataTypes.ENUM("active", "completed", "cancelled", "overdue"),
+      defaultValue: "active",
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -67,38 +120,13 @@ const AssignedTask = sequelize.define(
     },
   },
   {
+    sequelize,
+    modelName: "AssignedTask",
     tableName: "assigned_tasks",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
-
-// İlişkileri tanımla
-AssignedTask.associate = function (models) {
-  // One-to-One ilişkisi: AssignedTask -> Client
-  AssignedTask.belongsTo(models.Client, {
-    foreignKey: "client_id",
-    as: "client",
-  });
-
-  // One-to-One ilişkisi: AssignedTask -> Psychologist
-  AssignedTask.belongsTo(models.Psychologist, {
-    foreignKey: "psyc_id",
-    as: "psychologist",
-  });
-
-  // One-to-One ilişkisi: AssignedTask -> Meditation
-  AssignedTask.belongsTo(models.Meditation, {
-    foreignKey: "meditation_id",
-    as: "meditation",
-  });
-
-  // One-to-One ilişkisi: AssignedTask -> SeriesContent
-  AssignedTask.belongsTo(models.SeriesContent, {
-    foreignKey: "content_id",
-    as: "content",
-  });
-};
 
 module.exports = AssignedTask;

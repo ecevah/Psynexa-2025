@@ -12,6 +12,45 @@ const auth = require("../middleware/auth");
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Reservation:
+ *       type: object
+ *       required:
+ *         - psyc_id
+ *         - date
+ *         - start_time
+ *         - end_time
+ *       properties:
+ *         id:
+ *           type: integer
+ *         client_id:
+ *           type: integer
+ *         psyc_id:
+ *           type: integer
+ *         payment_id:
+ *           type: integer
+ *         date:
+ *           type: string
+ *           format: date
+ *         start_time:
+ *           type: string
+ *           format: time
+ *         end_time:
+ *           type: string
+ *           format: time
+ *         status:
+ *           type: string
+ *           enum: [pending, confirmed, cancelled, completed]
+ *         pay_status:
+ *           type: string
+ *           enum: [pending, paid, refunded, cancelled]
+ *         description:
+ *           type: string
+ */
+
+/**
+ * @swagger
  * /api/reservations:
  *   post:
  *     summary: Create a new reservation
@@ -27,14 +66,18 @@ const auth = require("../middleware/auth");
  *             required:
  *               - psyc_id
  *               - date
- *               - time
+ *               - start_time
+ *               - end_time
  *             properties:
  *               psyc_id:
  *                 type: integer
  *               date:
  *                 type: string
  *                 format: date
- *               time:
+ *               start_time:
+ *                 type: string
+ *                 format: time
+ *               end_time:
  *                 type: string
  *                 format: time
  *               description:
@@ -42,6 +85,10 @@ const auth = require("../middleware/auth");
  *     responses:
  *       201:
  *         description: Reservation created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Reservation'
  */
 router.post("/", auth, ReservationController.createReservation);
 
@@ -56,6 +103,12 @@ router.post("/", auth, ReservationController.createReservation);
  *     responses:
  *       200:
  *         description: List of reservations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Reservation'
  */
 router.get(
   "/psychologist",
@@ -74,6 +127,12 @@ router.get(
  *     responses:
  *       200:
  *         description: List of reservations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Reservation'
  */
 router.get("/client", auth, ReservationController.getClientReservations);
 
@@ -94,6 +153,10 @@ router.get("/client", auth, ReservationController.getClientReservations);
  *     responses:
  *       200:
  *         description: Reservation details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Reservation'
  */
 router.get("/:id", auth, ReservationController.getReservation);
 
@@ -118,30 +181,37 @@ router.get("/:id", auth, ReservationController.getReservation);
  *           schema:
  *             type: object
  *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *               start_time:
+ *                 type: string
+ *                 format: time
+ *               end_time:
+ *                 type: string
+ *                 format: time
  *               status:
  *                 type: string
  *                 enum: [pending, confirmed, cancelled, completed]
  *               pay_status:
  *                 type: string
  *                 enum: [pending, paid, refunded, cancelled]
- *               date:
- *                 type: string
- *                 format: date
- *               time:
- *                 type: string
- *                 format: time
  *               description:
  *                 type: string
  *     responses:
  *       200:
  *         description: Reservation updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Reservation'
  */
 router.put("/:id", auth, ReservationController.updateReservation);
 
 /**
  * @swagger
  * /api/reservations/{id}/cancel:
- *   put:
+ *   post:
  *     summary: Cancel a reservation
  *     tags: [Reservations]
  *     security:
@@ -155,7 +225,16 @@ router.put("/:id", auth, ReservationController.updateReservation);
  *     responses:
  *       200:
  *         description: Reservation cancelled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
-router.put("/:id/cancel", auth, ReservationController.cancelReservation);
+router.post("/:id/cancel", auth, ReservationController.cancelReservation);
 
 module.exports = router;

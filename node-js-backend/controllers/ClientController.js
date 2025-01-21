@@ -1,4 +1,4 @@
-const { Client } = require("../models");
+const { Client, Package, Psychologist } = require("../models");
 const APIFeatures = require("../utils/APIFeatures");
 const logger = require("../config/logger");
 
@@ -6,21 +6,34 @@ class ClientController {
   // Tüm clientları getir
   async getAllClients(req, res) {
     try {
+      // Yetki kontrolü
+      if (!["staff", "psychologist"].includes(req.user.type)) {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz yok",
+        });
+      }
+
       const features = new APIFeatures(Client, req.query)
         .filter()
-        .search()
+        .search(["name", "surname", "email", "phone"])
         .sort()
         .limitFields()
         .paginate();
 
-      const result = await features.execute();
+      const clients = await features.execute();
 
-      res.json(result);
+      res.json({
+        status: true,
+        message: "Danışanlar başarıyla getirildi",
+        data: clients,
+      });
     } catch (error) {
-      logger.error(`Client listesi getirme hatası: ${error.message}`);
+      logger.error(`Client listesi hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Clientlar getirilirken bir hata oluştu",
+        status: false,
+        message: "Danışanlar alınamadı",
+        error: error.message,
       });
     }
   }
@@ -28,24 +41,57 @@ class ClientController {
   // Tek bir client getir
   async getClient(req, res) {
     try {
-      const client = await Client.findByPk(req.params.id);
+      const { id } = req.params;
+      const user = req.user;
+
+      // Yetki kontrolü
+      if (user.type === "client" && user.id !== parseInt(id)) {
+        return res.status(403).json({
+          status: false,
+          message: "Başka bir danışanın bilgilerini görüntüleyemezsiniz",
+        });
+      }
+
+      const client = await Client.findOne({
+        where: { id },
+        include: [
+          {
+            model: Package,
+            as: "package",
+            attributes: [
+              "id",
+              "name",
+              "description",
+              "session_count",
+              "status",
+            ],
+          },
+          {
+            model: Psychologist,
+            as: "psychologist",
+            attributes: ["id", "name", "surname", "email", "phone", "image"],
+          },
+        ],
+      });
 
       if (!client) {
         return res.status(404).json({
-          success: false,
-          error: "Client bulunamadı",
+          status: false,
+          message: "Danışan bulunamadı",
         });
       }
 
       res.json({
-        success: true,
+        status: true,
+        message: "Danışan başarıyla getirildi",
         data: client,
       });
     } catch (error) {
       logger.error(`Client getirme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Client getirilirken bir hata oluştu",
+        status: false,
+        message: "Danışan bilgileri alınamadı",
+        error: error.message,
       });
     }
   }
@@ -72,55 +118,105 @@ class ClientController {
   // Client güncelle
   async updateClient(req, res) {
     try {
-      const client = await Client.findByPk(req.params.id);
+      const { id } = req.params;
+      const user = req.user;
 
-      if (!client) {
-        return res.status(404).json({
-          success: false,
-          error: "Client bulunamadı",
+      // Yetki kontrolü
+      if (user.type === "client" && user.id !== parseInt(id)) {
+        return res.status(403).json({
+          status: false,
+          message: "Başka bir danışanın bilgilerini güncelleyemezsiniz",
         });
       }
 
-      await client.update(req.body);
+      const client = await Client.findByPk(id);
+
+      if (!client) {
+        return res.status(404).json({
+          status: false,
+          message: "Danışan bulunamadı",
+        });
+      }
+
+      // Staff ve psikolog sadece belirli alanları güncelleyebilir
+      const allowedFields = {
+        client: [
+          "name",
+          "surname",
+          "email",
+          "phone",
+          "date_of_birth",
+          "sex",
+          "photo",
+        ],
+        staff: ["status", "package_id", "psyc_id", "casual_mode"],
+        psychologist: ["status", "casual_mode"],
+      };
+
+      const updateData = {};
+      const userType = user.type === "client" ? "client" : user.type;
+
+      Object.keys(req.body).forEach((field) => {
+        if (allowedFields[userType].includes(field)) {
+          updateData[field] = req.body[field];
+        }
+      });
+
+      await client.update(updateData);
 
       logger.info(`Client güncellendi: ${client.email}`);
       res.json({
-        success: true,
+        status: true,
+        message: "Danışan başarıyla güncellendi",
         data: client,
       });
     } catch (error) {
       logger.error(`Client güncelleme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Client güncellenirken bir hata oluştu",
+        status: false,
+        message: "Danışan güncellenemedi",
+        error: error.message,
       });
     }
   }
 
-  // Client sil
+  // Client sil (Soft delete)
   async deleteClient(req, res) {
     try {
-      const client = await Client.findByPk(req.params.id);
+      const { id } = req.params;
+      const user = req.user;
 
-      if (!client) {
-        return res.status(404).json({
-          success: false,
-          error: "Client bulunamadı",
+      // Yetki kontrolü - sadece staff silebilir
+      if (user.type !== "staff") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz yok",
         });
       }
 
-      await client.destroy();
+      const client = await Client.findByPk(id);
+
+      if (!client) {
+        return res.status(404).json({
+          status: false,
+          message: "Danışan bulunamadı",
+        });
+      }
+
+      // Soft delete - status'u inactive yap
+      await client.update({ status: "inactive" });
 
       logger.info(`Client silindi: ${client.email}`);
       res.json({
-        success: true,
-        message: "Client başarıyla silindi",
+        status: true,
+        message: "Danışan başarıyla silindi",
       });
     } catch (error) {
       logger.error(`Client silme hatası: ${error.message}`);
       res.status(500).json({
-        success: false,
-        error: "Client silinirken bir hata oluştu",
+        status: false,
+        message: "Danışan silinemedi",
+        error: error.message,
       });
     }
   }

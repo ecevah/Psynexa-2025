@@ -21,17 +21,33 @@ const Reminder = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
+    content: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
-    reminder_date: {
+    reminder_time: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    frequency: {
+      type: DataTypes.ENUM("once", "daily", "weekly", "monthly"),
+      defaultValue: "once",
     },
     status: {
       type: DataTypes.ENUM("pending", "completed", "cancelled"),
       defaultValue: "pending",
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,

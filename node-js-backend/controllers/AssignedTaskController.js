@@ -1,23 +1,31 @@
-const {
-  AssignedTask,
-  AssignedTaskResponse,
-  Client,
-  Psychologist,
-} = require("../models");
+const AssignedTask = require("../models/AssignedTask");
+const AssignedTaskResponse = require("../models/AssignedTaskResponse");
+const Client = require("../models/Client");
+const Psychologist = require("../models/Psychologist");
 const logger = require("../config/logger");
 
 class AssignedTaskController {
   // Yeni görev ata
   async createAssignedTask(req, res) {
     try {
+      // Sadece psikologlar görev atayabilir
+      if (req.user.type !== "psychologist") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz bulunmamaktadır",
+        });
+      }
+
       const psyc_id = req.user.id;
       const {
         client_id,
-        iterations_mediation_id,
-        mediation_id,
+        title,
+        description,
+        iteration_meditation_id,
+        meditation_id,
         blog_id,
         article_id,
-        breathing_exercises_id,
+        breathing_exercise_id,
         test_id,
         start_date,
         finish_date,
@@ -25,14 +33,31 @@ class AssignedTaskController {
         frequency_type,
       } = req.body;
 
+      // En az bir içerik türü seçilmeli
+      if (
+        !iteration_meditation_id &&
+        !meditation_id &&
+        !blog_id &&
+        !article_id &&
+        !breathing_exercise_id &&
+        !test_id
+      ) {
+        return res.status(400).json({
+          status: false,
+          message: "En az bir içerik türü seçilmelidir",
+        });
+      }
+
       const task = await AssignedTask.create({
         client_id,
         psyc_id,
-        iterations_mediation_id,
-        mediation_id,
+        title,
+        description,
+        iteration_meditation_id,
+        meditation_id,
         blog_id,
         article_id,
-        breathing_exercises_id,
+        breathing_exercise_id,
         test_id,
         start_date,
         finish_date,
@@ -42,62 +67,106 @@ class AssignedTaskController {
       });
 
       logger.info(`Yeni görev atandı: ${task.id}`);
-      res.status(201).json(task);
+      return res.status(201).json({
+        status: true,
+        message: "Görev başarıyla oluşturuldu",
+        data: task,
+      });
     } catch (error) {
       logger.error(`Görev atama hatası: ${error.message}`);
-      res.status(500).json({ error: "Görev atanamadı" });
+      return res.status(500).json({
+        status: false,
+        message: "Görev oluşturulurken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
   // Danışanın görevlerini getir
   async getClientTasks(req, res) {
     try {
+      // Sadece danışanlar kendi görevlerini görebilir
+      if (req.user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz bulunmamaktadır",
+        });
+      }
+
       const client_id = req.user.id;
       const tasks = await AssignedTask.findAll({
-        where: { client_id, status: "active" },
+        where: { client_id, status: ["active", "completed", "overdue"] },
         include: [
           {
             model: Psychologist,
-            attributes: ["id", "name"],
+            attributes: ["id", "name", "surname"],
+            as: "psychologist",
           },
           {
             model: AssignedTaskResponse,
+            as: "responses",
             attributes: ["id", "answer", "status", "created_at"],
           },
         ],
         order: [["start_date", "DESC"]],
       });
 
-      res.json(tasks);
+      return res.status(200).json({
+        status: true,
+        message: "Görevler başarıyla getirildi",
+        data: tasks,
+      });
     } catch (error) {
       logger.error(`Görev listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Görevler alınamadı" });
+      return res.status(500).json({
+        status: false,
+        message: "Görevler getirilirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
   // Psikoloğun atadığı görevleri getir
   async getPsychologistTasks(req, res) {
     try {
+      // Sadece psikologlar atadıkları görevleri görebilir
+      if (req.user.type !== "psychologist") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz bulunmamaktadır",
+        });
+      }
+
       const psyc_id = req.user.id;
       const tasks = await AssignedTask.findAll({
         where: { psyc_id },
         include: [
           {
             model: Client,
-            attributes: ["id", "name"],
+            attributes: ["id", "name", "surname"],
+            as: "client",
           },
           {
             model: AssignedTaskResponse,
+            as: "responses",
             attributes: ["id", "answer", "status", "created_at"],
           },
         ],
         order: [["created_at", "DESC"]],
       });
 
-      res.json(tasks);
+      return res.status(200).json({
+        status: true,
+        message: "Görevler başarıyla getirildi",
+        data: tasks,
+      });
     } catch (error) {
       logger.error(`Görev listesi hatası: ${error.message}`);
-      res.status(500).json({ error: "Görevler alınamadı" });
+      return res.status(500).json({
+        status: false,
+        message: "Görevler getirilirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
@@ -118,44 +187,76 @@ class AssignedTaskController {
         include: [
           {
             model: Client,
-            attributes: ["id", "name"],
+            attributes: ["id", "name", "surname"],
+            as: "client",
           },
           {
             model: Psychologist,
-            attributes: ["id", "name"],
+            attributes: ["id", "name", "surname"],
+            as: "psychologist",
           },
           {
             model: AssignedTaskResponse,
+            as: "responses",
             attributes: ["id", "answer", "status", "created_at"],
           },
         ],
       });
 
       if (!task) {
-        return res.status(404).json({ error: "Görev bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Görev bulunamadı",
+        });
       }
 
-      res.json(task);
+      return res.status(200).json({
+        status: true,
+        message: "Görev başarıyla getirildi",
+        data: task,
+      });
     } catch (error) {
       logger.error(`Görev detayı hatası: ${error.message}`);
-      res.status(500).json({ error: "Görev detayı alınamadı" });
+      return res.status(500).json({
+        status: false,
+        message: "Görev detayı getirilirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
   // Görev güncelle
   async updateAssignedTask(req, res) {
     try {
+      // Sadece psikologlar görev güncelleyebilir
+      if (req.user.type !== "psychologist") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz bulunmamaktadır",
+        });
+      }
+
       const { id } = req.params;
       const psyc_id = req.user.id;
-      const { start_date, finish_date, frequency, frequency_type, status } =
-        req.body;
+      const {
+        start_date,
+        finish_date,
+        frequency,
+        frequency_type,
+        status,
+        title,
+        description,
+      } = req.body;
 
       const task = await AssignedTask.findOne({
         where: { id, psyc_id },
       });
 
       if (!task) {
-        return res.status(404).json({ error: "Görev bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Görev bulunamadı",
+        });
       }
 
       await task.update({
@@ -164,20 +265,38 @@ class AssignedTaskController {
         frequency,
         frequency_type,
         status,
+        title,
+        description,
         updated_by: psyc_id,
       });
 
       logger.info(`Görev güncellendi: ${id}`);
-      res.json(task);
+      return res.status(200).json({
+        status: true,
+        message: "Görev başarıyla güncellendi",
+        data: task,
+      });
     } catch (error) {
       logger.error(`Görev güncelleme hatası: ${error.message}`);
-      res.status(500).json({ error: "Görev güncellenemedi" });
+      return res.status(500).json({
+        status: false,
+        message: "Görev güncellenirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
   // Görev sil
   async deleteAssignedTask(req, res) {
     try {
+      // Sadece psikologlar görev silebilir
+      if (req.user.type !== "psychologist") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz bulunmamaktadır",
+        });
+      }
+
       const { id } = req.params;
       const psyc_id = req.user.id;
 
@@ -186,7 +305,10 @@ class AssignedTaskController {
       });
 
       if (!task) {
-        return res.status(404).json({ error: "Görev bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Görev bulunamadı",
+        });
       }
 
       await task.update({
@@ -195,26 +317,44 @@ class AssignedTaskController {
       });
 
       logger.info(`Görev silindi: ${id}`);
-      res.json({ message: "Görev başarıyla silindi" });
+      return res.status(200).json({
+        status: true,
+        message: "Görev başarıyla silindi",
+      });
     } catch (error) {
       logger.error(`Görev silme hatası: ${error.message}`);
-      res.status(500).json({ error: "Görev silinemedi" });
+      return res.status(500).json({
+        status: false,
+        message: "Görev silinirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
   // Göreve yanıt ver
   async respondToTask(req, res) {
     try {
+      // Sadece danışanlar göreve yanıt verebilir
+      if (req.user.type !== "client") {
+        return res.status(403).json({
+          status: false,
+          message: "Bu işlem için yetkiniz bulunmamaktadır",
+        });
+      }
+
       const { id } = req.params;
       const client_id = req.user.id;
       const { answer } = req.body;
 
       const task = await AssignedTask.findOne({
-        where: { id, client_id },
+        where: { id, client_id, status: "active" },
       });
 
       if (!task) {
-        return res.status(404).json({ error: "Görev bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Görev bulunamadı veya tamamlanmış",
+        });
       }
 
       const response = await AssignedTaskResponse.create({
@@ -225,10 +365,18 @@ class AssignedTaskController {
       });
 
       logger.info(`Göreve yanıt verildi: ${response.id}`);
-      res.status(201).json(response);
+      return res.status(201).json({
+        status: true,
+        message: "Yanıt başarıyla gönderildi",
+        data: response,
+      });
     } catch (error) {
       logger.error(`Görev yanıtı hatası: ${error.message}`);
-      res.status(500).json({ error: "Göreve yanıt verilemedi" });
+      return res.status(500).json({
+        status: false,
+        message: "Yanıt gönderilirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 
@@ -247,7 +395,10 @@ class AssignedTaskController {
       });
 
       if (!task) {
-        return res.status(404).json({ error: "Görev bulunamadı" });
+        return res.status(404).json({
+          status: false,
+          message: "Görev bulunamadı",
+        });
       }
 
       const responses = await AssignedTaskResponse.findAll({
@@ -255,10 +406,18 @@ class AssignedTaskController {
         order: [["created_at", "DESC"]],
       });
 
-      res.json(responses);
+      return res.status(200).json({
+        status: true,
+        message: "Yanıtlar başarıyla getirildi",
+        data: responses,
+      });
     } catch (error) {
       logger.error(`Görev yanıtları hatası: ${error.message}`);
-      res.status(500).json({ error: "Görev yanıtları alınamadı" });
+      return res.status(500).json({
+        status: false,
+        message: "Yanıtlar getirilirken bir hata oluştu",
+        error: error.message,
+      });
     }
   }
 }

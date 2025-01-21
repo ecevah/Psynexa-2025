@@ -13,13 +13,29 @@ class IterationMeditationItemController {
       const create_by = req.user?.id;
       const create_role = req.user?.type;
 
-      // Check if meditation exists
+      if (create_role !== "psychologist") {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "Only psychologists can create meditation items",
+        });
+      }
+
+      // Check if meditation exists and belongs to the psychologist
       const meditation = await IterationMeditation.findByPk(meditation_id);
       if (!meditation) {
         await transaction.rollback();
         return res.status(404).json({
           status: false,
           message: "Iteration meditation not found",
+        });
+      }
+
+      if (meditation.psyc_id !== req.user?.id) {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "You can only add items to your own meditations",
         });
       }
 
@@ -149,12 +165,36 @@ class IterationMeditationItemController {
       const update_by = req.user?.id;
       const update_role = req.user?.type;
 
-      const item = await IterationMeditationItem.findByPk(id);
+      if (update_role !== "psychologist") {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "Only psychologists can update meditation items",
+        });
+      }
+
+      const item = await IterationMeditationItem.findByPk(id, {
+        include: [
+          {
+            model: IterationMeditation,
+            as: "meditation",
+          },
+        ],
+      });
+
       if (!item) {
         await transaction.rollback();
         return res.status(404).json({
           status: false,
           message: "Iteration meditation item not found",
+        });
+      }
+
+      if (item.meditation.psyc_id !== req.user?.id) {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "You can only update items from your own meditations",
         });
       }
 
@@ -245,12 +285,36 @@ class IterationMeditationItemController {
     try {
       const { id } = req.params;
 
-      const item = await IterationMeditationItem.findByPk(id);
+      if (req.user?.type !== "psychologist") {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "Only psychologists can delete meditation items",
+        });
+      }
+
+      const item = await IterationMeditationItem.findByPk(id, {
+        include: [
+          {
+            model: IterationMeditation,
+            as: "meditation",
+          },
+        ],
+      });
+
       if (!item) {
         await transaction.rollback();
         return res.status(404).json({
           status: false,
           message: "Iteration meditation item not found",
+        });
+      }
+
+      if (item.meditation.psyc_id !== req.user?.id) {
+        await transaction.rollback();
+        return res.status(403).json({
+          status: false,
+          message: "You can only delete items from your own meditations",
         });
       }
 

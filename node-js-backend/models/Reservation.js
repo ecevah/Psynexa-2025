@@ -27,14 +27,14 @@ const Reservation = sequelize.define(
     },
     payment_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "payments",
         key: "id",
       },
     },
     date: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     start_time: {

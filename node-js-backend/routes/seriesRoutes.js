@@ -25,31 +25,33 @@ const auth = require("../middleware/auth");
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - type
+ *               - title
  *             properties:
- *               name:
+ *               title:
  *                 type: string
- *               type:
+ *               description:
  *                 type: string
  *               contents:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     iterations_mediation_id:
+ *                     meditation_iteration_id:
  *                       type: integer
- *                     mediation_id:
+ *                     meditation_id:
  *                       type: integer
  *                     blog_id:
  *                       type: integer
  *                     article_id:
  *                       type: integer
- *                     breathing_exercises_id:
+ *                     breathing_exercise_id:
  *                       type: integer
- *                     type:
+ *                     title:
  *                       type: string
- *                       enum: [meditation, blog, article, breathing]
+ *                     description:
+ *                       type: string
+ *                     order:
+ *                       type: integer
  *     responses:
  *       201:
  *         description: Series created successfully
@@ -111,31 +113,34 @@ router.get("/:id", auth, SeriesController.getSeries);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               title:
  *                 type: string
- *               type:
+ *               description:
  *                 type: string
  *               status:
  *                 type: string
- *                 enum: [active, inactive]
+ *                 enum: [active, completed, archived]
  *               contents:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     iterations_mediation_id:
+ *                     meditation_iteration_id:
  *                       type: integer
- *                     mediation_id:
+ *                     meditation_id:
  *                       type: integer
  *                     blog_id:
  *                       type: integer
  *                     article_id:
  *                       type: integer
- *                     breathing_exercises_id:
+ *                     breathing_exercise_id:
  *                       type: integer
- *                     type:
+ *                     title:
  *                       type: string
- *                       enum: [meditation, blog, article, breathing]
+ *                     description:
+ *                       type: string
+ *                     order:
+ *                       type: integer
  *     responses:
  *       200:
  *         description: Series updated successfully
@@ -146,7 +151,7 @@ router.put("/:id", auth, SeriesController.updateSeries);
  * @swagger
  * /api/series/{id}:
  *   delete:
- *     summary: Delete a series
+ *     summary: Archive a series
  *     tags: [Series]
  *     security:
  *       - BearerAuth: []
@@ -158,7 +163,7 @@ router.put("/:id", auth, SeriesController.updateSeries);
  *           type: integer
  *     responses:
  *       200:
- *         description: Series deleted successfully
+ *         description: Series archived successfully
  */
 router.delete("/:id", auth, SeriesController.deleteSeries);
 
@@ -182,22 +187,23 @@ router.delete("/:id", auth, SeriesController.deleteSeries);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - type
  *             properties:
- *               iterations_mediation_id:
+ *               meditation_iteration_id:
  *                 type: integer
- *               mediation_id:
+ *               meditation_id:
  *                 type: integer
  *               blog_id:
  *                 type: integer
  *               article_id:
  *                 type: integer
- *               breathing_exercises_id:
+ *               breathing_exercise_id:
  *                 type: integer
- *               type:
+ *               title:
  *                 type: string
- *                 enum: [meditation, blog, article, breathing]
+ *               description:
+ *                 type: string
+ *               order:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Content added successfully

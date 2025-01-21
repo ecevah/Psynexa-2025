@@ -53,7 +53,7 @@ const Favorite = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "meditation_iterations",
+        model: "iteration_meditations",
         key: "id",
       },
     },
