@@ -1,0 +1,10 @@
+{
+    "HomePage": {
+      "title": "Merhaba dünya!",
+      "about": "Hakkımızda sayfasına git"
+    },
+    "DashboardPage": {
+      "title": "Kontrol Paneli",
+      "about": "Hakkımızda sayfasına git"
+    }
+}
