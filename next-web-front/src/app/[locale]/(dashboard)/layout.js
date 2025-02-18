@@ -1,9 +1,12 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
-import { headers } from 'next/headers';
-import { getSiteData } from '@/lib/siteData';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import { headers } from "next/headers";
+import { getSiteData } from "@/lib/siteData";
+import SidebarMenu from "@/components/call-center/sidebar-menu/sidebar-menu";
+import Header from "@/components/call-center/header/header";
+import Breadcrumb from "@/components/call-center/breadcrumb/breadcrumb";
 
 export default async function DashboardLayout({ children, params }) {
   const { locale } = await params;
@@ -13,15 +16,24 @@ export default async function DashboardLayout({ children, params }) {
   }
 
   const headersList = await headers();
-  const domain = headersList.get('host');
+  const domain = headersList.get("host");
 
   const data = await getSiteData(domain);
   const messages = await getMessages();
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <div data-locale={locale} className='p-[24px]'>
-        {children}
+      <div data-locale={locale} className="p-[24px]">
+        <div className="flex flex-row w-[calc(100vw-48px)] h-[calc(100vh-48px)]">
+          <SidebarMenu />
+          <div className="flex flex-col w-full h-full">
+            <Header />
+            <div className="mt-[20px] mb-[16px]">
+              <Breadcrumb />
+            </div>
+            {children}
+          </div>
+        </div>
       </div>
     </NextIntlClientProvider>
   );

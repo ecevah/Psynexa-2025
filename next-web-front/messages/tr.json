@@ -1,10 +1,69 @@
 {
-    "HomePage": {
-      "title": "Merhaba dünya!",
-      "about": "Hakkımızda sayfasına git"
+  "Template": {
+    "thisMonth": "Bu Ay",
+    "allTime": "Tüm Zamanlar",
+    "lastWeek": "Geçen Hafta",
+    "lastMonth": "Geçen Ay",
+    "lastYear": "Geçen Yıl"
+  },
+  "DashboardPage": {
+    "clientReviewNeeds": "Müşteri Gözden Geçirme İhtiyaçları",
+    "mySchedule": "Takvimim",
+    
+    "header": {
+      "morning": "Günaydın",
+      "afternoon": "İyi günler",
+      "evening": "İyi akşamlar",
+      "search": "Ara",
+      "message": "Mesaj",
+      "notification": "Bildirim",
+      "profile": "Profil"
     },
-    "DashboardPage": {
-      "title": "Kontrol Paneli",
-      "about": "Hakkımızda sayfasına git"
+    "statistics": {
+      "totalUsers": "Toplam Kullanıcı",
+      "activeClients": "Aktif Müşteriler",
+      "monitoredUsers": "İzlenen Kullanıcılar",
+      "totalPatients": "Toplam Hasta"
+    },
+    "patientTable": {
+      "patient": "Hasta",
+      "recentVisit": "Son Ziyaret",
+      "streak": "Süre",
+      "status": "Durum",
+      "statistics": "İstatistikler"
     }
+  },
+  "SidebarMenu": {
+    "items": {
+      "dashboard": {
+        "text": "Kontrol Paneli",
+        "icon": "/call-center/aside-icon.svg"
+      },
+      "clients": {
+        "text": "Müşteriler",
+        "icon": "/call-center/3-User.svg"
+      }
+    },
+    "bottom-items": {
+      "support": {
+        "text": "Destek",
+        "icon": "/call-center/hugeicons_customer-support.svg"
+      },
+      "logout": {
+        "text": "Çıkış Yap",
+        "icon": "/call-center/logout.svg"
+      }
+    }
+  },
+  "Calendar": {
+    "mySchedule": "Programım",
+    "todayTasks": "Bugünün Görevleri",
+    "createEvent": {
+      "title": "Etkinlik Oluştur",
+      "eventTitle": "Etkinlik Başlığı",
+      "description": "Açıklama",
+      "selectTime": "Saat Seçin",
+      "save": "Kaydet"
+    }
+  }
 }

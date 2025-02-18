@@ -1,5 +1,6 @@
 import { Urbanist } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/context/providers";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -16,11 +17,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+          @import
+          url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
         </style>
       </head>
       <body className={`${urbanist.variable} antialiased`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

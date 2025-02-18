@@ -1,10 +1,73 @@
 {
-    "HomePage": {
-      "title": "Hello world!",
-      "about": "Go to the about page"
+    "Template": {
+      "thisMonth": "This month",
+      "allTime": "All time",
+      "lastWeek": "Last week",
+      "lastMonth": "Last month",
+      "lastYear": "Last year"
     },
     "DashboardPage": {
-      "title": "Dashboard",
-      "about": "Go to the about page"
+      "clientReviewNeeds": "Client Review Needs",
+      "mySchedule": "My Schedule",
+      
+      "header": {
+        "morning": "Good morning",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening",
+        "search": "Search",
+        "message": "Message",
+        "notification": "Notification",
+        "profile": "Profile"
+      },
+      "statistics": {
+        "totalUsers": "Total Users",
+        "activeClients": "Active Clients",
+        "monitoredUsers": "Monitored Users",
+        "totalPatients": "Total Patients"
+      },
+      "patientTable": {
+        "patient": "Patient",
+        "recentVisit": "Recent Visit",
+        "streak": "Streak",
+        "status": "Status",
+        "statistics": "Statistics"
+      }
+    },
+    "SidebarMenu": {
+      "items": {
+        "dashboard": {
+          "text": "Dashboard",
+          "icon": "/call-center/aside-icon.svg",
+          "link": "/dashboard"
+        },
+        "clients": {
+          "text": "Clients",
+          "icon": "/call-center/3-User.svg",
+          "link": "/clients"
+        }
+      },
+      "bottom-items": {
+        "support": {
+          "text": "Support",
+          "icon": "/call-center/hugeicons_customer-support.svg",
+          "link": "/support"
+        },
+        "logout": {
+          "text": "Logout",
+          "icon": "/call-center/logout.svg",
+          "link": "/logout"
+        }
+      }
+    },
+    "Calendar": {
+      "mySchedule": "My Schedule",
+      "todayTasks": "Today Tasks",
+      "createEvent": {
+        "title": "Create Event",
+        "eventTitle": "Event Title",
+        "description": "Description",
+        "selectTime": "Select Time",
+        "save": "Save"
+      }
     }
 }
