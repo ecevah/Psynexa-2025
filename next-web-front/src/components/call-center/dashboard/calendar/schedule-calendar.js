@@ -204,7 +204,7 @@ export default function ScheduleCalendar({
 
   if (viewingDate) {
     return (
-      <div className="h-[536px] mx-auto w-full min-[1024px]:max-w-[500px] min-[1024px]:h-full min-[1024px]:max-w-none min-[1024px]:w-[364px] min-[1024px]:ml-[21px] bg-white rounded-[20px] p-[20px]">
+      <div className="h-full w-full bg-white rounded-[20px] p-[20px] flex flex-col">
         <EventListView
           events={events[viewingDate] || []}
           date={viewingDate}
@@ -217,7 +217,7 @@ export default function ScheduleCalendar({
 
   if (isCreatingEvent && selectedDate) {
     return (
-      <div className="h-[536px] mx-auto w-full min-[1024px]:max-w-[500px] min-[1024px]:h-full min-[1024px]:max-w-none min-[1024px]:w-[364px] min-[1024px]:ml-[21px] bg-white rounded-[20px] p-[20px]">
+      <div className="h-full w-full bg-white rounded-[20px] p-[20px] flex flex-col">
         <CreateEventForm
           selectedDate={selectedDate}
           formatDate={formatDate}
@@ -235,7 +235,7 @@ export default function ScheduleCalendar({
   }
 
   return (
-    <div className="h-[536px] mx-auto w-full min-[1024px]:max-w-[500px] min-[1024px]:h-full min-[1024px]:max-w-none min-[1024px]:w-[364px] min-[1024px]:ml-[21px] bg-white rounded-[20px] p-[20px]">
+    <div className="h-full w-full bg-white rounded-[20px] p-[20px] flex flex-col overflow-y-scroll events-container ">
       <CalendarHeader
         date={date}
         showMonthSelector={showMonthSelector}
@@ -251,10 +251,10 @@ export default function ScheduleCalendar({
         onTaskDateClick={handleTaskDateClick}
         onEmptyDateClick={handleEmptyDateClick}
       />
-      <div className="text-black font-semibold text-[20px] leading-[40px] mt-[4px]">
+      <div className="text-black font-semibold text-[20px] leading-[40px] mt-[10px]">
         {t("todayTasks")}
       </div>
-      <div className="flex flex-col w-full overflow-y-auto">
+      <div className="flex-1 flex flex-col w-full overflow-y-auto min-h-[72px] overflow-x-visible events-container ">
         {todayEvents.map((event) => (
           <TodayItem
             key={event.id}

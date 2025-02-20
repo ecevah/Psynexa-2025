@@ -64,6 +64,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
+app.set("trust proxy", true);
 app.use(passport.initialize());
 
 // Rate limiting

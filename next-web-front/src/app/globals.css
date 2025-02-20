@@ -41,17 +41,17 @@ body {
   text-decoration: none;
 }
 
-.react-calendar__tile {
+.react-calendar__month-view__days__day--neighboringMonth {
   padding: 0.75rem;
   background: none;
   text-align: center;
   line-height: 16px;
   font-size: 0.875rem;
   border-radius: 9999px;
-  width: 46px;
-  height: 46px;
-  max-width: 46px;
-  max-height: 46px;
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
   color: #0B1215;
 }
 

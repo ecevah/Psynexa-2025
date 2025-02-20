@@ -2,7 +2,14 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-const HeaderCircleIconButton = ({ icon, text, func }) => {
+const HeaderCircleIconButton = ({
+  icon,
+  text,
+  func,
+  style,
+  styleContainer,
+  labelIsVisible = true,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -11,8 +18,12 @@ const HeaderCircleIconButton = ({ icon, text, func }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={func}
+      style={styleContainer}
     >
-      <div className="flex items-center justify-center lg:w-[60px] lg:h-[60px] w-[40px] h-[40px] rounded-full bg-white hover:bg-gray-50">
+      <div
+        className="flex items-center justify-center lg:w-[60px] lg:h-[60px] w-[40px] h-[40px] rounded-full bg-white hover:bg-gray-50"
+        style={style}
+      >
         <Image
           src={icon}
           alt={text}
@@ -21,15 +32,17 @@ const HeaderCircleIconButton = ({ icon, text, func }) => {
           className="lg:max-w-[24px] lg:max-h-[24px] lg:min-w-[24px] lg:min-h-[24px] max-w-[16px] max-h-[16px] min-w-[16px] min-h-[16px]"
         />
       </div>
-      <span
-        className={`absolute transition-transform duration-300 -bottom-7 ${
-          isHovered
-            ? "translate-y-[-5px] opacity-100"
-            : "translate-y-[0px] opacity-0"
-        }`}
-      >
-        {text}
-      </span>
+      {labelIsVisible && (
+        <span
+          className={`absolute transition-transform duration-300 -bottom-7 ${
+            isHovered
+              ? "translate-y-[-5px] opacity-100"
+              : "translate-y-[0px] opacity-0"
+          }`}
+        >
+          {text}
+        </span>
+      )}
     </div>
   );
 };

@@ -65,5 +65,16 @@
       "selectTime": "Saat Seçin",
       "save": "Kaydet"
     }
+  },
+  "ClientPage": {
+    "table": {
+      "patient": "Hasta",
+      "recentVisit": "Son Ziyaret",
+      "phoneNumber": "Telefon Numarası",
+      "email": "E-posta",
+      "birthday": "Doğum Tarihi",
+      "statistics": "İstatistikler",
+      "profile": "Profil"
+    }
   }
 }

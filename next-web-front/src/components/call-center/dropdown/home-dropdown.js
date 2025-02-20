@@ -1,7 +1,13 @@
+"use client";
 import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
 
-const HomeDropdown = ({ options, selected = options[0].label, onChange }) => {
+const HomeDropdown = ({
+  options,
+  selected = options[0].label,
+  onChange,
+  style,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -19,10 +25,14 @@ const HomeDropdown = ({ options, selected = options[0].label, onChange }) => {
   }, []);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div
+      className="relative scale-[77.7%] lg:scale-100 min-[580px]:mr-[-20px] max-[580px]:ml-[-20px] lg:mr-0"
+      ref={dropdownRef}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="text-aside_menu-menu_list_itemm text-[18px] font-medium leading-[32px] py-[12px] pl-[16px] pr-[36px] min-w-[160px] rounded-full bg-[#F7F7F7] shadow-[0px_1px_2px_rgba(10,13,18,0.05)] text-left relative"
+        style={style}
       >
         {selected}
         <Image

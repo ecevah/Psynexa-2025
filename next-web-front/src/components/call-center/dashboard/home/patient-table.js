@@ -38,12 +38,12 @@ const PatientTable = () => {
   ];
 
   return (
-    <div className="w-full h-full overflow-hidden z-0">
+    <div className="w-full h-full flex flex-col">
       <div className="w-full grid grid-cols-2 min-[460px]:grid-cols-3 min-[700px]:grid-cols-4 min-[900px]:grid-cols-5 min-[1024px]:grid-cols-3 min-[1150px]:grid-cols-4 min-[1380px]:grid-cols-5 gap-4 px-4 py-3 bg-white sticky top-0 z-[50]">
         <div className="text-[#666] text-sm font-medium">
           {t.raw("patientTable.patient")}
         </div>
-        <div className="text-[#666] text-sm font-medium hidden min-[700px]:block">
+        <div className="text-[#666] text-sm font-medium hidden min-[700px]:block min-[1024px]:hidden min-[1150px]:block">
           {t.raw("patientTable.recentVisit")}
         </div>
         <div className="text-[#666] text-sm font-medium hidden min-[900px]:block min-[1024px]:hidden min-[1380px]:block">
@@ -57,7 +57,7 @@ const PatientTable = () => {
         </div>
       </div>
 
-      <div className="w-full overflow-y-auto h-[400px] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-[#D0E8FC] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
+      <div className="flex-1 w-full overflow-y-auto min-h-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-[#D0E8FC] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
         {patients.map((patient) => (
           <div
             key={patient.id}
@@ -81,7 +81,7 @@ const PatientTable = () => {
               </div>
             </div>
 
-            <div className="flex items-center text-[#0B1215] text-sm hidden min-[700px]:flex">
+            <div className="flex items-center text-[#0B1215] text-sm hidden min-[700px]:flex min-[1024px]:hidden min-[1150px]:flex">
               {patient.recentVisit}
             </div>
 

@@ -28,9 +28,6 @@ export default async function DashboardLayout({ children, params }) {
           <SidebarMenu />
           <div className="flex flex-col w-full h-full">
             <Header />
-            <div className="mt-[20px] mb-[16px]">
-              <Breadcrumb />
-            </div>
             {children}
           </div>
         </div>

@@ -6,6 +6,7 @@ import ScheduleCalendar from "@/components/call-center/dashboard/calendar/schedu
 import { useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 import React from "react";
+import Breadcrumb from "@/components/call-center/breadcrumb/breadcrumb";
 
 const CARD_ICONS = {
   totalUsers: "/call-center/3-user.svg",
@@ -85,7 +86,10 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 min-[1080px]:grid-cols-3 min-[1380px]:grid-cols-4 gap-4 mb-[20px]">
+      <div className="mt-[20px] mb-[16px]">
+        <Breadcrumb />
+      </div>
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 min-[1080px]:grid-cols-3 min-[1380px]:grid-cols-4 gap-4 mb-4">
         {CARD_TYPES.map((cardType) =>
           cardTypes[cardType].items.map((item, index) => (
             <ItemCard
@@ -99,19 +103,23 @@ export default function DashboardPage() {
           ))
         )}
       </div>
-      <div className="w-full h-full min-[1024px]:flex flex-col lg:flex-row pb-[24px] space-y-4 min-[1024px]:space-y-0 min-[1024px]:pb-[24px]">
-        <div className="w-full h-[500px] lg:h-full rounded-[20px] py-[20px] px-[12px] bg-white flex flex-col">
-          <ClientReviewHeader />
-          <div className="max-h-full h-full w-full overflow-hidden">
+      <div className="w-full lg:max-h-[560px] min-[1380px]:max-h-full lg:h-[calc(100vh-404px)] flex flex-col min-[1024px]:flex-row gap-6">
+        <div className="flex-1 h-full bg-white rounded-[20px] flex flex-col overflow-hidden">
+          <div className="px-[12px] pt-[20px] pb-[20px]">
+            <ClientReviewHeader />
+          </div>
+          <div className="flex-1 min-h-0">
             <PatientTable />
           </div>
         </div>
-        <ScheduleCalendar
-          taskDates={taskDates}
-          events={events}
-          todayEvents={todayEvents}
-          onEventCreate={handleEventCreate}
-        />
+        <div className="h-fit min-[1024px]:h-full min-[1024px]:w-[364px]">
+          <ScheduleCalendar
+            taskDates={taskDates}
+            events={events}
+            todayEvents={todayEvents}
+            onEventCreate={handleEventCreate}
+          />
+        </div>
       </div>
     </>
   );

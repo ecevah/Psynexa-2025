@@ -69,5 +69,16 @@
         "selectTime": "Select Time",
         "save": "Save"
       }
+    },
+    "ClientPage": {
+      "table": {
+        "patient": "Patient",
+        "recentVisit": "Recent Visit",
+        "phoneNumber": "Phone Number",
+        "email": "E-mail",
+        "birthday": "Birthday",
+        "statistics": "Statistics",
+        "profile": "Profile"
+      }
     }
 }

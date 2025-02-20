@@ -50,7 +50,7 @@ const logMiddleware = async (req, res, next) => {
         responseCode: responseCode || res.statusCode,
         responseTime: Date.now() - startTime,
       }),
-      ip_address: req.ip || req.connection.remoteAddress,
+      ip_address: req.ip,
       user_agent: req.get("user-agent"),
     };
 
