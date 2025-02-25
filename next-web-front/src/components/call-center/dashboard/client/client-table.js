@@ -10,7 +10,7 @@ const ClientTable = ({ clients }) => {
   return (
     <div className="w-full h-full flex flex-col">
       <div className="w-full">
-        <div className="min-[1000px]:min-w-[840px] grid grid-cols-[1fr_100px] min-[500px]:grid-cols-[1.5fr_1fr_100px] min-[720px]:grid-cols-[1.5fr_1fr_0.8fr_100px] min-[900px]:grid-cols-[1.5fr_1fr_1.2fr_0.8fr_100px] min-[1000px]:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_150px] lg:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_200px] gap-6 px-4 py-3 sticky top-0 z-[50]">
+        <div className="min-[1000px]:min-w-[840px] grid grid-cols-[1fr_100px] min-[500px]:grid-cols-[1.5fr_1fr_100px] min-[720px]:grid-cols-[1.5fr_1fr_0.8fr_100px] min-[900px]:grid-cols-[1.5fr_1fr_1.2fr_0.8fr_100px] min-[1000px]:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_120px] lg:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_130px] gap-6 px-4 py-3 sticky top-0 z-[50]">
           <div className="text-[#666] text-sm font-medium">
             {t.raw("table.patient")}
           </div>
@@ -38,7 +38,7 @@ const ClientTable = ({ clients }) => {
           {clients.map((client) => (
             <div
               key={client.id}
-              className="min-[1000px]:min-w-[840px] grid grid-cols-[1fr_100px] min-[500px]:grid-cols-[1.5fr_1fr_100px] min-[720px]:grid-cols-[1.5fr_1fr_0.8fr_100px] min-[900px]:grid-cols-[1.5fr_1fr_1.2fr_0.8fr_100px] min-[1000px]:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_150px] lg:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_200px] gap-6 px-4 pt-2 pb-3 h-[76px] max-h-[76px] my-[6px] rounded-[20px] bg-white hover:bg-[#D0E8FC] transition-colors duration-200 cursor-pointer group"
+              className="min-[1000px]:min-w-[840px] grid grid-cols-[1fr_100px] min-[500px]:grid-cols-[1.5fr_1fr_100px] min-[720px]:grid-cols-[1.5fr_1fr_0.8fr_100px] min-[900px]:grid-cols-[1.5fr_1fr_1.2fr_0.8fr_100px] min-[1000px]:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_120px] lg:grid-cols-[1.5fr_1fr_1fr_1.2fr_0.8fr_120px] gap-6 px-4 pt-2 pb-3 h-[76px] max-h-[76px] my-[6px] rounded-[20px] bg-white hover:bg-[#D0E8FC] transition-colors duration-200 cursor-pointer group"
               onMouseEnter={() => setHoveredId(client.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
@@ -78,7 +78,7 @@ const ClientTable = ({ clients }) => {
 
               <div className="flex items-center justify-end">
                 <div className="flex gap-4 w-[140px] justify-between">
-                  <div className="rounded-full">
+                  <div className="rounded-full  justify-center items-center flex">
                     <HeaderCircleIconButton
                       icon="/call-center/analysis-icon.svg"
                       text="Statistics"
@@ -94,9 +94,10 @@ const ClientTable = ({ clients }) => {
                           client.id
                         );
                       }}
+                      isBig={false}
                     />
                   </div>
-                  <div className="rounded-full">
+                  <div className="rounded-full justify-center items-center flex">
                     <HeaderCircleIconButton
                       icon="/call-center/arrow-down.svg"
                       text="Profile"
@@ -110,6 +111,7 @@ const ClientTable = ({ clients }) => {
                         // Handle profile click
                         console.log("Profile clicked for client:", client.id);
                       }}
+                      isBig={false}
                     />
                   </div>
                 </div>

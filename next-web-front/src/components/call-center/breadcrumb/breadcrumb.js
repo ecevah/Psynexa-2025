@@ -57,36 +57,51 @@ const Breadcrumb = () => {
     }
   };
 
+  const lastItem = items[items.length - 1];
+
   return (
     <div className="flex items-center font-urbanist">
-      {items.map((item, index) => (
-        <div key={index} className="flex items-center">
-          <span
-            onClick={() => handleClick(item.link, item.active)}
-            className={`cursor-pointer ${
-              index === 0
-                ? "text-[#0B1215] text-[24px] font-semibold leading-[40px]" // Dashboard stili
-                : "text-[#0B1215] text-[18px] font-medium leading-[32px] opacity-50" // Diğer itemların stili
-            }`}
-          >
-            {item.text}
-          </span>
-          {index < items.length - 1 && (
-            <div className="mx-2 flex items-center rotate-[-90deg]">
-              <Image
-                src={
-                  index === 0
-                    ? "/call-center/arrow-down.svg"
-                    : "/call-center/arrow-down-grey.svg"
-                }
-                alt="separator"
-                width={16}
-                height={10}
-              />
-            </div>
-          )}
-        </div>
-      ))}
+      {/* Mobil görünüm (555px altı) - Sadece son öğe */}
+      <div className="min-[555px]:hidden flex items-center">
+        <span
+          onClick={() => handleClick(lastItem?.link, lastItem?.active)}
+          className="text-[#0B1215] text-[24px] font-semibold leading-[40px] cursor-pointer"
+        >
+          {lastItem?.text}
+        </span>
+      </div>
+
+      {/* Desktop görünüm (555px üstü) - Tüm öğeler */}
+      <div className="hidden min-[555px]:flex items-center">
+        {items.map((item, index) => (
+          <div key={index} className="flex items-center">
+            <span
+              onClick={() => handleClick(item.link, item.active)}
+              className={`cursor-pointer ${
+                index === 0
+                  ? "text-[#0B1215] text-[24px] font-semibold leading-[40px]"
+                  : "text-[#0B1215] text-[18px] font-medium leading-[32px] opacity-50"
+              }`}
+            >
+              {item.text}
+            </span>
+            {index < items.length - 1 && (
+              <div className="mx-2 flex items-center rotate-[-90deg]">
+                <Image
+                  src={
+                    index === 0
+                      ? "/call-center/arrow-down.svg"
+                      : "/call-center/arrow-down-grey.svg"
+                  }
+                  alt="separator"
+                  width={16}
+                  height={10}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

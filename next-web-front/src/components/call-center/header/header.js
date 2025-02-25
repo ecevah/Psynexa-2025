@@ -51,7 +51,7 @@ const Header = () => {
               src={imageUrl}
               width={60}
               height={60}
-              className="rounded-full lg:min-w-[60px] lg:min-h-[60px] lg:max-w-[60px] lg:max-h-[60px] min-w-[40px] min-h-[40px] max-w-[40px] max-h-[40px]"
+              className="rounded-full lg:min-w-[60px] lg:min-h-[60px] lg:max-w-[60px] lg:max-h-[60px] min-w-[40px] min-h-[40px] max-w-[40px] max-h-[40px] object-cover"
             />
             <span
               className={`absolute transition-transform duration-300 -bottom-7 left-1/2 transform -translate-x-1/2 ${

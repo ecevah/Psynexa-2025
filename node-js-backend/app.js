@@ -62,7 +62,11 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    index: false,
+  })
+);
 app.use(cors());
 app.set("trust proxy", true);
 app.use(passport.initialize());
@@ -102,7 +106,7 @@ app.use("/api/iteration-meditations", iterationMeditationRoutes);
 app.use("/api/iteration-meditation-items", iterationMeditationItemRoutes);
 
 // Swagger UI
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+//app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Error handling
 app.use((req, res, next) => {

@@ -4,7 +4,12 @@ const logger = require("../config/logger");
 // Genel API limiti
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 dakika
-  max: 100, // IP başına maksimum istek
+  max: 50, // IP başına maksimum istek
+  keyGenerator: function (req) {
+    const forwarded = req.headers["x-forwarded-for"];
+    const ip = forwarded ? forwarded.split(",")[0].trim() : req.ip;
+    return ip;
+  },
   message: {
     status: false,
     message:
@@ -20,6 +25,11 @@ const apiLimiter = rateLimit({
 const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 saat
   max: 5, // IP başına maksimum deneme
+  keyGenerator: function (req) {
+    const forwarded = req.headers["x-forwarded-for"];
+    const ip = forwarded ? forwarded.split(",")[0].trim() : req.ip;
+    return ip;
+  },
   message: {
     status: false,
     message:
@@ -35,6 +45,11 @@ const authLimiter = rateLimit({
 const passwordResetLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 saat
   max: 3, // IP başına maksimum deneme
+  keyGenerator: function (req) {
+    const forwarded = req.headers["x-forwarded-for"];
+    const ip = forwarded ? forwarded.split(",")[0].trim() : req.ip;
+    return ip;
+  },
   message: {
     status: false,
     message:

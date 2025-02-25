@@ -92,6 +92,7 @@ const ClientGrid = ({ clients }) => {
                   console.log("Statistics clicked for client:", client.id);
                 }}
                 labelIsVisible={false}
+                isBig={false}
               />
             </div>
             <div className="relative">
@@ -111,6 +112,7 @@ const ClientGrid = ({ clients }) => {
                   console.log("Profile clicked for client:", client.id);
                 }}
                 labelIsVisible={false}
+                isBig={false}
               />
             </div>
           </div>

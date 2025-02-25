@@ -4,7 +4,24 @@
     "allTime": "Tüm Zamanlar",
     "lastWeek": "Geçen Hafta",
     "lastMonth": "Geçen Ay",
-    "lastYear": "Geçen Yıl"
+    "lastYear": "Geçen Yıl",
+    "hours": "Saat",
+    "minutes": "Dakika",
+    "seconds": "Saniye",
+    "january": "Ocak",
+    "february": "Şubat",
+    "march": "Mart",
+    "april": "Nisan",
+    "may": "Mayıs",
+    "june": "Haziran",
+    "july": "Temmuz",
+    "august": "Ağustos",
+    "september": "Eylül",
+    "october": "Ekim",
+    "november": "Kasım",
+    "december": "Aralık",
+    "voice": "Ses",
+    "text": "Metin"
   },
   "DashboardPage": {
     "clientReviewNeeds": "Müşteri Gözden Geçirme İhtiyaçları",
@@ -76,5 +93,168 @@
       "statistics": "İstatistikler",
       "profile": "Profil"
     }
+  },
+  "UserProfile": {
+    "role": "Rol",
+    "status": "Durum",
+    "active": "Aktif",
+    "inactive": "Pasif",
+    "joinDate": "Katılma Tarihi",
+    "lastActive": "Son Aktiflik",
+    "generalInfo": "Genel Bilgiler",
+    "gender": "Cinsiyet",
+    "dateOfBirth": "Doğum Tarihi",
+    "location": "Konum",
+    "language": "Dil",
+    "timezone": "Zaman Dilimi",
+    "contactInfo": "İletişim Bilgileri",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "about": "Hakkında",
+    "yearsOld": "Yaşındadır",
+    "totalMessage": "Toplam Mesaj",
+    "nexabotUsageTime": "Nexabot Kullanım Süresi",
+    "appUsageTime": "Uygulama Kullanım Süresi",
+    "emotionAnalysis": "Duygu Analizi"
+  },
+  "EmotionTracking": {
+    "months": {
+      "jan": "Oca",
+      "feb": "Şub",
+      "mar": "Mar",
+      "apr": "Nis",
+      "may": "May",
+      "jun": "Haz",
+      "jul": "Tem",
+      "aug": "Ağu",
+      "sep": "Eyl",
+      "oct": "Eki",
+      "nov": "Kas",
+      "dec": "Ara"
+    },
+    "emotions": {
+      "happy": "Mutlu",
+      "angry": "Kızgın",
+      "sad": "Üzgün",
+      "depressed": "Depresif",
+      "overenjoyed": "Çok Mutlu"
+    }
+  },
+  "NexabotAnalysis": {
+      "emotionAnalysis": "Duygu Analizi",
+      "judicialExpression": "Yargısal İfadeler",
+      "search": "Ara",
+      "searchPlaceholder": "Arama yapın...",
+      "emotions": {
+        "angry": "Kızgın",
+        "happy": "Mutlu",
+        "sad": "Üzgün",
+        "depressed": "Depresif",
+        "overjoyed": "Çok Mutlu"
+      },
+      "parameters": {
+        "frustration": "Hayal Kırıklığı",
+        "irritation": "Sinirlilik",
+        "rage": "Öfke",
+        "annoyance": "Rahatsızlık",
+        "joy": "Sevinç",
+        "contentment": "Memnuniyet",
+        "satisfaction": "Tatmin",
+        "pleasure": "Keyif",
+        "sadness": "Üzüntü",
+        "hopelessness": "Umutsuzluk",
+        "emptiness": "Boşluk",
+        "despair": "Çaresizlik",
+        "grief": "Keder",
+        "melancholy": "Melankoli",
+        "sorrow": "Acı",
+        "loneliness": "Yalnızlık",
+        "elation": "Coşku",
+        "euphoria": "Mutluluk",
+        "delight": "Neşe",
+        "excitement": "Heyecan"
+      },
+      "chatbot": {
+        "title": "Nexabot Sohbet",
+        "messagePlaceholder": "Mesajınızı yazın...",
+        "send": "Gönder"
+      },
+      "columns": {
+        "sentences": "Cümleler",
+        "expressions": "Yargısal İfadeler"
+      },
+      "sentences": {
+        "overwhelmed": "Son zamanlarda işle ilgili bunalmış hissediyorum.",
+        "pointless": "Bu günlerde her şey anlamsız geliyor.",
+        "cantFocus": "Birkaç dakikadan fazla hiçbir şeye odaklanamıyorum.",
+        "topOfWorld": "Kendimi dünyanın zirvesinde gibi hissediyorum!"
+      },
+      "expressions": {
+        "workStress": "İşle ilgili stres ve potansiyel tükenmişlik belirtileri.",
+        "depression": "Depresif düşünceler ve motivasyon kaybı göstergeleri.",
+        "attention": "Dikkat eksikliği ve konsantrasyon sorunları.",
+        "elevated": "Güçlü pozitif duygusal durum, potansiyel yükselmiş ruh hali."
+      }
+    },
+  "AppStatistics": {
+    "emotionTracking": "Duygu Takibi",
+    "emotionTrackingBar": "Duygu Takip Çubuğu",
+    "testResults": "Test Sonuçları",
+    "contentsData": "İçerik Verileri",
+    "search": "Ara",
+    "searchPlaceholder": "Arama yapın...",
+    "filter": "Filtrele",
+    "table": {
+      "testName": "Test Adı",
+      "category": "Kategori",
+      "situation": "Durum",
+      "detail": "Detay",
+      "download": "İndir",
+      "meditation": "Meditasyon",
+      "clicks": "Tıklamalar",
+      "time": "Süre",
+      "tags": "Etiketler",
+      "completed": "Tamamlandı",
+      "viewDetails": "Detayları Gör",
+      "downloadReport": "Raporu İndir"
+    },
+    "filterPopup": {
+      "title": "Filtreler",
+      "apply": "Uygula",
+      "reset": "Sıfırla",
+      "category": "Kategori",
+      "meditation": "Meditasyon",
+      "breathing": "Nefes Alma",
+      "focus": "Odaklanma",
+      "duration": "Süre",
+      "min": "Dk"
+    }
+  },
+  "Feedbacks": {
+    "initialMessage": "Merhaba! Size nasıl yardımcı olabilirim?",
+    "botResponse": "Teşekkürler! Mesajınızı aldım ve en kısa sürede değerlendireceğim.",
+    "negative": "Olumsuz",
+    "positive": "Olumlu",
+    "chatTitle": "Nexabot Chat",
+    "messagePlaceholder": "Mesajınızı yazın...",
+    "send": "Gönder",
+    "feedbackExample": "Bazı durumlarda, Nexabot'un yanıtları robotik geliyor ve empati eksikliği var. İnsan terapistinin sıcaklığına veya anlayışına yaklaşamıyor.",
+    "chatFeedback": {
+      "giveFeedback": "Geri Bildirim Ver",
+      "writeFeedback": "Geri Bildirim Yazın...",
+      "saveFeedback": "Kaydet",
+      "thankYou": "Geri Bildirim İçin Teşekkürler",
+      "like": "Beğen",
+      "dislike": "Beğenme"
+    },
+    "feedback": "Geri Bildirim",
+    "search": "Ara..",
+    "feedbacks": "Geri Bildirimler"
+  },
+  "ClientDetail": {
+    "userProfile": "Kullanıcı Profili",
+    "appStatistics": "Uygulama İstatistikleri",
+    "nexabotAnalysis": "Nexabot Analizi",
+    "feedback": "Geri Bildirim"
   }
 }
