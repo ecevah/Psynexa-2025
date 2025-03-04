@@ -1,21 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSelector, useDispatch } from "react-redux";
 import ChatBot from "./nexabot-analysis-component/chat-bot";
 import EmotionDoughnut from "./nexabot-analysis-component/emotion-doughnut";
 import EmotionAnalysis from "./nexabot-analysis-component/emotion-analysis";
 import JudicialExpressionsTable from "./nexabot-analysis-component/judicial-expressions-table";
 import Image from "next/image";
+import {
+  selectSelectedEmotion,
+  setSelectedEmotion,
+} from "@/store/features/nexabotAnalysisSlice";
 
 const NexabotAnalysis = () => {
   const t = useTranslations("NexabotAnalysis");
-  const [selectedEmotion, setSelectedEmotion] = useState("Overjoyed");
+  const dispatch = useDispatch();
+  const selectedEmotion = useSelector(selectSelectedEmotion);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchRef = useRef(null);
 
   const handleEmotionSelect = (emotion) => {
     // Eğer seçilen duygu zaten seçili değilse, yeni duyguyu seç
-    setSelectedEmotion(emotion);
+    dispatch(setSelectedEmotion(emotion));
   };
 
   useEffect(() => {

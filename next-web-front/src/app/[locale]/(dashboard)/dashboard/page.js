@@ -4,9 +4,15 @@ import PatientTable from "@/components/call-center/dashboard/home/patient-table"
 import ItemCard from "@/components/call-center/dashboard/item-card";
 import ScheduleCalendar from "@/components/call-center/dashboard/calendar/schedule-calendar";
 import { useTranslations } from "next-intl";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import React from "react";
 import Breadcrumb from "@/components/call-center/breadcrumb/breadcrumb";
+import {
+  selectCardTypes,
+  selectEvents,
+  selectTodayEvents,
+  addEvent,
+} from "@/store/features/dashboardSlice";
 
 const CARD_ICONS = {
   totalUsers: "/call-center/3-user.svg",

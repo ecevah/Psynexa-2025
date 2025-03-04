@@ -3,17 +3,35 @@ import React, { useState } from "react";
 import HeaderCircleIconButton from "../../header/circle-icon-button/header-circle-icon-button";
 import HomeDropdown from "../../dropdown/home-dropdown";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import { selectTotals } from "@/store/features/feedbacksSlice";
 
-const FeedbackHeader = ({ parameters, onChartToggle, isLineChart }) => {
+const FeedbackHeader = ({ onChartToggle, isLineChart }) => {
   const tTemplate = useTranslations("Template");
   const tFeedback = useTranslations("Feedbacks");
   const [selectedOption, setSelectedOption] = useState(tTemplate("allTime"));
+  const totals = useSelector(selectTotals);
+
+  const parameters = {
+    positive: {
+      color: "#45B369",
+      name: "Positive",
+      total: totals.positive,
+    },
+    negative: {
+      color: "#EF4A00",
+      name: "Negative",
+      total: totals.negative,
+    },
+  };
+
   const timeOptions = [
     { value: "thisMonth", label: tTemplate("allTime") },
     { value: "lastWeek", label: tTemplate("lastWeek") },
     { value: "lastMonth", label: tTemplate("lastMonth") },
     { value: "lastYear", label: tTemplate("lastYear") },
   ];
+
   return (
     <div className="flex flex-col sm:flex-row w-full justify-between items-center mb-6 relative z-10 gap-4">
       <div className="font-semibold text-lg leading-[28px]">

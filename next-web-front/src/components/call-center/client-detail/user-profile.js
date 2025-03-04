@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslations } from "next-intl";
 import ProfileHeader from "./user-profile-component/profile-header";
 import GeneralInfo from "./user-profile-component/general-info";
@@ -9,12 +9,33 @@ import SpeechDoughnut from "./user-profile-component/speech-doughnut";
 import HomeDropdown from "../dropdown/home-dropdown";
 import ItemCardLine from "./user-profile-component/item-card-line";
 import EmotionDoughnut from "./user-profile-component/emotion-doughnut";
+import {
+  selectNexabotUsage,
+  selectAppUsage,
+} from "@/store/features/itemCardLineSlice";
+import { setTimeScaleData } from "@/store/features/timeScaleSlice";
 
 const UserProfile = () => {
   const tTemplate = useTranslations("Template");
   const t = useTranslations("UserProfile");
   const [selectedOption, setSelectedOption] = useState(tTemplate("allTime"));
+  const dispatch = useDispatch();
+
+  // Redux selectors
   const user = useSelector((state) => state.user);
+  const nexabotUsage = useSelector(selectNexabotUsage);
+  const appUsage = useSelector(selectAppUsage);
+
+  // Initialize TimeScale data
+  React.useEffect(() => {
+    dispatch(
+      setTimeScaleData({
+        lineData: [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86],
+        greenBarData: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56],
+        blueBarData: [45, 55, 65, 45, 70, 45, 60, 45, 55, 65, 45, 70],
+      })
+    );
+  }, [dispatch]);
 
   const userData = {
     profile: {
@@ -71,15 +92,7 @@ const UserProfile = () => {
               </div>
               <div className="flex flex-col xl:flex-row gap-[20px]">
                 <div className="flex-1 min-w-0 h-full">
-                  <TimeScaleChart
-                    lineData={[28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86]}
-                    greenBarData={[
-                      65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56,
-                    ]}
-                    blueBarData={[
-                      45, 55, 65, 45, 70, 45, 60, 45, 55, 65, 45, 70,
-                    ]}
-                  />
+                  <TimeScaleChart />
                 </div>
                 <div className="flex justify-center xl:block">
                   <SpeechDoughnut />
@@ -95,30 +108,14 @@ const UserProfile = () => {
               <ItemCardLine
                 title={t("nexabotUsageTime")}
                 icon="/call-center/3-User.svg"
-                value="100"
-                barData={[
-                  { value: 30 },
-                  { value: 45 },
-                  { value: 60 },
-                  { value: 80 },
-                  { value: 65 },
-                  { value: 40 },
-                  { value: 25 },
-                ]}
+                value={nexabotUsage.value}
+                barData={nexabotUsage.barData}
               />
               <ItemCardLine
                 title={t("appUsageTime")}
                 icon="/call-center/notification.svg"
-                value="100"
-                barData={[
-                  { value: 30 },
-                  { value: 45 },
-                  { value: 60 },
-                  { value: 80 },
-                  { value: 65 },
-                  { value: 40 },
-                  { value: 25 },
-                ]}
+                value={appUsage.value}
+                barData={appUsage.barData}
               />
             </div>
 

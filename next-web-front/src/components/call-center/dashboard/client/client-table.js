@@ -1,11 +1,12 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import HeaderCircleIconButton from "../../header/circle-icon-button/header-circle-icon-button";
 import { useState } from "react";
 
 const ClientTable = ({ clients }) => {
   const t = useTranslations("ClientPage");
   const [hoveredId, setHoveredId] = useState(null);
+  const locale = useLocale();
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -88,11 +89,7 @@ const ClientTable = ({ clients }) => {
                         transition: "background-color 0.2s",
                       }}
                       func={() => {
-                        // Handle statistics click
-                        console.log(
-                          "Statistics clicked for client:",
-                          client.id
-                        );
+                        window.location.href = `/${locale}/client/${client.id}?tab=appStatistics`;
                       }}
                       isBig={false}
                     />
@@ -108,8 +105,7 @@ const ClientTable = ({ clients }) => {
                         transition: "background-color 0.2s",
                       }}
                       func={() => {
-                        // Handle profile click
-                        console.log("Profile clicked for client:", client.id);
+                        window.location.href = `/${locale}/client/${client.id}?tab=userProfile`;
                       }}
                       isBig={false}
                     />

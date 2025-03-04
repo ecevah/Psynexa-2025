@@ -1,7 +1,9 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Chart as ChartJS, ArcElement, Legend } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { useTranslations } from "next-intl";
+import { selectSpeechData } from "@/store/features/speechDoughnutSlice";
 
 ChartJS.register(ArcElement, Legend);
 
@@ -49,6 +51,8 @@ ChartJS.register(centerTextPlugin);
 
 const SpeechDoughnut = () => {
   const t = useTranslations("Template");
+  const { voicePercentage, textPercentage } = useSelector(selectSpeechData);
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -78,9 +82,8 @@ const SpeechDoughnut = () => {
     labels: [t("voice"), t("text")],
     datasets: [
       {
-        data: [55, 45],
+        data: [voicePercentage, textPercentage],
         backgroundColor: ["#A1DC67", "#0A6EBD"],
-
         borderColor: ["#A1DC67", "#0A6EBD"],
         borderWidth: 5,
         hoverOffset: 0,

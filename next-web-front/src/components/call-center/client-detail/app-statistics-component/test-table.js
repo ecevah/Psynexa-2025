@@ -1,38 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { useTranslations } from "next-intl";
+import { selectTestTableData } from "@/store/features/emotionTrackingSlice";
 import HeaderCircleIconButton from "../../header/circle-icon-button/header-circle-icon-button";
 
 const TestTable = () => {
-  const testData = [
-    {
-      testName: "Anxiety Test",
-      category: "Mental Health",
-      situation: "Completed",
-      detail: "View Details",
-      download: "Download",
-    },
-    {
-      testName: "Anxiety Test",
-      category: "Mental Health",
-      situation: "Completed",
-      detail: "View Details",
-      download: "Download",
-    },
-    {
-      testName: "Anxiety Test",
-      category: "Mental Health",
-      situation: "Completed",
-      detail: "View Details",
-      download: "Download",
-    },
-    {
-      testName: "Anxiety Test",
-      category: "Mental Health",
-      situation: "Completed",
-      detail: "View Details",
-      download: "Download",
-    },
-    // Add more test data as needed
-  ];
+  const t = useTranslations("AppStatistics");
+  const { items } = useSelector(selectTestTableData);
 
   return (
     <div className="w-full">
@@ -40,40 +14,46 @@ const TestTable = () => {
         <thead>
           <tr className="border-b border-[#F5F6FA]">
             <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Test Name
+              {t("testName")}
             </th>
             <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Category
+              {t("date")}
             </th>
             <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Situation
+              {t("score")}
             </th>
             <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Detail
+              {t("status")}
             </th>
             <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Download
+              {t("detail")}
+            </th>
+            <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
+              {t("download")}
             </th>
           </tr>
         </thead>
         <tbody>
-          {testData.map((test, index) => (
-            <tr key={index} className="border-b border-[#F5F6FA]">
+          {items.map((item) => (
+            <tr key={item.id} className="border-b border-[#F5F6FA]">
               <td className="py-4 px-4 text-[14px] font-medium text-[#0B1215]">
-                {test.testName}
+                {item.testName}
               </td>
               <td className="py-4 px-4 text-[14px] font-medium text-[#0B1215]">
-                {test.category}
+                {item.date}
+              </td>
+              <td className="py-4 px-4 text-[14px] font-medium text-[#0B1215]">
+                {item.score}
               </td>
               <td className="py-4 px-4">
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#E8F5E9] text-[#43A047] text-[12px] font-medium">
-                  {test.situation}
+                  {t(item.status)}
                 </div>
               </td>
               <td className="py-4 px-4">
                 <HeaderCircleIconButton
                   icon="/call-center/document.svg"
-                  text="View Details"
+                  text={t("detail")}
                   func={() => {}}
                   className="!bg-[#E3F2FD] !hover:bg-[#BBDEFB]"
                   style={{ backgroundColor: "#E0F1FE" }}
@@ -82,7 +62,7 @@ const TestTable = () => {
               <td className="py-4 px-4">
                 <HeaderCircleIconButton
                   icon="/call-center/download.svg"
-                  text="Download"
+                  text={t("download")}
                   func={() => {}}
                   className="!bg-[#E3F2FD] !hover:bg-[#BBDEFB]"
                   style={{ backgroundColor: "#E0F1FE" }}

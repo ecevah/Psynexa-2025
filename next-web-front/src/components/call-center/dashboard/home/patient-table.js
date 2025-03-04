@@ -1,41 +1,11 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import { selectPatients } from "@/store/features/dashboardSlice";
 
 const PatientTable = () => {
   const t = useTranslations("DashboardPage");
-
-  const patients = [
-    {
-      id: 1,
-      image: "/call-center/user-image.jpeg",
-      name: "John Doe",
-      age: 32,
-      recentVisit: "12 Oct 2024",
-      streak: "5 days",
-      status: "Critical",
-    },
-    {
-      id: 2,
-      image: "/call-center/user-image.jpeg",
-      name: "Jane Smith",
-      age: 28,
-      recentVisit: "11 Oct 2024",
-      streak: "10 days",
-      status: "Stable",
-    },
-
-    ...Array(10)
-      .fill()
-      .map((_, index) => ({
-        id: index + 3,
-        image: "/call-center/user-image.jpeg",
-        name: `Patient ${index + 3}`,
-        age: 25 + index,
-        recentVisit: "10 Oct 2024",
-        streak: `${3 + index} days`,
-        status: index % 2 === 0 ? "Critical" : "Stable",
-      })),
-  ];
+  const patients = useSelector(selectPatients);
 
   return (
     <div className="w-full h-full flex flex-col">

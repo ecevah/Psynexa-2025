@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import { selectChartData } from "@/store/features/feedbacksSlice";
 
-const BarChart = ({ data }) => {
+const BarChart = () => {
   const [mounted, setMounted] = useState(false);
   const [tooltip, setTooltip] = useState({
     show: false,
@@ -11,6 +13,8 @@ const BarChart = ({ data }) => {
     content: "",
     color: "",
   });
+
+  const chartData = useSelector(selectChartData);
 
   useEffect(() => {
     setMounted(true);
@@ -114,7 +118,7 @@ const BarChart = ({ data }) => {
 
         {/* Bars */}
         <div className="absolute inset-0 flex justify-between items-center ">
-          {data.map((monthData, index) => (
+          {chartData.map((monthData, index) => (
             <div
               key={index}
               className="flex flex-col justify-center items-center gap-1"

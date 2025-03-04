@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +13,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { useTranslations } from "next-intl";
+import { selectTimeScaleData } from "@/store/features/timeScaleSlice";
 
 ChartJS.register(
   CategoryScale,
@@ -24,7 +26,9 @@ ChartJS.register(
   Legend
 );
 
-const TimeScaleChart = ({ lineData, greenBarData, blueBarData }) => {
+const TimeScaleChart = () => {
+  const { lineData, greenBarData, blueBarData } =
+    useSelector(selectTimeScaleData);
   const t = useTranslations("Template");
 
   const options = {

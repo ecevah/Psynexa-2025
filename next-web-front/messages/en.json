@@ -60,7 +60,7 @@
         "clients": {
           "text": "Clients",
           "icon": "/call-center/3-User.svg",
-          "link": "/clients"
+          "link": "/client"
         }
       },
       "bottom-items": {
@@ -208,20 +208,29 @@
     "search": "Search",
     "searchPlaceholder": "Search...",
     "filter": "Filter",
-    "table": {
-      "testName": "Test Name",
-      "category": "Category",
-      "situation": "Situation",
-      "detail": "Detail",
-      "download": "Download",
-      "meditation": "Meditation",
-      "clicks": "Clicks",
-      "time": "Time",
-      "tags": "Tags",
-      "completed": "Completed",
-      "viewDetails": "View Details",
-      "downloadReport": "Download Report"
-    },
+    "completed": "Completed",
+    "title": "Filters",
+    "apply": "Apply",
+    "reset": "Reset",
+    "breathing": "Breathing",
+    "exercise": "Exercise",
+    "mindfulness": "Mindfulness",
+    "testName": "Test Name",
+    "category": "Category",
+    "situation": "Situation",
+    "detail": "Detail",
+    "download": "Download",
+    "meditation": "Meditation",
+    "clicks": "Clicks",
+    "time": "Time",
+    "tags": "Tags",
+    "date": "Date",
+    "score": "Score",
+    "status": "Status",
+    "duration": "Duration",
+    "viewDetails": "View Details",
+    "downloadReport": "Download Report",
+    "type": "Type",
     "filterPopup": {
       "title": "Filters",
       "apply": "Apply",

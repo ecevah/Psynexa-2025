@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import HeaderCircleIconButton from "../../header/circle-icon-button/header-circle-icon-button";
+import { useSelector } from "react-redux";
+import { selectMessages } from "@/store/features/feedbacksSlice";
 
 const ChatFeedback = () => {
   const t = useTranslations("Feedbacks.chatFeedback");
   const [feedbackState, setFeedbackState] = useState("initial"); // initial, input, completed
   const [selectedType, setSelectedType] = useState(null); // like, dislike
   const [feedbackText, setFeedbackText] = useState("");
+
+  const messages = useSelector(selectMessages);
 
   const handleFeedbackClick = (type) => {
     setSelectedType(type);

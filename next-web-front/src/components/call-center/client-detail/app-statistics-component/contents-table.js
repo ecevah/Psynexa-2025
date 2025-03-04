@@ -1,114 +1,61 @@
 import React from "react";
-import Image from "next/image";
+import { useSelector } from "react-redux";
+import { useTranslations } from "next-intl";
+import { selectContentsData } from "@/store/features/emotionTrackingSlice";
 
-const ContentsTable = ({ searchQuery = "" }) => {
-  const contentsData = [
-    {
-      meditation: {
-        image: "/call-center/user-image.jpeg",
-        title: "Morning Meditation",
-      },
-      clicks: "2.5K",
-      time: "15 min",
-      tags: "Mindfulness, Relaxation",
-    },
-    {
-      meditation: {
-        image: "/call-center/user-image.jpeg",
-        title: "Evening Calm",
-      },
-      clicks: "1.8K",
-      time: "20 min",
-      tags: "Sleep, Relaxation",
-    },
-    {
-      meditation: {
-        image: "/call-center/user-image.jpeg",
-        title: "Stress Relief",
-      },
-      clicks: "3.2K",
-      time: "10 min",
-      tags: "Stress, Focus",
-    },
-    {
-      meditation: {
-        image: "/call-center/user-image.jpeg",
-        title: "Deep Breathing",
-      },
-      clicks: "2.1K",
-      time: "12 min",
-      tags: "Breathing, Anxiety",
-    },
-  ];
+const ContentsTable = ({ searchQuery }) => {
+  const t = useTranslations("AppStatistics");
+  const { items } = useSelector(selectContentsData);
 
-  const filteredData = contentsData.filter((content) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      content.meditation.title.toLowerCase().includes(searchLower) ||
-      content.tags.toLowerCase().includes(searchLower)
-    );
-  });
+  const filteredItems = searchQuery
+    ? items.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : items;
 
   return (
-    <div className="w-full">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-[#F5F6FA]">
-            <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Meditation
-            </th>
-            <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Clicks
-            </th>
-            <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Time
-            </th>
-            <th className="py-4 px-4 text-left text-[14px] font-medium text-[#9D9D9D]">
-              Tags
-            </th>
+    <table className="w-full">
+      <thead>
+        <tr>
+          <th className="text-[#9D9D9D] text-[14px] font-medium leading-[24px] text-left py-[12px] px-[16px]">
+            {t("title")}
+          </th>
+          <th className="text-[#9D9D9D] text-[14px] font-medium leading-[24px] text-left py-[12px] px-[16px]">
+            {t("date")}
+          </th>
+          <th className="text-[#9D9D9D] text-[14px] font-medium leading-[24px] text-left py-[12px] px-[16px]">
+            {t("duration")}
+          </th>
+          <th className="text-[#9D9D9D] text-[14px] font-medium leading-[24px] text-left py-[12px] px-[16px]">
+            {t("type")}
+          </th>
+          <th className="text-[#9D9D9D] text-[14px] font-medium leading-[24px] text-left py-[12px] px-[16px]">
+            {t("status")}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredItems.map((item) => (
+          <tr key={item.id}>
+            <td className="text-[#313131] text-[14px] font-medium leading-[24px] py-[12px] px-[16px]">
+              {item.title}
+            </td>
+            <td className="text-[#313131] text-[14px] font-medium leading-[24px] py-[12px] px-[16px]">
+              {item.date}
+            </td>
+            <td className="text-[#313131] text-[14px] font-medium leading-[24px] py-[12px] px-[16px]">
+              {item.duration}
+            </td>
+            <td className="text-[#313131] text-[14px] font-medium leading-[24px] py-[12px] px-[16px]">
+              {t(item.type)}
+            </td>
+            <td className="text-[#313131] text-[14px] font-medium leading-[24px] py-[12px] px-[16px]">
+              {t(item.status)}
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((content, index) => (
-            <tr key={index} className="border-b border-[#F5F6FA]">
-              <td className="py-4 px-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-[40px] h-[40px] rounded-[10px] overflow-hidden relative">
-                    <Image
-                      src={content.meditation.image}
-                      alt={content.meditation.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <span className="text-[14px] font-medium text-[#0B1215]">
-                    {content.meditation.title}
-                  </span>
-                </div>
-              </td>
-              <td className="py-4 px-4 text-[14px] font-medium text-[#0B1215]">
-                {content.clicks}
-              </td>
-              <td className="py-4 px-4 text-[14px] font-medium text-[#0B1215]">
-                {content.time}
-              </td>
-              <td className="py-4 px-4">
-                <div className="flex flex-wrap gap-2">
-                  {content.tags.split(", ").map((tag, tagIndex) => (
-                    <span
-                      key={tagIndex}
-                      className="px-3 py-1 bg-[#F5F6FA] rounded-full text-[12px] font-medium text-[#9D9D9D]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 };
 

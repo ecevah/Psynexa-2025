@@ -1,34 +1,10 @@
 import React from "react";
 import HeaderCircleIconButton from "../../header/circle-icon-button/header-circle-icon-button";
+import { useSelector } from "react-redux";
+import { selectFeedbackData } from "@/store/features/feedbacksSlice";
 
 const MonthFeedbackTable = () => {
-  // Örnek veri - gerçek verilerle değiştirilecek
-  const feedbackData = [
-    {
-      id: 1,
-      content: "The session was very helpful and insightful.",
-      situation: "positive",
-      dateTime: "2024-01-15 14:30",
-    },
-    {
-      id: 2,
-      content: "I didn't find this session particularly useful.",
-      situation: "negative",
-      dateTime: "2024-01-14 15:45",
-    },
-    {
-      id: 3,
-      content: "Great experience with the therapist.",
-      situation: "positive",
-      dateTime: "2024-01-13 11:20",
-    },
-    {
-      id: 4,
-      content: "The connection was poor during the session.",
-      situation: "negative",
-      dateTime: "2024-01-12 09:15",
-    },
-  ];
+  const feedbackData = useSelector(selectFeedbackData);
 
   return (
     <div className="w-full">

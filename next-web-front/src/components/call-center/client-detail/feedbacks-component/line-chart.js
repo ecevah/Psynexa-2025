@@ -11,6 +11,8 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { useTranslations } from "next-intl"; // Çeviri desteği eklendi
+import { useSelector } from "react-redux";
+import { selectChartData } from "@/store/features/feedbacksSlice";
 
 // İlgili ChartJS elementlerini kaydediyoruz.
 ChartJS.register(
@@ -43,13 +45,15 @@ const LineChart = ({ firstLineData, secondLineData, labels }) => {
     t("months.dec"),
   ];
 
+  const chartData = useSelector(selectChartData);
+
   const data = {
     labels: defaultLabels,
     datasets: [
       {
         type: "line",
         label: "", // Legend'da gösterilmesin
-        data: firstLineData || [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56],
+        data: chartData.map((data) => data.positive),
         borderColor: "#45B369",
         borderWidth: 2,
         fill: false,
@@ -65,9 +69,7 @@ const LineChart = ({ firstLineData, secondLineData, labels }) => {
       {
         type: "line",
         label: "",
-        data: secondLineData || [
-          28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86,
-        ],
+        data: chartData.map((data) => Math.abs(data.negative)),
         borderColor: "#EF4A00",
         borderWidth: 2,
         fill: false,

@@ -8,43 +8,18 @@ import MonthFeedbackTable from "./feedbacks-component/month-feedback-table";
 import Image from "next/image";
 import ChatMessage from "./nexabot-analysis-component/chat-message";
 import ChatFeedback from "./feedbacks-component/chat-feedback";
+import { useSelector } from "react-redux";
+import {
+  selectMessages,
+  selectChartData,
+} from "@/store/features/feedbacksSlice";
 
 const Feedbacks = () => {
   const t = useTranslations("Feedbacks");
   const [isLineChart, setIsLineChart] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: t("initialMessage"),
-      isBot: true,
-      time: "09:30",
-    },
-    {
-      id: 2,
-      text: t("initialMessage"),
-      isBot: false,
-      time: "09:30",
-    },
-    {
-      id: 3,
-      text: t("initialMessage"),
-      isBot: true,
-      time: "09:30",
-    },
-    {
-      id: 4,
-      text: t("initialMessage"),
-      isBot: false,
-      time: "09:30",
-    },
-    {
-      id: 5,
-      text: t("initialMessage"),
-      isBot: true,
-      time: "09:30",
-    },
-  ]);
+  const messages = useSelector(selectMessages);
+  const chartData = useSelector(selectChartData);
   const textAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -52,29 +27,14 @@ const Feedbacks = () => {
     positive: {
       color: "#45B369",
       name: "Positive",
-      total: 458,
+      total: chartData.reduce((acc, data) => acc + data.positive, 0),
     },
     negative: {
       color: "#EF4A00",
       name: "Negative",
-      total: 258,
+      total: chartData.reduce((acc, data) => acc + Math.abs(data.negative), 0),
     },
   };
-
-  const chartData = [
-    { positive: 95, negative: -45 },
-    { positive: 85, negative: -35 },
-    { positive: 75, negative: -55 },
-    { positive: 90, negative: -40 },
-    { positive: 70, negative: -30 },
-    { positive: 85, negative: -45 },
-    { positive: 95, negative: -35 },
-    { positive: 80, negative: -50 },
-    { positive: 75, negative: -45 },
-    { positive: 85, negative: -35 },
-    { positive: 90, negative: -40 },
-    { positive: 95, negative: -35 },
-  ];
 
   const handleChartToggle = () => {
     setIsLineChart(!isLineChart);
@@ -142,16 +102,11 @@ const Feedbacks = () => {
         {/* Grafik Kartı */}
         <div className="bg-white rounded-[20px] p-4 sm:p-6">
           <FeedbackHeader
-            parameters={parameters}
             onChartToggle={handleChartToggle}
             isLineChart={isLineChart}
           />
           <div className="w-full overflow-hidden events-container">
-            {isLineChart ? (
-              <LineChart data={chartData} />
-            ) : (
-              <BarChart data={chartData} />
-            )}
+            {isLineChart ? <LineChart /> : <BarChart />}
           </div>
         </div>
 

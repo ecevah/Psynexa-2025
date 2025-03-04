@@ -1,6 +1,7 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Line } from "react-chartjs-2";
-import { useTranslations } from "next-intl";
+import { selectLineData } from "@/store/features/emotionTrackingSlice";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,7 +24,7 @@ ChartJS.register(
 );
 
 const EmotionTrackingLine = () => {
-  const t = useTranslations("EmotionTracking");
+  const data = useSelector(selectLineData);
 
   const options = {
     responsive: true,
@@ -34,21 +35,24 @@ const EmotionTrackingLine = () => {
           display: false,
         },
         ticks: {
-          color: "#9D9D9D",
+          padding: 10,
           font: {
-            size: 12,
+            size: 11,
           },
         },
       },
       y: {
         grid: {
-          color: "#F5F6FA",
+          color: "#E5E5E5",
         },
         ticks: {
-          color: "#9D9D9D",
+          padding: 10,
           font: {
-            size: 12,
+            size: 11,
           },
+        },
+        border: {
+          dash: [4, 4],
         },
       },
     },
@@ -80,84 +84,20 @@ const EmotionTrackingLine = () => {
         borderRadius: 20,
         usePointStyle: true,
         pointStyle: "circle",
-        callbacks: {
-          title: (context) => context[0].label,
-          label: (context) => {
-            const emotions = ["Angry", "Happy", "Sad"];
-            const colors = ["#FE7575", "#FEE278", "#67C4E5"];
-            const index = context.datasetIndex;
-            return `${emotions[index]}: ${context.parsed.y}%`;
-          },
-        },
       },
     },
-    elements: {
-      line: {
-        tension: 0,
-        capBezierPoints: true,
-        borderJoinStyle: "miter",
-      },
-      point: {
-        radius: 8.287,
-        borderWidth: 4,
-        backgroundColor: "#FFF",
-        hoverRadius: 8.287,
-        hoverBorderWidth: 4,
-        pointStyle: "circle",
+    layout: {
+      padding: {
+        left: 5,
+        right: 5,
+        top: 10,
+        bottom: 5,
       },
     },
-  };
-
-  const labels = [
-    t("months.jan"),
-    t("months.feb"),
-    t("months.mar"),
-    t("months.apr"),
-    t("months.may"),
-    t("months.jun"),
-    t("months.jul"),
-    t("months.aug"),
-    t("months.sep"),
-    t("months.oct"),
-    t("months.nov"),
-    t("months.dec"),
-  ];
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        data: [65, 45, 75, 35, 85, 55, 70, 60, 75, 65, 80, 70],
-        borderColor: "#FE7575",
-        borderWidth: 4,
-        pointBorderColor: "#FE7575",
-        pointBackgroundColor: "#FFF",
-        fill: false,
-        lineTension: 0,
-      },
-      {
-        data: [45, 65, 45, 60, 55, 75, 50, 70, 60, 70, 65, 55],
-        borderColor: "#FEE278",
-        borderWidth: 4,
-        pointBorderColor: "#FEE278",
-        pointBackgroundColor: "#FFF",
-        fill: false,
-        lineTension: 0,
-      },
-      {
-        data: [35, 55, 65, 45, 70, 45, 60, 50, 65, 55, 70, 60],
-        borderColor: "#67C4E5",
-        borderWidth: 4,
-        pointBorderColor: "#67C4E5",
-        pointBackgroundColor: "#FFF",
-        fill: false,
-        lineTension: 0,
-      },
-    ],
   };
 
   return (
-    <div className="w-full h-full p-[24px] my-auto">
+    <div className="w-full h-[270px] min-w-0 overflow-hidden">
       <Line options={options} data={data} />
     </div>
   );

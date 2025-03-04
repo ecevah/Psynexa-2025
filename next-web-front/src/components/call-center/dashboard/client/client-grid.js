@@ -1,11 +1,12 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import HeaderCircleIconButton from "../../header/circle-icon-button/header-circle-icon-button";
 import { useState } from "react";
 
 const ClientGrid = ({ clients }) => {
   const t = useTranslations("ClientPage");
   const [hoveredId, setHoveredId] = useState(null);
+  const locale = useLocale();
 
   return (
     <div className="w-full h-full overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 min-[890px]:grid-cols-3 min-[1300px]:grid-cols-4 min-[1570px]:grid-cols-5 gap-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-[#D0E8FC] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
@@ -88,8 +89,7 @@ const ClientGrid = ({ clients }) => {
                   transition: "background-color 0.2s",
                 }}
                 func={() => {
-                  // Handle statistics click
-                  console.log("Statistics clicked for client:", client.id);
+                  window.location.href = `/${locale}/client/${client.id}?tab=appStatistics`;
                 }}
                 labelIsVisible={false}
                 isBig={false}
@@ -109,7 +109,7 @@ const ClientGrid = ({ clients }) => {
                   transition: "background-color 0.2s",
                 }}
                 func={() => {
-                  console.log("Profile clicked for client:", client.id);
+                  window.location.href = `/${locale}/client/${client.id}?tab=userProfile`;
                 }}
                 labelIsVisible={false}
                 isBig={false}

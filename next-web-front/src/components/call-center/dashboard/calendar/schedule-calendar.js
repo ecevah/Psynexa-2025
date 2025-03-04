@@ -6,124 +6,18 @@ import TodayItem from "./today-item";
 import EventListView from "./event-list-view";
 import CreateEventForm from "./create-event-form";
 import CalendarHeader from "./calendar-header";
-
-// Örnek etkinlik verileri
-const SAMPLE_EVENTS = {
-  "2025-02-15": [
-    {
-      id: "1",
-      title: "Terapi Seansı - John Doe",
-      time: "09:00 AM - 10:30 AM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "2",
-      title: "Psikolojik Danışmanlık - Sarah Smith",
-      time: "11:00 AM - 12:30 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "3",
-      title: "Aile Terapisi - Johnson Ailesi",
-      time: "02:00 PM - 03:30 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "4",
-      title: "Bireysel Seans - Mike Wilson",
-      time: "04:00 PM - 05:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-  ],
-  "2025-02-20": [
-    {
-      id: "5",
-      title: "Grup Terapisi",
-      time: "10:00 AM - 11:30 AM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "6",
-      title: "Danışmanlık Seansı - Emma Brown",
-      time: "02:00 PM - 03:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-  ],
-  "2025-02-25": [
-    {
-      id: "7",
-      title: "Çift Terapisi - Taylor Çifti",
-      time: "11:00 AM - 12:30 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "8",
-      title: "Stres Yönetimi Seansı - Lisa Clark",
-      time: "03:00 PM - 04:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "9",
-      title: "Bireysel Danışmanlık - Tom Harris",
-      time: "05:00 PM - 06:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "7",
-      title: "Çift Terapisi - Taylor Çifti",
-      time: "11:00 AM - 12:30 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "8",
-      title: "Stres Yönetimi Seansı - Lisa Clark",
-      time: "03:00 PM - 04:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "9",
-      title: "Bireysel Danışmanlık - Tom Harris",
-      time: "05:00 PM - 06:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "7",
-      title: "Çift Terapisi - Taylor Çifti",
-      time: "11:00 AM - 12:30 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "8",
-      title: "Stres Yönetimi Seansı - Lisa Clark",
-      time: "03:00 PM - 04:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "9",
-      title: "Bireysel Danışmanlık - Tom Harris",
-      time: "05:00 PM - 06:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "7",
-      title: "Çift Terapisi - Taylor Çifti",
-      time: "11:00 AM - 12:30 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "8",
-      title: "Stres Yönetimi Seansı - Lisa Clark",
-      time: "03:00 PM - 04:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-    {
-      id: "9",
-      title: "Bireysel Danışmanlık - Tom Harris",
-      time: "05:00 PM - 06:00 PM",
-      image: "/call-center/user-image.jpeg",
-    },
-  ],
-};
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectCalendar,
+  selectEvents,
+  selectTodayEvents,
+  setCalendarDate,
+  setShowMonthSelector,
+  setIsCreatingEvent,
+  setViewingDate,
+  setEventFormData,
+  addEvent,
+} from "@/store/features/dashboardSlice";
 
 export default function ScheduleCalendar({
   taskDates,
@@ -133,14 +27,16 @@ export default function ScheduleCalendar({
 }) {
   const t = useTranslations("Calendar");
   const locale = useLocale();
-  const [date, setDate] = React.useState(new Date());
-  const [showMonthSelector, setShowMonthSelector] = React.useState(false);
-  const [isCreatingEvent, setIsCreatingEvent] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState(null);
-  const [eventTitle, setEventTitle] = React.useState("");
-  const [eventDescription, setEventDescription] = React.useState("");
-  const [eventTime, setEventTime] = React.useState("");
-  const [viewingDate, setViewingDate] = React.useState(null);
+  const dispatch = useDispatch();
+
+  const calendar = useSelector(selectCalendar);
+  const reduxEvents = useSelector(selectEvents);
+  const reduxTodayEvents = useSelector(selectTodayEvents);
+
+  // Convert ISO string to Date object
+  const selectedDate = calendar.selectedDate
+    ? new Date(calendar.selectedDate)
+    : new Date();
 
   const formatMonthYear = (date) => {
     return date.toLocaleDateString(locale, {
@@ -159,7 +55,7 @@ export default function ScheduleCalendar({
   };
 
   const months = Array.from({ length: 12 }, (_, i) => {
-    const d = new Date(date);
+    const d = new Date(selectedDate);
     d.setMonth(i);
     return {
       label: d.toLocaleDateString(locale, { month: "short" }),
@@ -168,67 +64,86 @@ export default function ScheduleCalendar({
   });
 
   const handleMonthSelect = (monthIndex) => {
-    const newDate = new Date(date);
+    const newDate = new Date(selectedDate);
     newDate.setMonth(monthIndex);
-    setDate(newDate);
-    setShowMonthSelector(false);
+    dispatch(setCalendarDate(newDate));
+    dispatch(setShowMonthSelector(false));
   };
 
-  const handleEmptyDateClick = (selectedDate) => {
-    setSelectedDate(selectedDate);
-    setIsCreatingEvent(true);
-    setViewingDate(null);
+  const handleEmptyDateClick = (date) => {
+    const isoDate = date.toISOString();
+    dispatch(setCalendarDate(isoDate));
+    dispatch(setIsCreatingEvent(true));
+    dispatch(setViewingDate(null));
   };
 
-  const handleTaskDateClick = (selectedDate) => {
-    const formattedDate = selectedDate.toISOString().split("T")[0];
-    setViewingDate(formattedDate);
-    setIsCreatingEvent(false);
+  const handleTaskDateClick = (date) => {
+    const formattedDate = date.toISOString().split("T")[0];
+    dispatch(setViewingDate(formattedDate));
+    dispatch(setIsCreatingEvent(false));
   };
 
   const handleSaveEvent = () => {
-    if (onEventCreate) {
-      onEventCreate({
-        date: selectedDate,
-        title: eventTitle,
-        description: eventDescription,
-        time: eventTime,
-      });
+    const { title, description, time, startTime, endTime } = calendar.eventForm;
+    if (title && time) {
+      dispatch(
+        addEvent({
+          date: selectedDate.toISOString().split("T")[0],
+          event: {
+            id: Date.now().toString(),
+            title,
+            description,
+            time: `${startTime} - ${endTime}`,
+            image: "/call-center/user-image.jpeg",
+          },
+        })
+      );
     }
-    setIsCreatingEvent(false);
-    setEventTitle("");
-    setEventDescription("");
-    setEventTime("");
-    setSelectedDate(null);
+    dispatch(setIsCreatingEvent(false));
+    dispatch(
+      setEventFormData({
+        title: "",
+        description: "",
+        time: "",
+        startTime: "",
+        endTime: "",
+      })
+    );
   };
 
-  if (viewingDate) {
+  if (calendar.viewingDate) {
     return (
       <div className="h-full w-full bg-white rounded-[20px] p-[20px] flex flex-col">
         <EventListView
-          events={events[viewingDate] || []}
-          date={viewingDate}
-          onClose={() => setViewingDate(null)}
+          events={reduxEvents[calendar.viewingDate] || []}
+          date={calendar.viewingDate}
+          onClose={() => dispatch(setViewingDate(null))}
           formatDate={formatDate}
         />
       </div>
     );
   }
 
-  if (isCreatingEvent && selectedDate) {
+  if (calendar.isCreatingEvent && selectedDate) {
     return (
       <div className="h-full w-full bg-white rounded-[20px] p-[20px] flex flex-col">
         <CreateEventForm
           selectedDate={selectedDate}
           formatDate={formatDate}
-          onCancel={() => setIsCreatingEvent(false)}
+          onCancel={() => dispatch(setIsCreatingEvent(false))}
           onSave={handleSaveEvent}
-          eventTitle={eventTitle}
-          setEventTitle={setEventTitle}
-          eventDescription={eventDescription}
-          setEventDescription={setEventDescription}
-          eventTime={eventTime}
-          setEventTime={setEventTime}
+          eventTitle={calendar.eventForm.title}
+          setEventTitle={(title) =>
+            dispatch(setEventFormData({ ...calendar.eventForm, title }))
+          }
+          eventDescription={calendar.eventForm.description}
+          setEventDescription={(description) =>
+            dispatch(setEventFormData({ ...calendar.eventForm, description }))
+          }
+          eventTime={calendar.eventForm.time}
+          setEventTime={(time) =>
+            dispatch(setEventFormData({ ...calendar.eventForm, time }))
+          }
         />
       </div>
     );
@@ -237,16 +152,16 @@ export default function ScheduleCalendar({
   return (
     <div className="h-full w-full bg-white rounded-[20px] p-[20px] flex flex-col overflow-y-scroll events-container ">
       <CalendarHeader
-        date={date}
-        showMonthSelector={showMonthSelector}
-        setShowMonthSelector={setShowMonthSelector}
+        date={selectedDate}
+        showMonthSelector={calendar.showMonthSelector}
+        setShowMonthSelector={(show) => dispatch(setShowMonthSelector(show))}
         months={months}
         handleMonthSelect={handleMonthSelect}
         formatMonthYear={formatMonthYear}
       />
       <CustomCalendar
-        date={date}
-        onDateChange={setDate}
+        date={selectedDate}
+        onDateChange={(date) => dispatch(setCalendarDate(date.toISOString()))}
         taskDates={taskDates}
         onTaskDateClick={handleTaskDateClick}
         onEmptyDateClick={handleEmptyDateClick}
@@ -255,7 +170,7 @@ export default function ScheduleCalendar({
         {t("todayTasks")}
       </div>
       <div className="flex-1 flex flex-col w-full overflow-y-auto min-h-[72px] overflow-x-visible events-container ">
-        {todayEvents.map((event) => (
+        {reduxTodayEvents.map((event) => (
           <TodayItem
             key={event.id}
             image={event.image}

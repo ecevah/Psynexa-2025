@@ -2,8 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import HomeDropdown from "../../dropdown/home-dropdown";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import { selectFeedbackData } from "@/store/features/feedbacksSlice";
 
 const MonthFeedbacksHeader = () => {
+  const feedbackData = useSelector(selectFeedbackData);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());

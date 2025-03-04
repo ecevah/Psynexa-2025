@@ -7,14 +7,25 @@ import { useTranslations } from "next-intl";
 import ClientTable from "@/components/call-center/dashboard/client/client-table";
 import ClientGrid from "@/components/call-center/dashboard/client/client-grid";
 import Image from "next/image";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectPaginatedClients,
+  selectTotalPages,
+  selectCurrentPage,
+  setCurrentPage,
+} from "@/store/features/clientsSlice";
 
 const ITEMS_PER_PAGE = 10;
 
 const ClientPage = () => {
   const tTemplate = useTranslations("Template");
   const [selectedOption, setSelectedOption] = useState(tTemplate("allTime"));
-  const [currentPage, setCurrentPage] = useState(1);
   const [isGridView, setIsGridView] = useState(false);
+
+  const dispatch = useDispatch();
+  const currentClients = useSelector(selectPaginatedClients);
+  const totalPages = useSelector(selectTotalPages);
+  const currentPage = useSelector(selectCurrentPage);
 
   // Örnek veri - Gerçek uygulamada API'den gelecek
   const clients = Array(50)
@@ -29,12 +40,6 @@ const ClientPage = () => {
       email: `client${index + 1}@example.com`,
       birthday: "12 Oct 2024",
     }));
-
-  const totalPages = Math.ceil(clients.length / ITEMS_PER_PAGE);
-  const currentClients = clients.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
 
   return (
     <>
@@ -91,7 +96,9 @@ const ClientPage = () => {
           <div className="flex justify-center items-center py-2 px-2">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                onClick={() =>
+                  dispatch(setCurrentPage(Math.max(1, currentPage - 1)))
+                }
                 disabled={currentPage === 1}
                 className="w-[32px] h-[32px] flex items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E0E4E8] transition-colors"
               >
@@ -112,7 +119,9 @@ const ClientPage = () => {
 
               <button
                 onClick={() =>
-                  setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  dispatch(
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  )
                 }
                 disabled={currentPage === totalPages}
                 className="w-[32px] h-[32px] flex items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E0E4E8] transition-colors"

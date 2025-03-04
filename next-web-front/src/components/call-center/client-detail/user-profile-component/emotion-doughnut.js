@@ -1,7 +1,9 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Chart as ChartJS, ArcElement, Legend } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { useTranslations } from "next-intl";
+import { selectEmotionData } from "@/store/features/emotionDoughnutSlice";
 
 // Emotion chart için özel plugin
 const emotionTextPlugin = {
@@ -36,6 +38,8 @@ ChartJS.register(ArcElement, Legend, emotionTextPlugin);
 
 const EmotionDoughnut = () => {
   const t = useTranslations("EmotionTracking.emotions");
+  const emotions = useSelector(selectEmotionData);
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -47,16 +51,14 @@ const EmotionDoughnut = () => {
       centerTextPlugin: false,
     },
     animation: {
-      animateScale: false, // Bu özelliği kapat
+      animateScale: false,
       animateRotate: true,
     },
-    // Hover efektlerini devre dışı bırak
     hover: {
       mode: null,
       intersect: false,
       animationDuration: 0,
     },
-    // Element hover efektlerini kapat
     elements: {
       arc: {
         hover: {
@@ -67,28 +69,18 @@ const EmotionDoughnut = () => {
     },
   };
 
+  const emotionLabels = ["angry", "happy", "depressed", "sad", "overenjoyed"];
+  const emotionColors = ["#FE7575", "#FEE278", "#C179FF", "#64C6EA", "#A1DC67"];
+
   const data = {
-    labels: [
-      t("angry"),
-      t("happy"),
-      t("depressed"),
-      t("sad"),
-      t("overenjoyed"),
-    ],
+    labels: emotionLabels.map((emotion) => t(emotion)),
     datasets: [
       {
-        data: [20, 25, 15, 25, 15],
-        backgroundColor: [
-          "#FE7575",
-          "#FEE278",
-          "#C179FF",
-          "#64C6EA",
-          "#A1DC67",
-        ],
+        data: emotionLabels.map((emotion) => emotions[emotion]),
+        backgroundColor: emotionColors,
         borderWidth: 0,
         borderRadius: 5,
         spacing: 10,
-        // Hover efektlerini devre dışı bırak
         hoverOffset: 0,
         hoverBorderWidth: 0,
       },
