@@ -137,4 +137,4 @@ docs/
 .env.test.local
 .env.production.local 
 
-/migrations
+migrations/
