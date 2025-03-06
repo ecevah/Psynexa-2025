@@ -1,4 +1,40 @@
 {
+  "Auth": {
+    "hero_text": "Uygulamanızı Yapay Zeka ile Güçlendirin: Daha Akıllı İçgörüler, Daha İyi Terapi.",
+    "having_troubles": "Sorun mu yaşıyorsunuz?",
+    "get_help": "Yardım Alın",
+    "signin_to_psynexa": "Psynexa'ya Giriş Yapın",
+    "signup_to_psynexa": "Psynexa'ya Kaydolun",
+    "signin_with_google": "Google ile Giriş Yap",
+    "signup_with_google": "Google ile Kaydol",
+    "or": "veya",
+    "email_address": "E-posta adresi",
+    "password": "Şifre",
+    "first_name": "Ad",
+    "last_name": "Soyad",
+    "password_requirements": "Şifre büyük harf, küçük harf, rakam ve özel karakter içermelidir",
+    "password_too_weak": "Çok zayıf",
+    "password_could_be_stronger": "Daha güçlü olabilir",
+    "password_getting_better": "Daha iyi oluyor",
+    "password_good": "İyi şifre",
+    "password_great": "Şifreniz harika. Güzel iş!",
+    "weak": "Zayıf",
+    "fair": "Orta",
+    "good": "İyi",
+    "strong": "Güçlü",
+    "forgot_password": "Şifremi unuttum?",
+    "sign_in": "Giriş yap",
+    "sign_up": "Kaydol",
+    "new_user": "Yeni kullanıcı mı?",
+    "create_account": "Hesap oluştur",
+    "already_have_account": "Zaten hesabınız var mı?",
+    "terms_agreement": "Hesap oluştur'a tıklayarak, Kullanım Şartları ve Gizlilik Politikası'nı okuduğumu ve kabul ettiğimi onaylıyorum.",
+    "terms_of_use": "Kullanım Şartları",
+    "privacy_policy": "Gizlilik Politikası",
+    "terms_of_service": "Hizmet Şartları",
+    "and": "ve",
+    "protected_by_recaptcha": "reCAPTCHA tarafından korunmaktadır ve Cuboid'in"
+  },
   "Template": {
     "thisMonth": "Bu Ay",
     "allTime": "Tüm Zamanlar",
@@ -265,5 +301,9 @@
     "appStatistics": "Uygulama İstatistikleri",
     "nexabotAnalysis": "Nexabot Analizi",
     "feedback": "Geri Bildirim"
+  },
+  "HomePage": {
+    "title": "Anasayfa",
+    "about": "Hakkımızda"
   }
 }

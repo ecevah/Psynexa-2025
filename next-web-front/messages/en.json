@@ -1,4 +1,40 @@
-{
+  {
+    "Auth": {
+      "hero_text": "Empower Your Practice with AI: Smarter Insights, Better Therapy.",
+      "having_troubles": "Having troubles?",
+      "get_help": "Get Help",
+      "signin_to_psynexa": "Sign in to Psynexa",
+      "signup_to_psynexa": "Sign up to Psynexa",
+      "signin_with_google": "Sign in with Google",
+      "signup_with_google": "Sign up with Google",
+      "or": "or",
+      "email_address": "Email address",
+      "password": "Password",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "password_requirements": "Password must include uppercase, lowercase, number, and special character",
+      "password_too_weak": "Too weak",
+      "password_could_be_stronger": "Could be stronger",
+      "password_getting_better": "Getting better",
+      "password_good": "Good password",
+      "password_great": "Your password is great. Nice work!",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong",
+      "forgot_password": "Forgot password?",
+      "sign_in": "Sign in",
+      "sign_up": "Sign up",
+      "new_user": "New user?",
+      "create_account": "Create an account",
+      "already_have_account": "Already have an account?",
+      "terms_agreement": "By clicking Create account, I agree that I have read and accepted the",
+      "terms_of_use": "Terms of Use",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_service": "Terms of Service",
+      "and": "and",
+      "protected_by_recaptcha": "Protected by reCAPTCHA and subject to the Cuboid"
+    },
     "Template": {
       "thisMonth": "This month",
       "allTime": "All time",
@@ -99,175 +135,179 @@
       }
     },
     "UserProfile": {
-    "role": "Role",
-    "status": "Status",
-    "active": "Active",
-    "inactive": "Inactive",
-    "joinDate": "Join Date",
-    "lastActive": "Last Active",
-    "generalInfo": "General Info",
-    "gender": "Gender",
-    "dateOfBirth": "Date of Birth",
-    "location": "Location",
-    "language": "Language",
-    "timezone": "Timezone",
-    "contactInfo": "Contact Info",
-    "phone": "Phone",
-    "email": "Email",
-    "about": "About",
-    "yearsOld": "Years Old",
-    "totalMessage": "Total Message",
-    "nexabotUsageTime": "Nexabot Usage Time",
-    "appUsageTime": "App Usage Time",
-    "emotionAnalysis": "Emotion Analysis"
-  },
-  "EmotionTracking": {
-    "months": {
-      "jan": "Jan",
-      "feb": "Feb",
-      "mar": "Mar",
-      "apr": "Apr",
-      "may": "May",
-      "jun": "Jun",
-      "jul": "Jul",
-      "aug": "Aug",
-      "sep": "Sep",
-      "oct": "Oct",
-      "nov": "Nov",
-      "dec": "Dec"
+      "role": "Role",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "joinDate": "Join Date",
+      "lastActive": "Last Active",
+      "generalInfo": "General Info",
+      "gender": "Gender",
+      "dateOfBirth": "Date of Birth",
+      "location": "Location",
+      "language": "Language",
+      "timezone": "Timezone",
+      "contactInfo": "Contact Info",
+      "phone": "Phone",
+      "email": "Email",
+      "about": "About",
+      "yearsOld": "Years Old",
+      "totalMessage": "Total Message",
+      "nexabotUsageTime": "Nexabot Usage Time",
+      "appUsageTime": "App Usage Time",
+      "emotionAnalysis": "Emotion Analysis"
     },
-    "emotions": {
-      "happy": "Mutlu",
-      "angry": "Kızgın",
-      "sad": "Üzgün",
-      "depressed": "Depresif",
-      "overenjoyed": "Çok Mutlu"
-    }
-  },
-  "NexabotAnalysis": {
-    "emotionAnalysis": "Emotion Analysis",
-    "judicialExpression": "Judicial Expression",
-    "search": "Search",
-    "searchPlaceholder": "Search...",
-    "emotions": {
-      "angry": "Angry",
-      "happy": "Happy",
-      "sad": "Sad",
-      "depressed": "Depressed",
-      "overjoyed": "Overjoyed"
+    "EmotionTracking": {
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      },
+      "emotions": {
+        "happy": "Mutlu",
+        "angry": "Kızgın",
+        "sad": "Üzgün",
+        "depressed": "Depresif",
+        "overenjoyed": "Çok Mutlu"
+      }
     },
-    "parameters": {
-      "frustration": "Frustration",
-      "irritation": "Irritation",
-      "rage": "Rage",
-      "annoyance": "Annoyance",
-      "joy": "Joy",
-      "contentment": "Contentment",
-      "satisfaction": "Satisfaction",
-      "pleasure": "Pleasure",
-      "sadness": "Sadness",
-      "hopelessness": "Hopelessness",
-      "emptiness": "Emptiness",
-      "despair": "Despair",
-      "grief": "Grief",
-      "melancholy": "Melancholy",
-      "sorrow": "Sorrow",
-      "loneliness": "Loneliness",
-      "elation": "Elation",
-      "euphoria": "Euphoria",
-      "delight": "Delight",
-      "excitement": "Excitement"
+    "NexabotAnalysis": {
+      "emotionAnalysis": "Emotion Analysis",
+      "judicialExpression": "Judicial Expression",
+      "search": "Search",
+      "searchPlaceholder": "Search...",
+      "emotions": {
+        "angry": "Angry",
+        "happy": "Happy",
+        "sad": "Sad",
+        "depressed": "Depressed",
+        "overjoyed": "Overjoyed"
+      },
+      "parameters": {
+        "frustration": "Frustration",
+        "irritation": "Irritation",
+        "rage": "Rage",
+        "annoyance": "Annoyance",
+        "joy": "Joy",
+        "contentment": "Contentment",
+        "satisfaction": "Satisfaction",
+        "pleasure": "Pleasure",
+        "sadness": "Sadness",
+        "hopelessness": "Hopelessness",
+        "emptiness": "Emptiness",
+        "despair": "Despair",
+        "grief": "Grief",
+        "melancholy": "Melancholy",
+        "sorrow": "Sorrow",
+        "loneliness": "Loneliness",
+        "elation": "Elation",
+        "euphoria": "Euphoria",
+        "delight": "Delight",
+        "excitement": "Excitement"
+      },
+      "chatbot": {
+        "title": "Nexabot Chat",
+        "messagePlaceholder": "Type your message...",
+        "send": "Send"
+      },
+      "columns": {
+        "sentences": "Sentences",
+        "expressions": "Expressions"
+      },
+      "sentences": {
+        "overwhelmed": "I am overwhelmed by work lately.",
+        "pointless": "Everything seems pointless lately.",
+        "cantFocus": "I can't focus on anything for more than a few minutes.",
+        "topOfWorld": "I feel like I'm on top of the world!"
+      },
+      "expressions": {
+        "workStress": "Work stress and potential burnout indicators.",
+        "depression": "Depressive thoughts and motivation loss indicators.",
+        "attention": "Attention deficit and concentration problems.",
+        "elevated": "Strong positive emotional state, potential elevated spiritual state."
+      }
     },
-    "chatbot": {
-      "title": "Nexabot Chat",
-      "messagePlaceholder": "Type your message...",
-      "send": "Send"
-    },
-    "columns": {
-      "sentences": "Sentences",
-      "expressions": "Expressions"
-    },
-    "sentences": {
-      "overwhelmed": "I am overwhelmed by work lately.",
-      "pointless": "Everything seems pointless lately.",
-      "cantFocus": "I can't focus on anything for more than a few minutes.",
-      "topOfWorld": "I feel like I'm on top of the world!"
-    },
-    "expressions": {
-      "workStress": "Work stress and potential burnout indicators.",
-      "depression": "Depressive thoughts and motivation loss indicators.",
-      "attention": "Attention deficit and concentration problems.",
-      "elevated": "Strong positive emotional state, potential elevated spiritual state."
-    }
-  },
-  "AppStatistics": {
-    "emotionTracking": "Emotion Tracking",
-    "emotionTrackingBar": "Emotion Tracking Bar",
-    "testResults": "Test Results",
-    "contentsData": "Contents Data",
-    "search": "Search",
-    "searchPlaceholder": "Search...",
-    "filter": "Filter",
-    "completed": "Completed",
-    "title": "Filters",
-    "apply": "Apply",
-    "reset": "Reset",
-    "breathing": "Breathing",
-    "exercise": "Exercise",
-    "mindfulness": "Mindfulness",
-    "testName": "Test Name",
-    "category": "Category",
-    "situation": "Situation",
-    "detail": "Detail",
-    "download": "Download",
-    "meditation": "Meditation",
-    "clicks": "Clicks",
-    "time": "Time",
-    "tags": "Tags",
-    "date": "Date",
-    "score": "Score",
-    "status": "Status",
-    "duration": "Duration",
-    "viewDetails": "View Details",
-    "downloadReport": "Download Report",
-    "type": "Type",
-    "filterPopup": {
+    "AppStatistics": {
+      "emotionTracking": "Emotion Tracking",
+      "emotionTrackingBar": "Emotion Tracking Bar",
+      "testResults": "Test Results",
+      "contentsData": "Contents Data",
+      "search": "Search",
+      "searchPlaceholder": "Search...",
+      "filter": "Filter",
+      "completed": "Completed",
       "title": "Filters",
       "apply": "Apply",
       "reset": "Reset",
-      "category": "Category",
-      "meditation": "Meditation",
       "breathing": "Breathing",
-      "focus": "Focus",
+      "exercise": "Exercise",
+      "mindfulness": "Mindfulness",
+      "testName": "Test Name",
+      "category": "Category",
+      "situation": "Situation",
+      "detail": "Detail",
+      "download": "Download",
+      "meditation": "Meditation",
+      "clicks": "Clicks",
+      "time": "Time",
+      "tags": "Tags",
+      "date": "Date",
+      "score": "Score",
+      "status": "Status",
       "duration": "Duration",
-      "min": "Min"
-    }
-  },
-  "Feedbacks": {
-    "initialMessage": "Hello! How can I help you?",
-    "botResponse": "Thank you! I received your message and will evaluate it as soon as possible.",
-    "negative": "Negative",
-    "positive": "Positive",
-    "chatTitle": "Nexabot Chat",
-    "messagePlaceholder": "Type your message...",
-    "send": "Send",
-    "feedbackExample": "In certain situations, Nexabot's replies feel robotic and lack empathy. It doesn't come close to the warmth or understanding of a human therapist.",
-    "chatFeedback": {
-      "giveFeedback": "Give Feedback",
-      "writeFeedback": "Write your feedback here...",
-      "saveFeedback": "Save",
-      "thankYou": "Thank you for FeedBack",
-      "like": "Like",
-      "dislike": "Dislike"
+      "viewDetails": "View Details",
+      "downloadReport": "Download Report",
+      "type": "Type",
+      "filterPopup": {
+        "title": "Filters",
+        "apply": "Apply",
+        "reset": "Reset",
+        "category": "Category",
+        "meditation": "Meditation",
+        "breathing": "Breathing",
+        "focus": "Focus",
+        "duration": "Duration",
+        "min": "Min"
+      }
     },
-    "feedback": "Feedback",
-    "search": "Search..",
-    "feedbacks": "Feedbacks"
-  },
-  "ClientDetail": {
-    "userProfile": "User Profile",
-    "appStatistics": "App Statistics",
-    "nexabotAnalysis": "Nexabot Analysis",
-    "feedback": "Feedback"
+    "Feedbacks": {
+      "initialMessage": "Hello! How can I help you?",
+      "botResponse": "Thank you! I received your message and will evaluate it as soon as possible.",
+      "negative": "Negative",
+      "positive": "Positive",
+      "chatTitle": "Nexabot Chat",
+      "messagePlaceholder": "Type your message...",
+      "send": "Send",
+      "feedbackExample": "In certain situations, Nexabot's replies feel robotic and lack empathy. It doesn't come close to the warmth or understanding of a human therapist.",
+      "chatFeedback": {
+        "giveFeedback": "Give Feedback",
+        "writeFeedback": "Write your feedback here...",
+        "saveFeedback": "Save",
+        "thankYou": "Thank you for FeedBack",
+        "like": "Like",
+        "dislike": "Dislike"
+      },
+      "feedback": "Feedback",
+      "search": "Search..",
+      "feedbacks": "Feedbacks"
+    },
+    "ClientDetail": {
+      "userProfile": "User Profile",
+      "appStatistics": "App Statistics",
+      "nexabotAnalysis": "Nexabot Analysis",
+      "feedback": "Feedback"
+    },
+    "HomePage": {
+      "title": "Home",
+      "about": "About"
+    }
   }
-}
