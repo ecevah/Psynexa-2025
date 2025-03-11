@@ -8,6 +8,7 @@ const tokenService = require("../services/tokenService");
 const { Op } = require("sequelize");
 const { deleteFile } = require("../config/multer");
 const path = require("path");
+const fetch = require("node-fetch");
 
 class ClientAuthController {
   // Register
@@ -33,6 +34,18 @@ class ClientAuthController {
 
       if (req.file) {
         req.body.photo = path.relative("public", req.file.path);
+      }
+
+      // Harici API ile kaydı doğrula
+      const validationResult = await this.validateRegistration(req.body);
+      if (!validationResult.isValid) {
+        if (req.file) {
+          deleteFile(req.file.path);
+        }
+        return res.status(validationResult.status || 400).json({
+          status: false,
+          message: "Harici kayıt doğrulaması başarısız oldu",
+        });
       }
 
       const client = await Client.create(req.body);
@@ -147,6 +160,18 @@ class ClientAuthController {
         });
       }
 
+      // Harici API ile doğrulama yap
+      const isValidAccess = await this.validateClientAccess(
+        client.id,
+        client.language || "tr"
+      );
+      if (!isValidAccess) {
+        return res.status(401).json({
+          status: false,
+          message: "Erişim reddedildi",
+        });
+      }
+
       // Token'ları oluştur
       const { accessToken, refreshToken, refreshTokenExpiry } =
         tokenService.generateTokens(client.id, "client");
@@ -252,6 +277,64 @@ class ClientAuthController {
         status: false,
         message: "Şifre sıfırlama işlemi başarısız",
       });
+    }
+  }
+
+  // Validate Client Access
+  async validateClientAccess(clientId, clientLanguage) {
+    try {
+      const response = await fetch("http://147.79.115.249:8080/api/login", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          client_language: clientLanguage,
+        }),
+      });
+
+      return response.status === 200;
+    } catch (error) {
+      logger.error(`API doğrulama hatası: ${error.message}`);
+      return false;
+    }
+  }
+
+  // Validate Registration
+  async validateRegistration(userData) {
+    try {
+      const photoBase64 = userData.photo
+        ? Buffer.from(userData.photo).toString("base64")
+        : "";
+
+      const reqBody = {
+        name: userData.name || "",
+        mail: userData.email || "",
+        username: userData.username || userData.name || "",
+        hashed_password: userData.password || "",
+        language: userData.language || "tr",
+        face_photo: photoBase64,
+      };
+
+      const response = await fetch("http://147.79.115.249:8080/api/register", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqBody),
+      });
+
+      return {
+        isValid: response.status === 200,
+        status: response.status,
+      };
+    } catch (error) {
+      logger.error(`Kayıt API doğrulama hatası: ${error.message}`);
+      return {
+        isValid: false,
+        status: 500,
+      };
     }
   }
 

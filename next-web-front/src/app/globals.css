@@ -11,6 +11,9 @@ body {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  width: 100dvw;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .react-calendar {
@@ -118,4 +121,8 @@ body {
 
 .events-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari ve Opera için */
+}
+
+.landing-page-container {
+  background: radial-gradient(282.76% 179.3% at -11.35% 2.83%, #0A6EBD 0%, #053357 58%);
 }

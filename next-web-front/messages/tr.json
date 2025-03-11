@@ -304,6 +304,14 @@
   },
   "HomePage": {
     "title": "Anasayfa",
-    "about": "Hakkımızda"
+    "about": "Hakkımızda",
+    "header": {
+      "home": "Anasayfa",
+      "about": "Hakkımızda",
+      "solutions": "Çözümler",
+      "faq": "S.S.S",
+      "contact": "İletişim",
+      "language": "Dil"
+    }
   }
 }

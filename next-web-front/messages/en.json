@@ -308,6 +308,14 @@
     },
     "HomePage": {
       "title": "Home",
-      "about": "About"
+      "about": "About",
+      "header": {
+        "home": "Home",
+        "about": "About us",
+        "solutions": "Solutions",
+        "faq": "FAQ",
+        "contact": "Contact",
+        "language": "Language"
+      }
     }
   }
