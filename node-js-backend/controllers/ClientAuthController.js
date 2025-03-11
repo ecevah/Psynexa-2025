@@ -284,7 +284,7 @@ class ClientAuthController {
   async validateClientAccess(clientId, clientLanguage) {
     try {
       const response = await fetch("http://147.79.115.249:8080/api/login", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -318,7 +318,7 @@ class ClientAuthController {
       };
 
       const response = await fetch("http://147.79.115.249:8080/api/register", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
