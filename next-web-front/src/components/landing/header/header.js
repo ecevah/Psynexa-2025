@@ -41,7 +41,10 @@ const Header = () => {
 
   return (
     <>
-      <div className="py-[20px] md:py-[32px] px-[20px] md:px-[72px] flex flex-row justify-between items-center relative">
+      <div
+        className="py-[20px] md:py-[32px] px-[20px] md:px-[72px] flex flex-row justify-between items-center relative"
+        data-aos="fade-up"
+      >
         <Image
           src="/landing/header-logo.svg"
           alt="logo"

@@ -1,6 +1,7 @@
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/context/providers";
+import Aos from "@/services/aos";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
         </style>
       </head>
       <body className={`${urbanist.variable} antialiased`}>
-        <Providers>{children}</Providers>
+        <Aos>
+          <Providers>{children}</Providers>
+        </Aos>
       </body>
     </html>
   );
