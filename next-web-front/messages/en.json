@@ -316,6 +316,26 @@
         "faq": "FAQ",
         "contact": "Contact",
         "language": "Language"
+      },
+      "your_personal_friend": {
+        "circle": "Your personal friend",
+        "title": "A Bridge That Touches Your Mind And Opens To The Future",
+        "description": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you."
+      },
+      "personal_mental_companion": {
+        "circle": "Personal Mental Companion",
+        "title": "A Bridge That Touches Your Mind And Opens To The Future",
+        "description": "Experience the balance and peace with Psynexa's empathetic AI support and customized mental well-being tools."
+      },
+      "enjoy_psynexa": {
+        "circle": "Enjoy Psynexa",
+        "title": "Why Psynexa?",
+        "description": "Experience the balance and peace with Psynexa's empathetic AI support and customized mental well-being tools."
+      },
+      "instant_answers": {
+        "circle": "Get Instant Answers",
+        "title": "Frequently Asked Questions",
+        "description": ""
       }
     }
   }

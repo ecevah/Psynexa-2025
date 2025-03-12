@@ -126,3 +126,7 @@ body {
 .landing-page-container {
   background: radial-gradient(282.76% 179.3% at -11.35% 2.83%, #0A6EBD 0%, #053357 58%);
 }
+
+.white-to-blue-gradient {
+  background: linear-gradient(180deg, #FFF 0%, rgba(255, 255, 255, 0.10) 100%);
+}

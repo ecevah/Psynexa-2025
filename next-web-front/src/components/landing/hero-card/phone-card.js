@@ -8,7 +8,7 @@ import ExhaleCard from "./exhale-card";
 const PhoneCard = () => {
   return (
     <>
-      <div className="w-full h-[770px] flex items-end justify-center overflow-hidden relative">
+      <div className="w-full h-[770px] flex items-end justify-center overflow-hidden relative z-20">
         <div className="w-[411px] h-[624px] relative ml-[6px]">
           <div className="w-[411px] h-[624px] relative overflow-hidden">
             <Image

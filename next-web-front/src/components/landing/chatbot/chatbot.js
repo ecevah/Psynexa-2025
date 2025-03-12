@@ -3,7 +3,7 @@ import React from "react";
 
 const Chatbot = () => {
   return (
-    <div className="w-full max-w-[1440px] mx-auto p-4 md:p-6 lg:p-[40px] rounded-md md:rounded-xl lg:rounded-[24px] bg-[rgba(0,0,0,0.10)] backdrop-blur-[150px]">
+    <div className="w-full max-w-[1440px] mx-auto p-4 md:p-6 lg:p-[40px] rounded-md md:rounded-xl lg:rounded-[24px] bg-[rgba(0,0,0,0.10)] backdrop-blur-[150px] z-20 relative">
       <div className="w-full rounded-lg md:rounded-xl lg:rounded-[32px] relative overflow-hidden px-4 sm:px-6 md:px-8 lg:px-[40px] py-4 md:py-5 lg:py-[24px] flex flex-col">
         <div className="absolute w-full md:w-[1500px] lg:w-[2200px] h-[1000px] md:h-[1500px] lg:h-[2200px] rounded-full bg-[rgba(135,199,248,0.35)] blur-[150px] md:blur-[200px] lg:blur-[250px] -top-[800px] md:-top-[1500px] lg:-top-[2100px] left-0 md:left-[50px] lg:left-[100px]"></div>
         <div className="absolute w-[400px] md:w-[600px] lg:w-[919px] h-[400px] md:h-[600px] lg:h-[919px] rounded-full bg-[rgba(135,199,248,0.35)] blur-[100px] md:blur-[150px] lg:blur-[200px] -top-[200px] md:-top-[300px] lg:-top-[466px] -left-[200px] md:-left-[250px] lg:-left-[366px]"></div>
@@ -85,7 +85,7 @@ const Chatbot = () => {
               src="/landing/vector-chatbot.svg"
               width={185}
               height={100}
-              className="hidden md:block absolute top-[60px] md:top-[90px] lg:top-[120px] left-[-80px] md:left-[-100px] lg:left-[-140px] max-w-[100px] md:max-w-[150px] lg:max-w-[185px] max-h-[60px] md:max-h-[80px] lg:max-h-[100px] rotate-[85deg]"
+              className="hidden md:block absolute top-[60px] md:top-[90px] lg:top-[120px] left-[-80px] md:left-[-100px] lg:left-[-140px] max-w-[100px] md:max-w-[150px] lg:max-w-[185px] max-h-[60px] md:max-h-[80px] lg:max-h-[100px]"
               alt="vector-chatbot"
             />
 

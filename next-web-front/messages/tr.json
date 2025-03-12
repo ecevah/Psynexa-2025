@@ -312,6 +312,26 @@
       "faq": "S.S.S",
       "contact": "İletişim",
       "language": "Dil"
+    },
+    "your_personal_friend": {
+      "circle": "Kişisel Arkadaşınız",
+      "title": "Zihininize Doğru, Geleceğe Açılan Bir Köprü",
+      "description": "Psynexa ile zihninize derinlikle girin. Her gün daha dengeli ve huzurlu bir şekilde, Nexabot'un empatik desteği ve size özel önerileriyle birlikte."
+    },
+    "personal_mental_companion": {
+      "circle": "Kişisel Zihinsel Arkadaşınız",
+      "title": "Zihininize Doğru, Geleceğe Açılan Bir Köprü",
+      "description": "Psynexa'nın empatik AI desteği ve özel zihinsel sağlık aracılarıyla dengeli ve huzurlu bir şekilde deneyimleyin."
+    },
+    "enjoy_psynexa": {
+      "circle": "Psynexa'yı İzle",
+      "title": "Neden Psynexa?",
+      "description": "Psynexa'nın empatik AI desteği ve özel zihinsel sağlık aracılarıyla dengeli ve huzurlu bir şekilde deneyimleyin."
+    },
+    "instant_answers": {
+      "circle": "Get Instant Answers",
+      "title": "Sıkça Sorulan Sorular",
+      "description": ""
     }
   }
 }
