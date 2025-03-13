@@ -62,7 +62,6 @@ export default function HomePage() {
         <DownloadCard />
         <MailCard />
         <FooterCard />
-        <div className="absolute w-[1890px] h-[1890px] rounded-full bg-[rgba(135,199,248,0.25)] blur-[200px] -bottom-[450px] -right-[450px]"></div>
       </div>
     </>
   );

@@ -8,7 +8,7 @@ const DownloadCard = () => {
         className="w-full mx-auto rounded-[12px] sm:rounded-[18px] md:rounded-[24px] overflow-hidden"
         style={{
           background:
-            "url('/landing/bg-download.jpeg') lightgray 50% / cover no-repeat",
+            "linear-gradient(rgba(5, 51, 87, 0.9), rgba(5, 51, 87, 0.9)), url('/landing/bg-download.jpeg') lightgray 50% / cover no-repeat",
         }}
       >
         <div className="w-full relative flex flex-col lg:flex-row items-center">

@@ -4,7 +4,9 @@ import Link from "next/link";
 
 const FooterCard = () => {
   return (
-    <footer className="w-full  py-10 md:py-16 px-6 sm:px-8 md:px-10 lg:px-20">
+    <footer className="w-full  py-10 md:py-16 px-6 sm:px-8 md:px-10 lg:px-20 relative overflow-hidden h-fit">
+      <div className="absolute w-[1890px] h-[1890px] rounded-full bg-[rgba(135,199,248,0.25)] blur-[200px] -bottom-[1860px] -translate-x-1/4"></div>
+
       <div className="max-w-[1400px] mx-auto">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-[154px]">
