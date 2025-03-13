@@ -87,6 +87,7 @@ class ClientAuthController {
           accessToken,
           refreshToken,
         },
+        client_id: validationResult.client_id,
       });
     } catch (error) {
       if (req.file) {
@@ -325,15 +326,22 @@ class ClientAuthController {
         body: JSON.stringify(reqBody),
       });
 
+      let responseData = {};
+      if (response.status === 200) {
+        responseData = await response.json();
+      }
+
       return {
         isValid: response.status === 200,
         status: response.status,
+        client_id: responseData.client_id || null,
       };
     } catch (error) {
       logger.error(`Kayıt API doğrulama hatası: ${error.message}`);
       return {
         isValid: false,
         status: 500,
+        client_id: null,
       };
     }
   }
