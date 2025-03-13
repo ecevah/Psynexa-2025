@@ -329,9 +329,130 @@
       "description": "Psynexa'nın empatik AI desteği ve özel zihinsel sağlık aracılarıyla dengeli ve huzurlu bir şekilde deneyimleyin."
     },
     "instant_answers": {
-      "circle": "Get Instant Answers",
+      "circle": "Anında Cevaplar",
       "title": "Sıkça Sorulan Sorular",
       "description": ""
+    },
+    "exhale_card": {
+        "increase": "Enerjinizi Arttırın",
+        "calmness": "Uzun nefes alarak zihin ve bedenine huzur getirin",
+        "breathly": "Nefes Alın",
+        "hold": "Bekle",
+        "exhale": "Nefes Verin",
+        "hold_breath": "Bekle",
+        "seconds": "saniye"
+      },
+      "mini-nexabot-logo": {
+        "bold": "Merhaba Ben Nexabot!",
+        "light": "Kişisel arkadaşınız. Nasılsınız?"
+      },
+      "mood_tracker_card": {
+        "title": "Haftalık Duygu Takibi",
+        "weekly_mood": "Haftalık",
+        "mon": "Paz",
+        "tue": "Sal",
+        "wed": "Çrş",
+        "thu": "Prş",
+        "fri": "Cum",
+        "sat": "Cmt",
+        "sun": "Paz"
+      },
+      "meditation_card": {
+        "title": "Basit Stres Yönetimi"
+      },
+      "chatbot_card": {
+        "title-1": "Bizimle konuşun",
+        "title-2": "Nexabot",
+        "title-3": "Şimdi!",
+        "button-1": "Konuş",
+        "button-2": "Sesli Konuş",
+        "button-3": "Öneriler Al",
+        "button-4": "Arkadaş Ol",
+        "message-card-bold": "Merhaba Ben Nexabot!",
+        "message-card-light": "Nasılsınız? Ben Nexabot, kişisel arkadaşınız. Özel bir soru mu var?",
+        "chinese-card":"Bugün biraz kafam karışık ve yardım almak istiyorum.",
+        "message-input-card":"Mesajınızı yazın...",
+        "not-web":"Web için kullanılamaz, mobil uygulama indirin."
+      },
+      "mockup-card":{
+        "mini-nexabot-logo-bold":"Merhaba Ben Nexabot!",
+        "mini-nexabot-logo-light":"Kişisel arkadaşınız. Nasılsınız?",
+        "nexabot-card-description":"Nexabot duygularınızı analiz eder, empatik destek sunar ve size özel öneriler sunarak gününüzü geçirmenize yardımcı olur.",
+        "voice-text-card-title":"Sesli ve Metin İle İletişim",
+        "voice-text-card-description":"Sesli veya metin ile Nexabot ile konuşun ve size özel öneriler ve gözden kaçan ayrıntıları alın.",
+        "meditation-card-title":"Meditasyon ve Sesli Blog Dinleme",
+        "meditation-card-description":"Kişiselleştirilmiş meditasyon oturumları ve ilham verici sesli bloglarla zihninizi rahatlatın ve ruhunuzu yükseltin."
+      },
+      "faq": {
+        "item1": {
+          "title": "Psynexa nedir ve nasıl çalışır?",
+          "content": "Psynexa, ruh sağlığı desteği sunan yapay zeka destekli bir uygulamadır. Kullanıcıların duygusal durumlarını analiz eder, kişiselleştirilmiş tavsiyeler sunar ve meditasyon, nefes egzersizleri gibi farklı tekniklerle zihinsel sağlığınızı destekler. Kullanıcı dostu arayüzü sayesinde günlük ruh halinizi takip edebilir, düzenli uygulamalarla zihinsel dayanıklılığınızı artırabilirsiniz."
+        },
+        "item2": {
+          "title": "Psynexa ücretli mi?",
+          "content": "Psynexa'nın hem ücretsiz hem de premium özellikleri bulunmaktadır. Temel özellikler ücretsiz olarak sunulurken, daha gelişmiş özellikler ve kişiselleştirilmiş içerikler premium abonelik planımızla erişilebilir durumdadır."
+        },
+        "item3": {
+          "title": "Verilerim güvende mi?",
+          "content": "Kullanıcı gizliliği ve veri güvenliği bizim için en büyük önceliktir. Tüm verileriniz şifrelenir ve güvenli sunucularda saklanır. Kişisel bilgilerinizi kesinlikle üçüncü taraflarla paylaşmıyoruz ve en son güvenlik protokollerini uyguluyoruz."
+        },
+        "item4": {
+          "title": "Psynexa'yı kimler kullanabilir?",
+          "content": "Psynexa, zihinsel sağlığını iyileştirmek veya korumak isteyen herkes için tasarlanmıştır. Yaş sınırı olmaksızın, stres yönetimi, anksiyete azaltma veya genel zihinsel refah için destek arayan herkes tarafından kullanılabilir."
+        },
+        "item5": {
+          "title": "Nasıl başlayabilirim?",
+          "content": "Başlamak için Psynexa uygulamasını indirmeniz ve bir hesap oluşturmanız yeterlidir. Daha sonra kişiselleştirilmiş deneyiminiz için kısa bir değerlendirme yapılacak ve uygulama size özel öneriler sunmaya başlayacaktır."
+        }
+      },
+      "triple": {
+        "title": "Zihninize Dokunan ve Geleceğe Açılan Bir Köprü",
+        "description-1": "Psynexa ile zihninizin derinliklerine yolculuk yapın. Nexabot'un empatik desteği ve size özel önerileriyle her günü daha dengeli ve huzurlu bir şekilde karşılayın.",
+        "description-2": "Psynexa ile zihninizin derinliklerine yolculuk yapın. Nexabot'un empatik desteği ve size özel önerileriyle her günü daha dengeli ve huzurlu bir şekilde karşılayın.",
+        "button": "Uygulamaları Keşfedin"
+      },
+      "grid-card":{
+        "grid-1-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
+        "grid-1-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
+        "grid-2-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
+        "grid-2-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
+        "grid-3-title": "Günlük, Haftalık ve Aylık Duygu Takibi",
+        "grid-3-description": "Duygu takibi kolayca yapın ve sağlığınız hakkında daha iyi bir perspektif elde edin.",
+        "grid-4-title": "Rahatlatıcı Nefes Alma Egzersizi",
+        "grid-4-description": "Her zaman rahatlama ve odaklanma için uygun bir alan."
+      },
+      "download-card":{
+        "title": "Zihninize Dokunan ve Geleceğe Açılan Bir Köprü",
+        "description": "Psynexa ile zihninizin derinliklerine yolculuk yapın. Nexabot'un empatik desteği ve size özel önerileriyle her günü daha dengeli ve huzurlu bir şekilde karşılayın."
+      },
+      "footer-card":{
+        "mail-card":{
+          "title": "Bizimle Haberdar Olun",
+          "description": "İlk sen haberdar olun",
+          "email": "E-posta adresinizi girin"
+        },
+        "footer-card":{
+          "description": "Gelişmiş üretken yapay zeka teknolojisi ile donatılmış olan Nexabot, ruh halinizi anında analiz eder ve size uygun rehberlik sağlar.",
+          "menu":{
+            "title": "Menü",
+            "home": "Anasayfa",
+            "about": "Hakkımızda",
+            "solutions": "Çözümler",
+            "faq": "S.S.S",
+            "contact": "İletişim"
+          },
+          "info":{
+            "title": "Bilgiler",
+            "help": "Yardım Merkezi",
+            "blog": "Blog",
+            "terms": "Hizmet Sözleşmesi",
+            "privacy": "Gizlilik Politikası"
+          },
+          "app-card":{
+            "title": "Uygulamayı İndirin"
+          },
+          "copyright": "Psynexa tüm hakları korunmaktadır 2024"
+        }
+      }
     }
   }
-}

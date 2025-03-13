@@ -8,7 +8,10 @@ import ExhaleCard from "./exhale-card";
 const PhoneCard = () => {
   return (
     <>
-      <div className="w-full h-[770px] flex items-end justify-center overflow-hidden relative z-20">
+      <div
+        className="w-full h-[770px] flex items-end justify-center overflow-hidden relative z-20"
+        id="solutions-section"
+      >
         <div className="w-[411px] h-[624px] relative ml-[6px]">
           <div className="w-[411px] h-[624px] relative overflow-hidden">
             <Image
@@ -17,6 +20,7 @@ const PhoneCard = () => {
               height={810}
               alt="mockup"
               className="absolute"
+              data-aos="fade-up"
             />
           </div>
           <div className="min-[1100px]:flex hidden flex-col absolute bottom-[100px] -right-[320px]">

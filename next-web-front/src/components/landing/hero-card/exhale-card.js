@@ -1,10 +1,15 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
 
 const ExhaleCard = () => {
+  const t = useTranslations("HomePage");
   return (
     <>
-      <div className="w-[320px] px-[16px] py-[24px] flex flex-col relative rounded-[24px] bg-[#095c9c33] gap-[12px] shadow-[0px_1px_6px_0px_rgba(157,157,157,0.15)]">
+      <div
+        className="w-[320px] px-[16px] py-[24px] flex flex-col relative rounded-[24px] bg-[#095c9c33] gap-[12px] shadow-[0px_1px_6px_0px_rgba(157,157,157,0.15)]"
+        data-aos="fade-right"
+      >
         <div className="absolute -top-[50px] -right-[50px]">
           <div className="relative">
             <Image
@@ -14,12 +19,12 @@ const ExhaleCard = () => {
               alt="5hold"
               className="w-[120px] h-[120px] max-w-[120px] max-h-[120px] min-w-[120px] min-h-[120px]"
             />
-            <p className="absolute top-[40px] right-[40px] text-[12px] font-medium leading-[12px] text-white text-center">
+            <p className="absolute top-[40px] right-[40px] text-[12px] font-medium leading-[12px] text-white text-center lowercase">
               <span className="text-white text-[24px] font-bold leading-[26px]">
                 05
               </span>{" "}
               <br />
-              hold
+              {t("exhale_card.hold")}
             </p>
           </div>
         </div>
@@ -34,12 +39,11 @@ const ExhaleCard = () => {
             />
           </div>
           <p className="text-white text-[14px] font-semibold leading-[16px]">
-            Increase your <br />
-            Energy
+            {t("exhale_card.increase")}
           </p>
         </div>
         <div className="text-[11px] font-light text-white leading-[15px]">
-          Invite calmness to the mind and body with long exhalations
+          {t("exhale_card.calmness")}
         </div>
         <div className="flex flex-row gap-[24px]">
           <div className="flex flex-col">
@@ -51,9 +55,11 @@ const ExhaleCard = () => {
               className="max-w-[16px] min-w-[16px] max-h-[16px] min-h-[16px]"
             />
             <p className="text-white text-[14px] leading-[17px] mt-[8px] mb-[4px]">
-              Breathly
+              {t("exhale_card.breathly")}
             </p>
-            <p className="text-white text-[11px] leading-[13px]">4 Saniye</p>
+            <p className="text-white text-[11px] leading-[13px]">
+              4 {t("exhale_card.seconds")}
+            </p>
           </div>
           <div className="flex flex-col">
             <Image
@@ -64,9 +70,11 @@ const ExhaleCard = () => {
               className="max-w-[16px] min-w-[16px] max-h-[16px] min-h-[16px]"
             />
             <p className="text-white text-[14px] leading-[17px] mt-[8px] mb-[4px]">
-              Hold
+              {t("exhale_card.hold")}
             </p>
-            <p className="text-white text-[11px] leading-[13px]">4 Saniye</p>
+            <p className="text-white text-[11px] leading-[13px]">
+              4 {t("exhale_card.seconds")}
+            </p>
           </div>
           <div className="flex flex-col">
             <Image
@@ -77,9 +85,11 @@ const ExhaleCard = () => {
               className="max-w-[16px] min-w-[16px] max-h-[16px] min-h-[16px]"
             />
             <p className="text-white text-[14px] leading-[17px] mt-[8px] mb-[4px]">
-              Exhale
+              {t("exhale_card.exhale")}
             </p>
-            <p className="text-white text-[11px] leading-[13px]">4 Saniye</p>
+            <p className="text-white text-[11px] leading-[13px]">
+              4 {t("exhale_card.seconds")}
+            </p>
           </div>
           <div className="flex flex-col">
             <Image
@@ -90,9 +100,11 @@ const ExhaleCard = () => {
               className="max-w-[16px] min-w-[16px] max-h-[16px] min-h-[16px]"
             />
             <p className="text-white text-[14px] leading-[17px] mt-[8px] mb-[4px]">
-              Hold
+              {t("exhale_card.hold")}
             </p>
-            <p className="text-white text-[11px] leading-[13px]">4 Saniye</p>
+            <p className="text-white text-[11px] leading-[13px]">
+              4 {t("exhale_card.seconds")}
+            </p>
           </div>
         </div>
       </div>

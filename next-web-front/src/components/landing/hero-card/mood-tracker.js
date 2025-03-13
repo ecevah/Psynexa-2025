@@ -1,16 +1,21 @@
 import Image from "next/image";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const MoodTracker = () => {
+  const t = useTranslations("HomePage");
   return (
-    <div className="flex flex-col w-[340px] px-[12px] py-[24px] rounded-[20px] bg-[#095c9c33] shadow-[0px_1px_6px_0px_rgba(157,157,157,0.15)]">
+    <div
+      className="flex flex-col w-[340px] px-[12px] py-[24px] rounded-[20px] bg-[#095c9c33] shadow-[0px_1px_6px_0px_rgba(157,157,157,0.15)]"
+      data-aos="fade-right"
+    >
       <div className="flex flex-row items-center justify-between">
         <div className="text-[18px] font-semibold leading-[20px] text-white">
-          Weekly Mood Tracker
+          {t("mood_tracker_card.title")}
         </div>
         <div className="p-[8px] border-[0.3px] border-white border-solid rounded-[13px] gap-[4px] flex flex-row bg-[#08538E]">
           <div className="text-[14px] font-medium leading-[20px] text-white">
-            Weekly
+            {t("mood_tracker_card.weekly_mood")}
           </div>
           <Image
             src="/landing/arrow-down.svg"
@@ -28,7 +33,7 @@ const MoodTracker = () => {
               12
             </div>
             <div className="text-[#0B1215] text-[14px] text-center leading-[14px]">
-              Mon
+              {t("mood_tracker_card.mon")}
             </div>
           </div>
           <Image
@@ -45,7 +50,7 @@ const MoodTracker = () => {
               13
             </div>
             <div className="text-[#0B1215] text-[14px] text-center leading-[14px]">
-              Tue
+              {t("mood_tracker_card.tue")}
             </div>
           </div>
           <Image
@@ -62,7 +67,7 @@ const MoodTracker = () => {
               14
             </div>
             <div className="text-[#0B1215] text-[14px] text-center leading-[14px]">
-              Wed
+              {t("mood_tracker_card.wed")}
             </div>
           </div>
           <Image
@@ -79,7 +84,7 @@ const MoodTracker = () => {
               15
             </div>
             <div className="text-[#0B1215] text-[14px] text-center leading-[14px]">
-              Thu
+              {t("mood_tracker_card.thu")}
             </div>
           </div>
           <Image
@@ -96,7 +101,7 @@ const MoodTracker = () => {
               16
             </div>
             <div className="text-white text-[14px] text-center leading-[14px]">
-              Fri
+              {t("mood_tracker_card.fri")}
             </div>
           </div>
           <Image
@@ -113,7 +118,7 @@ const MoodTracker = () => {
               17
             </div>
             <div className="text-white text-[14px] text-center leading-[14px]">
-              Sat
+              {t("mood_tracker_card.sat")}
             </div>
           </div>
           <Image

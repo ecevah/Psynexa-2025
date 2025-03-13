@@ -1,10 +1,25 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const FooterCard = () => {
+  const t = useTranslations("HomePage.footer-card.footer-card");
+
+  // Function to scroll to a specific section by ID
+  const scrollToSection = (sectionId, e) => {
+    e.preventDefault();
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <footer className="w-full  py-10 md:py-16 px-6 sm:px-8 md:px-10 lg:px-20 relative overflow-hidden h-fit">
+    <footer
+      className="w-full  py-10 md:py-16 px-6 sm:px-8 md:px-10 lg:px-20 relative overflow-hidden h-fit"
+      id="contact-section"
+    >
       <div className="absolute w-[1890px] h-[1890px] rounded-full bg-[rgba(135,199,248,0.25)] blur-[200px] -bottom-[1860px] -translate-x-1/4"></div>
 
       <div className="max-w-[1400px] mx-auto">
@@ -18,57 +33,68 @@ const FooterCard = () => {
               width={217.28}
               height={56}
               className="w-[180px] md:w-[217.28px] h-auto"
+              data-aos="fade-up"
             />
-            <p className="text-white font-urbanist text-[14px] font-normal leading-[26px] mt-[12px] opacity-80 max-w-[350px]">
-              Equipped with advanced generative AI technology, Nexabot instantly
-              analyzes your mood and provides you with appropriate guidance.
+            <p
+              className="text-white font-urbanist text-[14px] font-normal leading-[26px] mt-[12px] opacity-80 max-w-[350px]"
+              data-aos="fade-up"
+            >
+              {t("description")}
             </p>
           </div>
 
           {/* Column 2 - Menu */}
           <div className="flex flex-col">
-            <h3 className="text-white font-urbanist text-[18px] sm:text-[20px] font-light leading-[26px] mb-4">
-              Menu
+            <h3
+              className="text-white font-urbanist text-[18px] sm:text-[20px] font-light leading-[26px] mb-4"
+              data-aos="fade-up"
+            >
+              {t("menu.title")}
             </h3>
             <ul className="flex flex-col gap-2 sm:gap-3">
-              <li>
+              <li data-aos="fade-up">
                 <Link
                   href="/"
-                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
+                  onClick={(e) => scrollToSection("hero-section", e)}
+                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity cursor-pointer"
                 >
-                  Home
+                  {t("menu.home")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
-                  href="/about"
-                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
+                  href="/"
+                  onClick={(e) => scrollToSection("about-section", e)}
+                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity cursor-pointer"
                 >
-                  About Us
+                  {t("menu.about")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
-                  href="/solutions"
-                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
+                  href="/"
+                  onClick={(e) => scrollToSection("solutions-section", e)}
+                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity cursor-pointer"
                 >
-                  Solutions
+                  {t("menu.solutions")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
-                  href="/faq"
-                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
+                  href="/"
+                  onClick={(e) => scrollToSection("faq-section", e)}
+                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity cursor-pointer"
                 >
-                  FAQ
+                  {t("menu.faq")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
-                  href="/contact"
-                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
+                  href="/"
+                  onClick={(e) => scrollToSection("contact-section", e)}
+                  className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity cursor-pointer"
                 >
-                  Contact
+                  {t("menu.contact")}
                 </Link>
               </li>
             </ul>
@@ -76,40 +102,43 @@ const FooterCard = () => {
 
           {/* Column 3 - Information */}
           <div className="flex flex-col">
-            <h3 className="text-white font-urbanist text-[18px] sm:text-[20px] font-light leading-[26px] mb-4">
-              Information
+            <h3
+              className="text-white font-urbanist text-[18px] sm:text-[20px] font-light leading-[26px] mb-4"
+              data-aos="fade-up"
+            >
+              {t("info.title")}
             </h3>
             <ul className="flex flex-col gap-2 sm:gap-3">
-              <li>
+              <li data-aos="fade-up">
                 <Link
                   href="/help"
                   className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
                 >
-                  Help Center
+                  {t("info.help")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
                   href="/blog"
                   className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
                 >
-                  Our Blog
+                  {t("info.blog")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
                   href="/terms"
                   className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
                 >
-                  Terms and Conditions
+                  {t("info.terms")}
                 </Link>
               </li>
-              <li>
+              <li data-aos="fade-up">
                 <Link
                   href="/privacy"
                   className="text-white font-urbanist text-[16px] sm:text-[17px] font-medium leading-[26px] hover:opacity-70 transition-opacity"
                 >
-                  Privacy Policy
+                  {t("info.privacy")}
                 </Link>
               </li>
             </ul>
@@ -117,10 +146,13 @@ const FooterCard = () => {
 
           {/* Column 4 - Get the App */}
           <div className="flex flex-col">
-            <h3 className="text-white font-urbanist text-[18px] sm:text-[20px] font-normal leading-[26px] mb-4">
-              Get the app
+            <h3
+              className="text-white font-urbanist text-[18px] sm:text-[20px] font-normal leading-[26px] mb-4"
+              data-aos="fade-up"
+            >
+              {t("app-card.title")}
             </h3>
-            <div className="flex flex-col gap-3 w-[187px]">
+            <div className="flex flex-col gap-3 w-[187px]" data-aos="fade-up">
               {/* Apple Store Button */}
               <Link
                 href="#"
@@ -170,12 +202,16 @@ const FooterCard = () => {
         <div className="w-full mt-10 pt-6 flex flex-col sm:flex-row items-center sm:items-start sm:justify-between gap-4">
           {/* Copyright Text - Left Side */}
           <p className="text-white/70 font-urbanist text-[17px] leading-[26px]">
-            Psynexa all rights protected 2024
+            {t("copyright")}
           </p>
 
           {/* Social Media Icons - Right Side */}
           <div className="flex items-center gap-4">
-            <Link href="#" aria-label="X (Twitter)">
+            <Link
+              href="https://x.com/psynexa"
+              aria-label="X (Twitter)"
+              target="_blank"
+            >
               <Image
                 src="/landing/x.svg"
                 alt="X"
@@ -184,16 +220,11 @@ const FooterCard = () => {
                 className=""
               />
             </Link>
-            <Link href="#" aria-label="Facebook">
-              <Image
-                src="/landing/facebook.svg"
-                alt="Facebook"
-                width={24}
-                height={24}
-                className=""
-              />
-            </Link>
-            <Link href="#" aria-label="Instagram">
+            <Link
+              href="https://www.instagram.com/psynexa.us"
+              aria-label="Instagram"
+              target="_blank"
+            >
               <Image
                 src="/landing/instagram.svg"
                 alt="Instagram"
@@ -202,7 +233,11 @@ const FooterCard = () => {
                 className=""
               />
             </Link>
-            <Link href="#" aria-label="LinkedIn">
+            <Link
+              href="https://www.linkedin.com/company/psynexa"
+              aria-label="LinkedIn"
+              target="_blank"
+            >
               <Image
                 src="/landing/linkedin.svg"
                 alt="LinkedIn"
@@ -211,7 +246,11 @@ const FooterCard = () => {
                 className=""
               />
             </Link>
-            <Link href="#" aria-label="TikTok">
+            <Link
+              href="https://www.tiktok.com/@psynexa_tr"
+              aria-label="TikTok"
+              target="_blank"
+            >
               <Image
                 src="/landing/tiktok.svg"
                 alt="TikTok"
@@ -220,7 +259,11 @@ const FooterCard = () => {
                 className=""
               />
             </Link>
-            <Link href="#" aria-label="YouTube">
+            <Link
+              href="https://www.youtube.com/@Psynexa"
+              aria-label="YouTube"
+              target="_blank"
+            >
               <Image
                 src="/landing/youtube.svg"
                 alt="YouTube"

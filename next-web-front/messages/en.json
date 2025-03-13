@@ -336,6 +336,127 @@
         "circle": "Get Instant Answers",
         "title": "Frequently Asked Questions",
         "description": ""
+      },
+      "exhale_card": {
+        "increase": "Increase your Energy",
+        "calmness": "Invite calmness to the mind and body with long exhalations",
+        "breathly": "Breathly",
+        "hold": "Hold",
+        "exhale": "Exhale",
+        "hold_breath": "hold",
+        "seconds": "seconds"
+      },
+      "mini-nexabot-logo": {
+        "bold": "Hi I'm Nexabot!",
+        "light": "your personal friend. How are you!"
+      },
+      "mood_tracker_card": {
+        "title": "Weekly Mood Tracker",
+        "weekly_mood": "Weekly",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "meditation_card": {
+        "title": "Stress Management Made Simple"
+      },
+      "chatbot_card": {
+        "title-1": "Start a conversation with our",
+        "title-2": "Nexabot",
+        "title-3": "Now!",
+        "button-1": "Talk Nexa",
+        "button-2": "Voice Nexa",
+        "button-3": "Get Suggestions",
+        "button-4": "Be Friend",
+        "message-card-bold": "Welcome to Nexabot!",
+        "message-card-light": "How are you! I am Nexabot, your personal friend. Have a specific question to ask me?",
+        "chinese-card":"I'm feeling a bit confused today and could use some help figuring things out.",
+        "message-input-card":"Write your message....",
+        "not-web":"Not available for web use, download the mobile app."
+      },
+      "mockup-card":{
+        "mini-nexabot-logo-bold":"Hi I'm Nexabot!",
+        "mini-nexabot-logo-light":"your personal friend. How are you!",
+        "nexabot-card-description":"Nexabot analyzes your emotions, offers empathetic support, and provides personalized suggestions to help you navigate your day.",
+        "voice-text-card-title":"Voice and Text Interaction with Nexabot",
+        "voice-text-card-description":"Communicate with Nexabot via voice or text to receive tailored recommendations and insights designed just for you.",
+        "meditation-card-title":"Meditation and Audio Blog Listening",
+        "meditation-card-description":"mmerse yourself in personalized meditation sessions and inspiring audio blogs to calm your mind and uplift your spirit."
+      },
+      "faq": {
+        "item1": {
+          "title": "What is Psynexa and how does it work?",
+          "content": "Psynexa is an AI-powered application offering mental health support. It analyzes users' emotional states, provides personalized recommendations, and supports mental health through techniques like meditation and breathing exercises. Its user-friendly interface allows you to track your daily mood and build mental resilience through regular practice."
+        },
+        "item2": {
+          "title": "Is Psynexa paid?",
+          "content": "Psynexa offers both free and premium features. Basic features are available for free, while more advanced features and personalized content are accessible through our premium subscription plan."
+        },
+        "item3": {
+          "title": "Is my data secure?",
+          "content": "User privacy and data security are our top priorities. All your data is encrypted and stored on secure servers. We never share your personal information with third parties and implement the latest security protocols."
+        },
+        "item4": {
+          "title": "Who can use Psynexa?",
+          "content": "Psynexa is designed for anyone looking to improve or maintain their mental health. It can be used by anyone, regardless of age, seeking support for stress management, anxiety reduction, or general mental well-being."
+        },
+        "item5": {
+          "title": "How can I get started?",
+          "content": "To get started, simply download the Psynexa app and create an account. A short assessment will then be conducted for your personalized experience, and the app will begin offering you customized recommendations."
+        }
+      },
+      "triple": {
+        "title": "A Bridge That Touches Your Mind And Opens To The Future",
+        "description-1": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you.",
+        "description-2": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you.",
+        "button": "Explore The Apps"
+      },
+      "grid-card":{
+        "grid-1-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
+        "grid-1-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
+        "grid-2-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
+        "grid-2-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
+        "grid-3-title": "Daily, Weekly, and Monthly Mood Tracking",
+        "grid-3-description": "Track your emotions effortlessly and view insightful trends to gain a better perspective on your well-being.",
+        "grid-4-title": "Relaxing Breathing Exercise",
+        "grid-4-description": "A dedicated space to practice tailored breathing exercises, helping you achieve calm and focus anytime you need."
+      },
+      "download-card":{
+        "title": "A Bridge That Touches Your Mind And Opens To The Future",
+        "description": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you."
+      },
+      "footer-card":{
+        "mail-card":{
+          "title": "Join Our Newsletter",
+          "description": "Be the first to know when we launch",
+          "email": "Enter your email"
+        },
+        "footer-card":{
+          "description": "Equipped with advanced generative AI technology, Nexabot instantly analyzes your mood and provides you with appropriate guidance.",
+          "menu":{
+            "title": "Menu",
+            "home": "Home",
+            "about": "About",
+            "solutions": "Solutions",
+            "faq": "FAQ",
+            "contact": "Contact"
+          },
+          "info":{
+            "title": "Information",
+            "help": "Help Center",
+            "blog": "Blog",
+            "terms": "Terms of Service",
+            "privacy": "Privacy Policy"
+          },
+          "app-card":{
+            "title": "Get the app"
+          },
+          "copyright": "Psynexa all rights protected 2024"
+        }
       }
     }
   }

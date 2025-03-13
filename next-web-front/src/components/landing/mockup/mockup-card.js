@@ -7,16 +7,21 @@ import Video from "./video";
 import NexabotCard from "./nexabot-card";
 import MobileStarCard from "./mobile-star-card";
 import MobileVideo from "./mobile-video";
+
 const MockupCard = () => {
   return (
     <>
-      <div className="hidden min-[1000px]:block relative w-[650px] h-[780px] mx-auto min-[1455px]:mt-[162px] min-[1455px]:mb-[200px] min-[1200px]:mt-[100px] min-[1200px]:mb-[50px] mt-0 mb-0 max-[1455px]:scale-[0.8] max-[1200px]:scale-[0.6] max-[1000px]:scale-[0.4]">
+      <div
+        className="hidden min-[1000px]:block relative w-[650px] h-[780px] mx-auto min-[1455px]:mt-[162px] min-[1455px]:mb-[200px] min-[1200px]:mt-[100px] min-[1200px]:mb-[50px] mt-0 mb-0 max-[1455px]:scale-[0.8] max-[1200px]:scale-[0.6] max-[1000px]:scale-[0.4]"
+        id="about-section"
+      >
         <Image
           src="/landing/left-mockup.png"
           width={406}
           height={570}
           className="min-w-[406px] min-h-[570px] max-w-[406px] max-h-[570px] rotate-[5deg] absolute top-0 left-0 z-50"
           alt="left-mockup"
+          data-aos="fade-right"
         />
         <Image
           src="/landing/right-mockup.png"
@@ -24,6 +29,7 @@ const MockupCard = () => {
           height={570}
           className="min-w-[406px] min-h-[570px] max-w-[406px] max-h-[570px] -rotate-[5deg] absolute bottom-0 right-0 z-40"
           alt="right-mockup"
+          data-aos="fade-left"
         />
         <NexabotMiniLogo />
         <MeditationBlog />

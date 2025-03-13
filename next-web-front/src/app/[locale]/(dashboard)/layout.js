@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { headers } from "next/headers";
 import { getSiteData } from "@/lib/siteData";
@@ -15,6 +15,10 @@ export default async function DashboardLayout({ children, params }) {
     notFound();
   }
 
+  // Redirect to the home page with the current locale
+  redirect(`/${locale}`);
+
+  // The code below won't execute due to the redirect above
   const headersList = await headers();
   const domain = headersList.get("host");
 
@@ -24,6 +28,7 @@ export default async function DashboardLayout({ children, params }) {
   return (
     <NextIntlClientProvider messages={messages}>
       <div data-locale={locale} className="p-[24px]">
+        {/* 
         <div className="flex flex-row w-[calc(100vw-48px)] h-[calc(100vh-48px)]">
           <SidebarMenu />
           <div className="flex flex-col w-full h-full">
@@ -31,6 +36,7 @@ export default async function DashboardLayout({ children, params }) {
             {children}
           </div>
         </div>
+        */}
       </div>
     </NextIntlClientProvider>
   );

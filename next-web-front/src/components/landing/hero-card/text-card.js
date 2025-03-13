@@ -3,7 +3,11 @@ import React from "react";
 const TextCard = ({ circle, title, description, isHero = false }) => {
   return (
     <>
-      <div className="w-full flex flex-col items-center mt-[72px] relative z-20">
+      <div
+        className="w-full flex flex-col items-center mt-[72px] relative z-20"
+        data-aos="fade-up"
+        id="hero-section"
+      >
         {isHero && (
           <div className="absolute w-[667px] h-[667px] rounded-full bg-[rgba(135,199,248,0.55)] blur-[200px] -bottom-[300px] -left-[330px]"></div>
         )}

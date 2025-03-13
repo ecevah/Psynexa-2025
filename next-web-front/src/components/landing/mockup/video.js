@@ -27,7 +27,10 @@ const Video = () => {
   );
 
   return (
-    <div className="absolute -top-[100px] -right-[400px] z-20">
+    <div
+      className="absolute -top-[100px] -right-[400px] z-20"
+      data-aos="fade-left"
+    >
       <div
         style={{
           width: "445px",

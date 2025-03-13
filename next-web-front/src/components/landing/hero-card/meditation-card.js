@@ -1,9 +1,14 @@
 import Image from "next/image";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const MeditationCard = () => {
+  const t = useTranslations("HomePage");
   return (
-    <div className="flex flex-col items-center px-[24px] py-[12px] rounded-[24px] bg-[#095c9c33] w-[286px] shadow-[0px_1px_6px_0px_rgba(157,157,157,0.15)]">
+    <div
+      className="flex flex-col items-center px-[24px] py-[12px] rounded-[24px] bg-[#095c9c33] w-[286px] shadow-[0px_1px_6px_0px_rgba(157,157,157,0.15)]"
+      data-aos="fade-left"
+    >
       <Image
         src="/landing/meditation.jpeg"
         width={92}
@@ -12,7 +17,7 @@ const MeditationCard = () => {
         className="min-w-[92px] max-w-[92px] min-h-[79px] max-h-[79px] rounded-[20px]"
       />
       <div className="text-center text-[12px] font-bold leading-[20px] text-white mt-[5px] mb-[-4px]">
-        Stress Management Made Simple
+        {t("meditation_card.title")}
       </div>
       <div className="text-center text-[10px] font-normal leading-[16px] text-white opacity-80">
         Psynexa

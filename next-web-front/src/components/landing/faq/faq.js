@@ -1,3 +1,5 @@
+"use client";
+import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 
 const FAQItem = ({
@@ -10,7 +12,7 @@ const FAQItem = ({
   isLast,
 }) => {
   return (
-    <div className="w-full">
+    <div className="w-full" data-aos="fade-up">
       <div
         className={`w-full flex justify-between items-center py-3 sm:py-4 md:py-5 px-4 sm:px-6 md:px-8 cursor-pointer border-b border-white border-opacity-50 ${
           isExpanded ? "bg-[rgba(203,203,203,0.10)] border-b-0" : ""
@@ -78,32 +80,30 @@ const FAQItem = ({
 
 const Faq = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const t = useTranslations("HomePage.faq");
 
+  // Create our own FAQ array with hardcoded indices
+  // Since we know there are 5 FAQ items, we manually retrieve each one
   const faqData = [
     {
-      title: "Psynexa nedir ve nasıl çalışır?",
-      content:
-        "Psynexa, ruh sağlığı desteği sunan yapay zeka destekli bir uygulamadır. Kullanıcıların duygusal durumlarını analiz eder, kişiselleştirilmiş tavsiyeler sunar ve meditasyon, nefes egzersizleri gibi farklı tekniklerle zihinsel sağlığınızı destekler. Kullanıcı dostu arayüzü sayesinde günlük ruh halinizi takip edebilir, düzenli uygulamalarla zihinsel dayanıklılığınızı artırabilirsiniz.",
+      title: t("item1.title"),
+      content: t("item1.content"),
     },
     {
-      title: "Psynexa ücretli mi?",
-      content:
-        "Psynexa'nın hem ücretsiz hem de premium özellikleri bulunmaktadır. Temel özellikler ücretsiz olarak sunulurken, daha gelişmiş özellikler ve kişiselleştirilmiş içerikler premium abonelik planımızla erişilebilir durumdadır.",
+      title: t("item2.title"),
+      content: t("item2.content"),
     },
     {
-      title: "Verilerim güvende mi?",
-      content:
-        "Kullanıcı gizliliği ve veri güvenliği bizim için en büyük önceliktir. Tüm verileriniz şifrelenir ve güvenli sunucularda saklanır. Kişisel bilgilerinizi kesinlikle üçüncü taraflarla paylaşmıyoruz ve en son güvenlik protokollerini uyguluyoruz.",
+      title: t("item3.title"),
+      content: t("item3.content"),
     },
     {
-      title: "Psynexa'yı kimler kullanabilir?",
-      content:
-        "Psynexa, zihinsel sağlığını iyileştirmek veya korumak isteyen herkes için tasarlanmıştır. Yaş sınırı olmaksızın, stres yönetimi, anksiyete azaltma veya genel zihinsel refah için destek arayan herkes tarafından kullanılabilir.",
+      title: t("item4.title"),
+      content: t("item4.content"),
     },
     {
-      title: "Nasıl başlayabilirim?",
-      content:
-        "Başlamak için Psynexa uygulamasını indirmeniz ve bir hesap oluşturmanız yeterlidir. Daha sonra kişiselleştirilmiş deneyiminiz için kısa bir değerlendirme yapılacak ve uygulama size özel öneriler sunmaya başlayacaktır.",
+      title: t("item5.title"),
+      content: t("item5.content"),
     },
   ];
 
@@ -112,11 +112,10 @@ const Faq = () => {
   };
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16">
-      <h2 className="text-[28px] sm:text-[36px] md:text-[42px] lg:text-[48px] font-bold text-white text-center mb-6 sm:mb-10 md:mb-16">
-        Sıkça Sorulan Sorular
-      </h2>
-
+    <div
+      className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16"
+      id="faq-section"
+    >
       <div className="w-full border border-white border-opacity-50 rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden">
         {faqData.map((faq, index) => (
           <FAQItem

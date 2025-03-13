@@ -130,3 +130,23 @@ body {
 .white-to-blue-gradient {
   background: linear-gradient(180deg, #FFF 0%, rgba(255, 255, 255, 0.10) 100%);
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Kaydırma çubuğu genişliği */
+  height: 8px; /* Yatay kaydırma için */
+  background: transparent; /* Arka planı tamamen kaldır */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(203, 203, 203, 0.10); /* Scroll çubuğunun rengi */
+  border-radius: 9999px; /* Tam yuvarlak yapar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Scroll çubuğunun arka planı tamamen kaldırıldı */
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* Firefox için ince scrollbar */
+  scrollbar-color: rgba(203, 203, 203, 0.10) transparent; /* Scroll rengi + arka planı şeffaf */
+}

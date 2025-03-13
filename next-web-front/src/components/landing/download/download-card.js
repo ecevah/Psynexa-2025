@@ -1,7 +1,9 @@
 import React from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const DownloadCard = () => {
+  const t = useTranslations("HomePage.download-card");
   return (
     <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-12 md:py-16 lg:py-20">
       <div
@@ -13,15 +15,22 @@ const DownloadCard = () => {
       >
         <div className="w-full relative flex flex-col lg:flex-row items-center">
           {/* Left content */}
-          <div className="w-full lg:w-1/2 flex flex-col gap-4 sm:gap-5 md:gap-6 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 z-10">
-            <h2 className="text-[28px] sm:text-[36px] md:text-[42px] lg:text-[48px] xl:text-[60px] font-extrabold font-urbanist text-white leading-[1.1]">
-              A Bridge That Touches Your Mind And Opens To The Future
+          <div
+            className="w-full lg:w-1/2 flex flex-col gap-4 sm:gap-5 md:gap-6 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 z-10"
+            data-aos="fade-right"
+          >
+            <h2
+              className="text-[28px] sm:text-[36px] md:text-[42px] lg:text-[48px] xl:text-[60px] font-extrabold font-urbanist text-white leading-[1.1]"
+              data-aos="fade-right"
+            >
+              {t("title")}
             </h2>
 
-            <p className="text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] font-urbanist text-white leading-[1.4] opacity-90 max-w-full lg:max-w-[90%]">
-              Journey into the depths of your mind with Psynexa. Meet each day
-              in a more balanced and peaceful way with Nexabot's empathetic
-              support and special suggestions for you.
+            <p
+              className="text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] font-urbanist text-white leading-[1.4] opacity-90 max-w-full lg:max-w-[90%]"
+              data-aos="fade-right"
+            >
+              {t("description")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2 sm:mt-4">

@@ -1,13 +1,16 @@
 import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [showLanding, setShowLanding] = useState(true);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const t = useTranslations("HomePage");
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -26,9 +29,55 @@ const Chatbot = () => {
     });
   };
 
+  // Convert messages to the conversation history format required by the API
+  const formatConversationHistory = (msgs) => {
+    // Create a string representation of the conversation history
+    const history = msgs
+      .map((msg) => {
+        return `'${msg.type === "user" ? "user" : "nexa"}': '${msg.content}'`;
+      })
+      .join(", ");
+
+    return `[${history}]`;
+  };
+
+  // Make API call to get bot response
+  const getBotResponse = async (userMessage, conversationHistory) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        "http://147.79.115.249:8080/api/free_message_generate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            input_text: userMessage,
+            conversation_history: conversationHistory,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.status && data.data && data.data.Response) {
+        return data.data.Response;
+      } else {
+        console.error("API error:", data);
+        return "I'm sorry, I couldn't process your request at the moment. Please try again later.";
+      }
+    } catch (error) {
+      console.error("API call failed:", error);
+      return "I'm sorry, there was an error connecting to my services. Please try again later.";
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Handle sending a new message
-  const handleSendMessage = () => {
-    if (inputValue.trim() === "") return;
+  const handleSendMessage = async () => {
+    if (inputValue.trim() === "" || isLoading) return;
 
     // Add user message
     const userMessage = {
@@ -37,41 +86,60 @@ const Chatbot = () => {
       timestamp: getCurrentTime(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInputValue("");
     setShowLanding(false);
 
-    // Simulate bot response after a short delay
-    setTimeout(() => {
-      const botMessage = {
-        type: "bot",
-        content: "Thank you for your message! I'll help you with that.",
-        timestamp: getCurrentTime(),
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 1000);
-  };
+    // Format conversation history for API
+    const conversationHistory = formatConversationHistory(updatedMessages);
 
-  // Handle predefined button clicks
-  const handleButtonClick = (message) => {
-    const userMessage = {
-      type: "user",
-      content: "selam nexabot",
+    // Get bot response from API
+    const botResponseText = await getBotResponse(
+      inputValue,
+      conversationHistory
+    );
+
+    // Add bot response to messages
+    const botMessage = {
+      type: "bot",
+      content: botResponseText,
       timestamp: getCurrentTime(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [...prev, botMessage]);
+  };
+
+  // Handle predefined button clicks
+  const handleButtonClick = async (buttonText) => {
+    // Use the button text as the user message
+    const userMessage = {
+      type: "user",
+      content: buttonText,
+      timestamp: getCurrentTime(),
+    };
+
+    const updatedMessages = [userMessage];
+    setMessages(updatedMessages);
     setShowLanding(false);
 
-    // Simulate bot response
-    setTimeout(() => {
-      const botMessage = {
-        type: "bot",
-        content: "Merhaba! Size nasıl yardımcı olabilirim?",
-        timestamp: getCurrentTime(),
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 1000);
+    // Format conversation history for API
+    const conversationHistory = formatConversationHistory(updatedMessages);
+
+    // Get bot response from API
+    const botResponseText = await getBotResponse(
+      buttonText,
+      conversationHistory
+    );
+
+    // Add bot response to messages
+    const botMessage = {
+      type: "bot",
+      content: botResponseText,
+      timestamp: getCurrentTime(),
+    };
+
+    setMessages((prev) => [...prev, botMessage]);
   };
 
   // Handle input change
@@ -96,10 +164,13 @@ const Chatbot = () => {
           <div className="flex flex-col lg:flex-row w-full justify-between relative mb-8 md:mb-10 lg:mb-[72px] gap-10 lg:gap-4">
             {/* Left side content */}
             <div className="flex flex-col">
-              <p className="capitalize text-3xl sm:text-4xl md:text-5xl lg:text-[64px] font-bold leading-tight md:leading-tight lg:leading-[79px] text-white">
-                start a conversation <br /> with our{" "}
+              <p
+                className="capitalize text-3xl sm:text-4xl md:text-5xl lg:text-[64px] font-bold leading-tight md:leading-tight lg:leading-[79px] text-white"
+                data-aos="fade-right"
+              >
+                {t("chatbot_card.title-1")} <br />
                 <span className="text-[#5DB9FF]">Nexabot</span>
-                <br /> Now!
+                <br /> {t("chatbot_card.title-3")}
               </p>
 
               <div className="flex flex-col mt-6 sm:mt-8 md:mt-10 lg:mt-[46px]">
@@ -107,7 +178,10 @@ const Chatbot = () => {
                 <div className="flex flex-col sm:flex-row mb-4 md:mb-[16px] gap-3 sm:gap-4">
                   <div
                     className="rounded-full !border-[0.3px] border-solid border-white bg-[rgba(49,101,142,0.30)] backdrop-blur-[2px] py-2 md:py-[12px] px-3 md:px-[12px] flex flex-row gap-2 md:gap-[8px] items-center cursor-pointer hover:bg-[rgba(49,101,142,0.50)]"
-                    onClick={() => handleButtonClick("Talk Nexa")}
+                    onClick={() =>
+                      handleButtonClick(t("chatbot_card.button-1"))
+                    }
+                    data-aos="fade-up"
                   >
                     <Image
                       src="/landing/close-line.svg"
@@ -117,13 +191,16 @@ const Chatbot = () => {
                       alt="plus"
                     />
                     <div className="text-white text-base sm:text-lg md:text-xl lg:text-[20px] font-light mr-2 md:mr-[12px]">
-                      Talk Nexa
+                      {t("chatbot_card.button-1")}
                     </div>
                   </div>
 
                   <div
                     className="rounded-full !border-[0.3px] border-solid border-white bg-[rgba(49,101,142,0.30)] backdrop-blur-[2px] py-2 md:py-[12px] px-3 md:px-[12px] flex flex-row gap-2 md:gap-[8px] items-center cursor-pointer hover:bg-[rgba(49,101,142,0.50)]"
-                    onClick={() => handleButtonClick("Voice Nexa")}
+                    onClick={() =>
+                      handleButtonClick(t("chatbot_card.button-2"))
+                    }
+                    data-aos="fade-up"
                   >
                     <Image
                       src="/landing/close-line.svg"
@@ -133,7 +210,7 @@ const Chatbot = () => {
                       alt="plus"
                     />
                     <div className="text-white text-base sm:text-lg md:text-xl lg:text-[20px] font-light mr-2 md:mr-[12px]">
-                      Voice Nexa
+                      {t("chatbot_card.button-2")}
                     </div>
                   </div>
                 </div>
@@ -142,7 +219,10 @@ const Chatbot = () => {
                 <div className="flex flex-col sm:flex-row sm:ml-6 md:ml-[30px] lg:ml-[58px] gap-3 sm:gap-4">
                   <div
                     className="rounded-full !border-[0.3px] border-solid border-white bg-[rgba(49,101,142,0.30)] backdrop-blur-[2px] py-2 md:py-[12px] px-3 md:px-[12px] flex flex-row gap-2 md:gap-[8px] items-center cursor-pointer hover:bg-[rgba(49,101,142,0.50)]"
-                    onClick={() => handleButtonClick("Get Suggestions")}
+                    onClick={() =>
+                      handleButtonClick(t("chatbot_card.button-3"))
+                    }
+                    data-aos="fade-up"
                   >
                     <Image
                       src="/landing/close-line.svg"
@@ -152,13 +232,16 @@ const Chatbot = () => {
                       alt="plus"
                     />
                     <div className="text-white text-base sm:text-lg md:text-xl lg:text-[20px] font-light mr-2 md:mr-[12px]">
-                      Get Suggestions
+                      {t("chatbot_card.button-3")}
                     </div>
                   </div>
 
                   <div
                     className="rounded-full !border-[0.3px] border-solid border-white bg-[rgba(49,101,142,0.30)] backdrop-blur-[2px] py-2 md:py-[12px] px-3 md:px-[12px] flex flex-row gap-2 md:gap-[8px] items-center cursor-pointer hover:bg-[rgba(49,101,142,0.50)]"
-                    onClick={() => handleButtonClick("Be Friend")}
+                    onClick={() =>
+                      handleButtonClick(t("chatbot_card.button-4"))
+                    }
+                    data-aos="fade-up"
                   >
                     <Image
                       src="/landing/close-line.svg"
@@ -168,7 +251,7 @@ const Chatbot = () => {
                       alt="plus"
                     />
                     <div className="text-white text-base sm:text-lg md:text-xl lg:text-[20px] font-light mr-2 md:mr-[12px]">
-                      Be Friend
+                      {t("chatbot_card.button-4")}
                     </div>
                   </div>
                 </div>
@@ -187,7 +270,10 @@ const Chatbot = () => {
               />
 
               {/* First chat bubble */}
-              <div className="px-4 sm:px-5 md:px-[30px] py-3 md:py-[12px] bg-[#053A64] w-full sm:w-[280px] md:w-[310px] flex flex-row items-center gap-3 md:gap-[12px] rounded-xl md:rounded-[24px] ml-0 sm:ml-[10px]">
+              <div
+                className="px-4 sm:px-5 md:px-[30px] py-3 md:py-[12px] bg-[#053A64] w-full sm:w-[280px] md:w-[310px] flex flex-row items-center gap-3 md:gap-[12px] rounded-xl md:rounded-[24px] ml-0 sm:ml-[10px]"
+                data-aos="fade-up"
+              >
                 <div className="w-[50px] h-[50px] md:w-[68px] md:h-[68px] rounded-full bg-[#0A6EBD] flex items-center justify-center">
                   <Image
                     src="/landing/mini-logo.svg"
@@ -198,14 +284,18 @@ const Chatbot = () => {
                   />
                 </div>
                 <p className="flex-1 sm:w-[178px] text-white text-[11px] md:text-[12px]">
-                  <span className="font-bold">Welcome to Nexabot!</span> How are
-                  you! I am Nexabot, your personal friend. Have a specific
-                  question to ask me?
+                  <span className="font-bold">
+                    {t("chatbot_card.message-card-bold")}
+                  </span>{" "}
+                  {t("chatbot_card.message-card-light")}
                 </p>
               </div>
 
               {/* Second chat bubble */}
-              <div className="px-4 sm:px-5 md:px-[30px] py-3 md:py-[12px] bg-[#053A64] w-full sm:w-[280px] md:w-[310px] flex flex-row items-center gap-3 md:gap-[12px] rounded-xl md:rounded-[24px] mt-4 md:mt-[23px] mb-4 md:mb-[47px] self-end sm:ml-[80px] md:ml-[120px]">
+              <div
+                className="px-4 sm:px-5 md:px-[30px] py-3 md:py-[12px] bg-[#053A64] w-full sm:w-[280px] md:w-[310px] flex flex-row items-center gap-3 md:gap-[12px] rounded-xl md:rounded-[24px] mt-4 md:mt-[23px] mb-4 md:mb-[47px] self-end sm:ml-[80px] md:ml-[120px]"
+                data-aos="fade-up"
+              >
                 <Image
                   src="/landing/chenese.jpeg"
                   width={68}
@@ -214,16 +304,18 @@ const Chatbot = () => {
                   className="w-[50px] h-[50px] md:w-[68px] md:h-[68px] rounded-full"
                 />
                 <p className="flex-1 sm:w-[178px] text-white text-[11px] md:text-[12px]">
-                  I'm feeling a bit confused today and could use some help
-                  figuring things out.
+                  {t("chatbot_card.chinese-card")}
                 </p>
               </div>
 
               {/* Chat input box */}
-              <div className="px-4 sm:px-5 md:px-[30px] pt-3 md:pt-[15px] pb-2 md:pb-[9px] bg-[#053A64] w-full sm:w-[280px] md:w-[310px] flex flex-row gap-3 md:gap-[12px] rounded-xl md:rounded-[24px] h-[100px] md:h-[123px] justify-between">
+              <div
+                className="px-4 sm:px-5 md:px-[30px] pt-3 md:pt-[15px] pb-2 md:pb-[9px] bg-[#053A64] w-full sm:w-[280px] md:w-[310px] flex flex-row gap-3 md:gap-[12px] rounded-xl md:rounded-[24px] h-[100px] md:h-[123px] justify-between"
+                data-aos="fade-up"
+              >
                 <div className="flex flex-col justify-between">
                   <div className="text-white text-[12px] md:text-[14px] font-medium">
-                    Write your message....
+                    {t("chatbot_card.message-input-card")}
                   </div>
                   <div className="flex flex-row gap-4 md:gap-[24px] items-center mb-2 md:mb-[15px]">
                     <Image
@@ -258,7 +350,7 @@ const Chatbot = () => {
           // Chat interface that replaces the landing view
           <div
             ref={chatContainerRef}
-            className="flex flex-col h-[300px] md:h-[400px] overflow-y-auto mb-4 md:mb-[24px] pr-2"
+            className="flex flex-col h-[300px] md:h-[400px] overflow-y-auto mb-4 md:mb-[24px] pr-2 custom-scrollbar"
             style={{ scrollBehavior: "smooth" }}
           >
             {messages.map((message, index) => (
@@ -271,7 +363,7 @@ const Chatbot = () => {
                 {message.type === "bot" && (
                   <div className="flex flex-col items-start">
                     <div className="flex min-w-[60px] max-w-[298px] p-3 items-start gap-2 rounded-[12px_12px_12px_2px] bg-white">
-                      <p className="text-[#0B1215] font-['Urbanist'] text-base font-normal leading-[140%]">
+                      <p className="text-[#0B1215] font-['Urbanist'] text-base font-normal leading-[140%] whitespace-pre-line">
                         {message.content}
                       </p>
                     </div>
@@ -295,12 +387,31 @@ const Chatbot = () => {
                 )}
               </div>
             ))}
+            {isLoading && (
+              <div className="my-2 md:my-3 flex justify-start">
+                <div className="flex flex-col items-start">
+                  <div className="flex min-w-[60px] p-3 items-start gap-2 rounded-[12px_12px_12px_2px] bg-white">
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+                        style={{ animationDelay: "0.4s" }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
         )}
 
         {/* Bottom search/input section - always visible */}
-        <div className="relative mt-6 md:mt-0">
+        <div className="relative mt-6 md:mt-0" data-aos="fade-up">
           <div className="relative">
             <Image
               src="/landing/search.svg"
@@ -314,8 +425,11 @@ const Chatbot = () => {
               value={inputValue}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              className="w-full h-[60px] sm:h-[80px] md:h-[100px] rounded-full bg-[#053A64] placeholder:text-white text-white text-base sm:text-xl md:text-[24px] font-medium px-[24px] py-[12px] md:py-[16px] bg-[rgba(255,255,255,0.10)] backdrop-blur-[100px] pl-[40px] sm:pl-[45px] md:pl-[50px] pr-[120px] sm:pr-[150px] md:pr-[200px]"
-              placeholder="Write your message...."
+              disabled={isLoading}
+              className={`w-full h-[60px] sm:h-[80px] md:h-[100px] rounded-full bg-[#053A64] placeholder:text-white text-white text-base sm:text-xl md:text-[24px] font-medium px-[24px] py-[12px] md:py-[16px] bg-[rgba(255,255,255,0.10)] backdrop-blur-[100px] pl-[40px] sm:pl-[45px] md:pl-[50px] pr-[120px] sm:pr-[150px] md:pr-[200px] ${
+                isLoading ? "opacity-75 cursor-not-allowed" : ""
+              }`}
+              placeholder={t("chatbot_card.message-input-card")}
             />
             <div className="flex flex-row gap-2 md:gap-[8px] absolute right-[10px] sm:right-[15px] md:right-[20px] bottom-[5px] sm:bottom-[8px] md:bottom-[10px]">
               {/* Microphone button with tooltip */}
@@ -335,23 +449,35 @@ const Chatbot = () => {
                 </div>
                 {showTooltip && (
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                    Web için kullanılablir değil mobil uygulama edinin
+                    {t("chatbot_card.not-web")}
                   </div>
                 )}
               </div>
 
               {/* Send button */}
               <div
-                className="w-[50px] h-[50px] sm:w-[65px] sm:h-[65px] md:w-[80px] md:h-[80px] rounded-full flex items-center justify-center bg-secondary_color_palette-100 cursor-pointer hover:bg-[#4d8fbd]"
-                onClick={handleSendMessage}
+                className={`w-[50px] h-[50px] sm:w-[65px] sm:h-[65px] md:w-[80px] md:h-[80px] rounded-full flex items-center justify-center bg-secondary_color_palette-100 ${
+                  isLoading || inputValue.trim() === ""
+                    ? "opacity-75 cursor-not-allowed"
+                    : "cursor-pointer hover:bg-[#4d8fbd]"
+                }`}
+                onClick={
+                  isLoading || inputValue.trim() === ""
+                    ? null
+                    : handleSendMessage
+                }
               >
-                <Image
-                  src="/landing/send-borderline.svg"
-                  alt="send"
-                  width={24}
-                  height={24}
-                  className="w-5 h-5 md:w-6 md:h-6"
-                />
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Image
+                    src="/landing/send-borderline.svg"
+                    alt="send"
+                    width={24}
+                    height={24}
+                    className="w-5 h-5 md:w-6 md:h-6"
+                  />
+                )}
               </div>
             </div>
           </div>
