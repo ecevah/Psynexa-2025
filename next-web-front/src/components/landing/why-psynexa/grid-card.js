@@ -124,7 +124,7 @@ const GridCard = () => {
           <div className="text-white text-[14px] xs:text-[16px] sm:text-[18px] leading-[18px] xs:leading-[20px] sm:leading-[25px] relative z-10">
             {t("grid-4-description")}
           </div>
-          <div className="relative w-full h-[180px] xs:h-[200px] sm:h-[250px] md:h-[280px] mt-auto">
+          <div className="relative w-full h-[180px] xs:h-[200px] sm:h-[250px] md:h-[280px] lg:h-[330px] mt-auto">
             <div className="absolute inset-0 overflow-hidden">
               <Image
                 src="/landing/breathing-tech.png"
