@@ -28,10 +28,10 @@ const FAQItem = ({
         onClick={onToggle}
       >
         <div className="flex items-center gap-2 sm:gap-4 md:gap-6 flex-1 overflow-hidden">
-          <div className="text-white font-urbanist text-[20px] sm:text-[24px] md:text-[28px] lg:text-[32px] font-medium shrink-0">
+          <div className="text-white font-urbanist text-[20px] sm:text-[24px] font-medium shrink-0">
             {number < 10 ? `0${number}` : number}
           </div>
-          <div className="text-white font-urbanist text-[16px] sm:text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] font-medium leading-tight">
+          <div className="text-white font-urbanist text-[16px] sm:text-[20px] md:text-[24px] font-medium leading-tight">
             {title}
           </div>
         </div>

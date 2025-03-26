@@ -363,7 +363,7 @@ const Chatbot = () => {
                 {message.type === "bot" && (
                   <div className="flex flex-col items-start">
                     <div className="flex min-w-[60px] max-w-[298px] p-3 items-start gap-2 rounded-[12px_12px_12px_2px] bg-white">
-                      <p className="text-[#0B1215] font-['Urbanist'] text-base font-normal leading-[140%] whitespace-pre-line">
+                      <p className="text-[#0B1215] font-['Urbanist'] text-[18px] font-normal leading-[140%] whitespace-pre-line">
                         {message.content}
                       </p>
                     </div>
@@ -376,7 +376,7 @@ const Chatbot = () => {
                 {message.type === "user" && (
                   <div className="flex flex-col items-end">
                     <div className="flex min-w-[60px] max-w-[298px] p-3 items-start gap-2 rounded-[12px_12px_2px_12px] bg-[#E0F1FE]">
-                      <p className="text-[#0B1215] font-['Urbanist'] text-base font-normal leading-[140%]">
+                      <p className="text-[#0B1215] font-['Urbanist'] text-[18px] font-normal leading-[140%]">
                         {message.content}
                       </p>
                     </div>
@@ -433,6 +433,7 @@ const Chatbot = () => {
             />
             <div className="flex flex-row gap-2 md:gap-[8px] absolute right-[10px] sm:right-[15px] md:right-[20px] bottom-[5px] sm:bottom-[8px] md:bottom-[10px]">
               {/* Microphone button with tooltip */}
+              {/* 
               <div className="relative">
                 <div
                   className="w-[50px] h-[50px] sm:w-[65px] sm:h-[65px] md:w-[80px] md:h-[80px] rounded-full flex items-center justify-center bg-secondary_color_palette-100 cursor-not-allowed"
@@ -453,7 +454,7 @@ const Chatbot = () => {
                   </div>
                 )}
               </div>
-
+*/}
               {/* Send button */}
               <div
                 className={`w-[50px] h-[50px] sm:w-[65px] sm:h-[65px] md:w-[80px] md:h-[80px] rounded-full flex items-center justify-center bg-secondary_color_palette-100 ${

@@ -29,42 +29,42 @@ const TabBar = () => {
           className="absolute transition-all duration-300 ease-in-out"
           id="floating-background"
           style={{
-            width: "90px",
+            width: "100px",
             height: "42px",
             borderRadius: "9999px",
             backgroundColor: "#ffffff1f",
-            transform: `translateX(${activeTab * 122}px)`,
+            transform: `translateX(${activeTab * 133}px)`,
             left: 0,
             marginLeft: "12px",
           }}
         ></div>
 
         <div
-          className={`w-[90px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[17px] text-white py-[8px] cursor-pointer relative z-10`}
+          className={`w-[100px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[15px] text-white py-[8px] cursor-pointer relative z-10`}
           onClick={() => handleTabClick(0, "hero-section")}
         >
           {t("header.home")}
         </div>
         <div
-          className={`w-[90px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[17px] text-white py-[8px] cursor-pointer relative z-10`}
+          className={`w-[100px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[15px] text-white py-[8px] cursor-pointer relative z-10`}
           onClick={() => handleTabClick(1, "about-section")}
         >
           {t("header.about")}
         </div>
         <div
-          className={`w-[90px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[17px] text-white py-[8px] cursor-pointer relative z-10`}
+          className={`w-[100px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[15px] text-white py-[8px] cursor-pointer relative z-10`}
           onClick={() => handleTabClick(2, "solutions-section")}
         >
           {t("header.solutions")}
         </div>
         <div
-          className={`w-[90px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[17px] text-white py-[8px] cursor-pointer relative z-10`}
+          className={`w-[100px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[15px] text-white py-[8px] cursor-pointer relative z-10`}
           onClick={() => handleTabClick(3, "faq-section")}
         >
           {t("header.faq")}
         </div>
         <div
-          className={`w-[90px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[17px] text-white py-[8px] cursor-pointer relative z-10`}
+          className={`w-[100px] h-[42px] rounded-full text-center leading-[26px] font-semibold text-[15px] text-white py-[8px] cursor-pointer relative z-10`}
           onClick={() => handleTabClick(4, "contact-section")}
         >
           {t("header.contact")}

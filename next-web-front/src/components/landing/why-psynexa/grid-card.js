@@ -101,7 +101,7 @@ const GridCard = () => {
                 width={870}
                 height={712}
                 alt="mood tracker"
-                className="absolute -bottom-[30px] -left-[30px] xs:-bottom-[50px] xs:-left-[50px] sm:-bottom-[150px] sm:-left-[80px] md:-bottom-[180px] md:-left-[90px] lg:-bottom-[250px] lg:-left-[100px] xl:-bottom-[300px] w-[120%] xs:w-[115%] sm:w-[110%] md:w-[105%] lg:w-[100%] h-auto object-contain"
+                className="absolute -bottom-[160px] -left-[30px] xs:-bottom-[50px] xs:-left-[50px] sm:-bottom-[150px] sm:-left-[80px] md:-bottom-[180px] md:-left-[90px] lg:-bottom-[250px] lg:-left-[100px] xl:-bottom-[300px] w-[120%] xs:w-[115%] sm:w-[110%] md:w-[105%] lg:w-[100%] h-auto object-contain"
                 priority
               />
             </div>
@@ -131,7 +131,7 @@ const GridCard = () => {
                 width={525}
                 height={465}
                 alt="breathing"
-                className="absolute -bottom-[30px] -left-[10px] xs:-bottom-[40px] xs:left-[0] sm:-bottom-[80px] md:-bottom-[100px] lg:-bottom-[120px] xl:-bottom-[150px] w-[100%] h-auto object-contain"
+                className="absolute -bottom-[100px] max-[640px]:max-w-[300px] -left-[10px] xs:-bottom-[40px] xs:left-[0] sm:-bottom-[10px] xl:-bottom-[20px] w-[100%] h-auto object-contain"
                 priority
               />
             </div>

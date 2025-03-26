@@ -8,18 +8,35 @@ const tokenService = require("../services/tokenService");
 const { Op } = require("sequelize");
 const { deleteFile } = require("../config/multer");
 const path = require("path");
-const fetch = require("node-fetch");
+const fs = require("fs");
 
 class ClientAuthController {
+
   // Register
   async register(req, res) {
     try {
-      const { email, username } = req.body;
+      const { email, password } = req.body;
+      
+      // Veri doğrulama
+      if (!email || !password) {
+        return res.status(400).json({
+          status: false,
+          message: "Email ve şifre zorunludur"
+        });
+      }
 
+      // Email format kontrolü
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({
+          status: false,
+          message: "Geçersiz email formatı"
+        });
+      }
+
+      // Sadece email ile kontrol et
       const existingClient = await Client.findOne({
-        where: {
-          [Op.or]: [{ email }, { username }],
-        },
+        where: { email }
       });
 
       if (existingClient) {
@@ -28,35 +45,30 @@ class ClientAuthController {
         }
         return res.status(400).json({
           status: false,
-          message: "Bu email veya kullanıcı adı zaten kullanımda",
+          message: "Bu email zaten kullanımda",
         });
+      }
+
+      // Otomatik username oluştur
+      if (!req.body.username) {
+        req.body.username = email.split('@')[0];
       }
 
       if (req.file) {
         req.body.photo = path.relative("public", req.file.path);
       }
 
-      // Harici API ile kaydı doğrula
-      const validationResult = await this.validateRegistration(req.body);
-      if (!validationResult.isValid) {
-        if (req.file) {
-          deleteFile(req.file.path);
-        }
-        return res.status(validationResult.status || 400).json({
-          status: false,
-          message: "Harici kayıt doğrulaması başarısız oldu",
-        });
-      }
-
+      // Önce yerel veritabanına kaydet
       const client = await Client.create(req.body);
 
+      // Dosya işlemleri
       if (req.file) {
         const oldPath = req.file.path;
         const newPath = oldPath.replace("temp", client.id.toString());
         const newDir = path.dirname(newPath);
 
-        require("fs").mkdirSync(newDir, { recursive: true });
-        require("fs").renameSync(oldPath, newPath);
+        fs.mkdirSync(newDir, { recursive: true });
+        fs.renameSync(oldPath, newPath);
 
         await client.update({
           photo: path.relative("public", newPath),
@@ -75,9 +87,39 @@ class ClientAuthController {
         refreshTokenExpiry
       );
 
-      // Hoşgeldin emaili gönder
-      await emailService.sendWelcomeEmail(client.email, client.name);
+      // Varsa hoşgeldin e-postası gönder
+      try {
+        await emailService.sendWelcomeEmail(client.email, client.name);
+      } catch (emailError) {
+        logger.error(`Hoşgeldin emaili gönderilemedi: ${emailError.message}`);
+      }
 
+      // Yanıt döndükten sonra API çağrısını yap (fire and forget)
+      try {
+        const apiUrl = process.env.AI_LOGIN_REGISTER_URL;
+        const registerEndpoint = apiUrl.endsWith('/') ? 'register' : '/register';
+        
+        fetch(apiUrl + registerEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({  
+            client_id: client.id,
+            language: req.body.language || "turkish",
+          })
+        })
+        .then(response => response.json())
+        .then(data => logger.info('AI Login Register başarılı:', data))
+        .catch(error => {
+          logger.error(`AI Login Register hatası: ${error.message}`);
+          // Kullanıcıya zaten yanıt döndürüldüğü için burada sadece log kaydı tutuyoruz
+        });
+      } catch (fetchError) {
+        logger.error(`AI Login Register fetch hatası: ${fetchError.message}`);
+        // Bu hata kullanıcıya dönmez, sadece log kaydı tutulur
+      }
+      // Başarılı yanıtı hemen dön
       logger.info(`Yeni client kaydı oluşturuldu: ${client.email}`);
       res.status(201).json({
         status: true,
@@ -86,17 +128,23 @@ class ClientAuthController {
           client,
           accessToken,
           refreshToken,
-        },
-        client_id: validationResult.client_id,
+        }
       });
     } catch (error) {
       if (req.file) {
         deleteFile(req.file.path);
       }
       logger.error(`Kayıt hatası: ${error.message}`);
+      logger.error(`Kayıt hata stack: ${error.stack}`);
+      
+      // Hata mesajını daha detaylı gönder
       res.status(500).json({
         status: false,
         message: "Kayıt işlemi başarısız",
+        error: {
+          message: error.message,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }
       });
     }
   }
@@ -144,60 +192,109 @@ class ClientAuthController {
   async login(req, res) {
     try {
       const { email, password } = req.body;
-      const client = await Client.findOne({ where: { email } });
-
-      if (!client) {
-        return res.status(401).json({
+      
+      // Client'ı bulmayı dene
+      let client;
+      try {
+        client = await Client.findOne({ where: { email } });
+        if (!client) {
+          return res.status(401).json({
+            status: false,
+            message: "Geçersiz email veya şifre",
+          });
+        }
+      } catch (error) {
+        logger.error(`Client bulma hatası: ${error.message}`);
+        return res.status(500).json({
           status: false,
-          message: "Geçersiz email veya şifre",
+          message: "Veritabanı hatası oluştu",
         });
       }
-
-      const isMatch = await client.validatePassword(password);
-      if (!isMatch) {
-        return res.status(401).json({
+      
+      // Şifre doğrulamasını dene
+      try {
+        const isMatch = await client.validatePassword(password);
+        if (!isMatch) {
+          return res.status(401).json({
+            status: false,
+            message: "Geçersiz email veya şifre",
+          });
+        }
+      } catch (error) {
+        logger.error(`Şifre doğrulama hatası: ${error.message}`);
+        return res.status(500).json({
           status: false,
-          message: "Geçersiz email veya şifre",
+          message: "Şifre doğrulama hatası oluştu",
         });
       }
+      
+      // API doğrulaması kaldırıldı
+      logger.info(`API doğrulaması devre dışı bırakıldı, giriş onaylandı`);
+      
+      // Token'ları oluştur ve kaydet
+      try {
+        const { accessToken, refreshToken, refreshTokenExpiry } =
+          tokenService.generateTokens(client.id, "client");
 
-      // Harici API ile doğrulama yap
-      const isValidAccess = await this.validateClientAccess(
-        client.id,
-        client.language || "tr"
-      );
-      if (!isValidAccess) {
-        return res.status(401).json({
-          status: false,
-          message: "Erişim reddedildi",
-        });
-      }
-
-      // Token'ları oluştur
-      const { accessToken, refreshToken, refreshTokenExpiry } =
-        tokenService.generateTokens(client.id, "client");
-
-      // Refresh token'ı kaydet
-      await tokenService.saveRefreshToken(
-        refreshToken,
-        client.id,
-        "client",
-        refreshTokenExpiry
-      );
-
-      // Login response
-      logger.info(`Client giriş yaptı: ${client.email}`);
-      res.json({
-        status: true,
-        message: "Giriş başarılı",
-        data: {
-          client,
-          accessToken,
+        await tokenService.saveRefreshToken(
           refreshToken,
-        },
-      });
+          client.id, 
+          "client",
+          refreshTokenExpiry
+        );
+        
+        // Önce kullanıcıya başarılı yanıtı gönderelim
+        logger.info(`Client giriş yaptı: ${client.email}`);
+        res.json({
+          status: true,
+          message: "Giriş başarılı",
+          data: {
+            client,
+            accessToken,
+            refreshToken,
+          },
+        });
+        
+        // Yanıt gönderdikten sonra log amaçlı fetch işlemini yapalım
+        // Bu işlemin başarısız olması artık kullanıcının girişini etkilemeyecek
+        console.log("AI_LOGIN_REGISTER_URL:", process.env.AI_LOGIN_REGISTER_URL);
+        console.log(client.id);
+        
+        // URL'de eksik slash kontrolü
+        const apiUrl = process.env.AI_LOGIN_REGISTER_URL;
+        const loginEndpoint = apiUrl.endsWith('/') ? 'login' : '/login';
+        
+        fetch(process.env.AI_LOGIN_REGISTER_URL + loginEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({  
+            client_id: client.id,
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP Hatası! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => console.log('Başarılı:', data))        
+        .catch(error => {
+          // Sadece loglama yapıyoruz, kullanıcıya yanıt göndermiyoruz
+          logger.error(`Giriş sonrası AI Login Register hatası: ${error.message}`);
+        });
+        
+      } catch (error) {
+        logger.error(`Token işlemi hatası: ${error.message}`);
+        return res.status(500).json({
+          status: false,
+          message: "Token oluşturma veya kaydetme hatası",
+        });
+      }
+      
     } catch (error) {
-      logger.error(`Giriş hatası: ${error.message}`);
+      logger.error(`Genel giriş hatası: ${error.message}`);
       res.status(500).json({
         status: false,
         message: "Giriş işlemi başarısız",
@@ -281,69 +378,11 @@ class ClientAuthController {
     }
   }
 
-  // Validate Client Access
+  // Harici API ile Client Access doğrulaması
   async validateClientAccess(clientId, clientLanguage) {
-    try {
-      const response = await fetch("http://147.79.115.249:8080/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          client_id: clientId,
-          client_language: clientLanguage,
-        }),
-      });
-
-      return response.status === 200;
-    } catch (error) {
-      logger.error(`API doğrulama hatası: ${error.message}`);
-      return false;
-    }
-  }
-
-  // Validate Registration
-  async validateRegistration(userData) {
-    try {
-      const photoBase64 = userData.photo
-        ? Buffer.from(userData.photo).toString("base64")
-        : "";
-
-      const reqBody = {
-        name: userData.name || "",
-        mail: userData.email || "",
-        username: userData.username || userData.name || "",
-        hashed_password: userData.password || "",
-        language: userData.language || "tr",
-        face_photo: photoBase64,
-      };
-
-      const response = await fetch("http://147.79.115.249:8080/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reqBody),
-      });
-
-      let responseData = {};
-      if (response.status === 200) {
-        responseData = await response.json();
-      }
-
-      return {
-        isValid: response.status === 200,
-        status: response.status,
-        client_id: responseData.client_id || null,
-      };
-    } catch (error) {
-      logger.error(`Kayıt API doğrulama hatası: ${error.message}`);
-      return {
-        isValid: false,
-        status: 500,
-        client_id: null,
-      };
-    }
+    // Harici API bağlantısı kaldırıldı
+    logger.info("Harici API erişim doğrulaması devre dışı bırakıldı, erişim varsayılan olarak kabul ediliyor");
+    return true;
   }
 
   // Refresh Token
@@ -358,9 +397,7 @@ class ClientAuthController {
       }
 
       // Refresh token'ı doğrula
-      const { userId, userType } = await tokenService.verifyRefreshToken(
-        refreshToken
-      );
+      const { userId, userType } = await tokenService.verifyRefreshToken(refreshToken);
 
       // Yeni token'ları oluştur
       const tokens = tokenService.generateTokens(userId, userType);
@@ -399,9 +436,17 @@ class ClientAuthController {
         });
       }
 
-      // Refresh token'ı doğrula
+      // Refresh token'dan kullanıcı bilgilerini al
+      let userId, userType;
+      
       try {
-        await tokenService.verifyRefreshToken(refreshToken);
+        // Token doğrulama ile kullanıcı bilgilerini al
+        const tokenData = await tokenService.verifyRefreshToken(refreshToken);
+        userId = tokenData.userId;
+        userType = tokenData.userType;
+        
+        // Refresh token'ı veritabanından sil
+        await tokenService.deleteRefreshToken(refreshToken);
       } catch (error) {
         return res.status(401).json({
           status: false,
@@ -409,15 +454,45 @@ class ClientAuthController {
         });
       }
 
-      // Refresh token'ı sil
-      await tokenService.deleteRefreshToken(refreshToken);
-
+      // Önce başarılı yanıtı dön
       res.status(200).json({
         status: true,
         message: "Başarıyla çıkış yapıldı",
       });
+
+      // Yanıt döndükten sonra AI API'sine bildir (fire-and-forget)
+      try {
+        // URL'de eksik slash kontrolü
+        const apiUrl = process.env.AI_LOGIN_REGISTER_URL;
+        const logoutEndpoint = apiUrl.endsWith('/') ? 'logout' : '/logout';
+        
+        fetch(apiUrl + logoutEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({  
+            client_id: userId,  // req.user.id yerine token'dan çıkardığımız userId kullanılıyor
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP Hatası! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => logger.info('AI Logout başarılı:', data))        
+        .catch(error => {
+          // Sadece loglama yapıyoruz, kullanıcıya yanıt göndermiyoruz
+          logger.error(`Çıkış sonrası AI Login Register hatası: ${error.message}`);
+        });
+      } catch (fetchError) {
+        // API çağrısı başarısız olsa bile kullanıcı çıkış yapmış olur
+        logger.error(`AI Logout fetch hatası: ${fetchError.message}`);
+      }
     } catch (error) {
       logger.error(`Çıkış hatası: ${error.message}`);
+      console.log(error.message);
       res.status(500).json({
         status: false,
         message: "Çıkış işlemi başarısız",

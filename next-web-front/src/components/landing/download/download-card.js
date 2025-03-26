@@ -49,7 +49,7 @@ const DownloadCard = () => {
                     alt="Google Play"
                     width={110}
                     height={24}
-                    className="h-4 sm:h-5 md:h-6 w-auto"
+                    className="h-5 md:h-6 w-auto"
                   />
                 </div>
               </a>
