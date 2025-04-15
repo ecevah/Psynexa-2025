@@ -318,23 +318,23 @@
         "language": "Language"
       },
       "your_personal_friend": {
-        "circle": "Your personal friend",
-        "title": "A Bridge That Touches Your Mind And Opens To The Future",
-        "description": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you."
+        "circle": "Your emotional friend",
+        "title": "A Judgment-Free AI Companion For the Price of a Coffee",
+        "description": "Chat, talk, or even video call — connect with Nexa any way you like, all while your data stays safe and protected."
       },
       "personal_mental_companion": {
         "circle": "Personal Mental Companion",
-        "title": "A Bridge That Touches Your Mind And Opens To The Future",
-        "description": "Experience the balance and peace with Psynexa's empathetic AI support and customized mental well-being tools."
+        "title": "What is Psynexa all about?",
+        "description": "Chat, talk, or even video call — connect with Nexa any way you like, all while your data stays safe and protected."
       },
       "enjoy_psynexa": {
         "circle": "Enjoy Psynexa",
         "title": "Why Psynexa?",
-        "description": "Experience the balance and peace with Psynexa's empathetic AI support and customized mental well-being tools."
+        "description": "Psynexa combines advanced technology with a personalized approach to meet your unique needs. It offers practical tools, engaging features, and customized support to improve your daily life and overall experience."
       },
       "instant_answers": {
-        "circle": "Get Instant Answers",
-        "title": "Frequently Asked Questions",
+        "circle": "Breathe in peace, breathe out stress",
+        "title": "Take a moment to reset — our guided breathing exercise helps you relax, refocus, and reconnect with yourself in just a few minutes.",
         "description": ""
       },
       "exhale_card": {
@@ -348,7 +348,7 @@
       },
       "mini-nexabot-logo": {
         "bold": "Hi I'm Nexabot!",
-        "light": "your personal friend. How are you!"
+        "light": "your personal friend. How have you been?"
       },
       "mood_tracker_card": {
         "title": "Weekly Mood Tracker",
@@ -365,27 +365,28 @@
         "title": "Stress Management Made Simple"
       },
       "chatbot_card": {
-        "title-1": "Start a conversation with our",
-        "title-2": "Nexabot",
-        "title-3": "Now!",
-        "button-1": "Talk Nexa",
-        "button-2": "Voice Nexa",
-        "button-3": "Get Suggestions",
+        "title-1": "Nexa: ",
+        "title-2": "Let’s spill some thoughts together.",
+        "title-3": "",
+        "button-1": "Can you imagine what just happened?",
+        "button-2": "I broke up with my boyfriend... I don’t even know how to feel.",
+        "button-3": "Guess who forgot their keys again?",
         "button-4": "Be Friend",
         "message-card-bold": "Welcome to Nexabot!",
-        "message-card-light": "How are you! I am Nexabot, your personal friend. Have a specific question to ask me?",
+        "message-card-light": "How are you! I am Nexa, your personal friend. Have a specific question to ask me?",
         "chinese-card":"I'm feeling a bit confused today and could use some help figuring things out.",
-        "message-input-card":"Write your message....",
+        "message-input-card":"Feeling chatty? So am I. Let’s chat! :)",
         "not-web":"Not available for web use, download the mobile app."
       },
       "mockup-card":{
-        "mini-nexabot-logo-bold":"Hi I'm Nexabot!",
-        "mini-nexabot-logo-light":"your personal friend. How are you!",
-        "nexabot-card-description":"Nexabot analyzes your emotions, offers empathetic support, and provides personalized suggestions to help you navigate your day.",
-        "voice-text-card-title":"Voice and Text Interaction with Nexabot",
-        "voice-text-card-description":"Communicate with Nexabot via voice or text to receive tailored recommendations and insights designed just for you.",
+        "mini-nexabot-logo-bold":"",
+        "mini-nexabot-logo-light":"I already asked how you've been above. Did you miss it?",
+        "nexabot-card-title":"Fresh Memories, Anytime!",
+        "nexabot-card-description":"Hey, again me, Nexa! I’ve got three types of memories to keep things fresh, and I’m here to chat about anything — serious or silly. Just let me know how I can help!",
+        "voice-text-card-title":"Voice and Video Call Features",
+        "voice-text-card-description":"Out with friends but want to share the moment? Call me, I’m here to see your smile and talk anytime!",
         "meditation-card-title":"Meditation and Audio Blog Listening",
-        "meditation-card-description":"mmerse yourself in personalized meditation sessions and inspiring audio blogs to calm your mind and uplift your spirit."
+        "meditation-card-description":"Immerse yourself in personalized meditation sessions and inspiring audio blogs to calm your mind and uplift your spirit."
       },
       "faq": {
         "item1": {
@@ -410,24 +411,26 @@
         }
       },
       "triple": {
-        "title": "A Bridge That Touches Your Mind And Opens To The Future",
-        "description-1": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you.",
-        "description-2": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you.",
+        "title": "Hey again — just one last thing!",
+        "description-1": "I'm really glad you're taking the time to read this! I promise it’s short.",
+        "description-2": "I’ve got three different types of memories that help me understand you better with every chat. They allow me to get closer to you and offer a more personalized experience.",
+        "description-3": "As we talk, I keep improving and adapting to your needs, learning from every conversation. So, feel free to share whatever you’re comfortable with! The more I know, the better I can support you. Each day, I get a little bit better at understanding your mindset, and I’m always here, listening and learning, just for you. ",
+        "description-4": "My goal is simple: I’m here to help.",
         "button": "Explore The Apps"
       },
       "grid-card":{
-        "grid-1-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
-        "grid-1-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
-        "grid-2-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
-        "grid-2-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
+        "grid-1-title": "Maintaining Your Privacy & Security",
+        "grid-1-description": "Your data is protected with the highest standards, ensuring your emotional journey remains confidential and secure.",
+        "grid-2-title": "Meditation & Test Features",
+        "grid-2-description": "Engage in guided meditations and take insightful tests to better understand and manage your mental health.",
         "grid-3-title": "Daily, Weekly, and Monthly Mood Tracking",
         "grid-3-description": "Track your emotions effortlessly and view insightful trends to gain a better perspective on your well-being.",
         "grid-4-title": "Relaxing Breathing Exercise",
         "grid-4-description": "A dedicated space to practice tailored breathing exercises, helping you achieve calm and focus anytime you need."
       },
       "download-card":{
-        "title": "A Bridge That Touches Your Mind And Opens To The Future",
-        "description": "Journey into the depths of your mind with Psynexa. Meet each day in a more balanced and peaceful way with Nexabot's empathetic support and special suggestions for you."
+        "title": "One coffee is all it costs to enjoy unlimited, judgment-free conversations. Download Psynexa today!",
+        "description": ""
       },
       "footer-card":{
         "mail-card":{
@@ -436,7 +439,7 @@
           "email": "Enter your email"
         },
         "footer-card":{
-          "description": "Equipped with advanced generative AI technology, Nexabot instantly analyzes your mood and provides you with appropriate guidance.",
+          "description": "Equipped with advanced generative AI technology, Nexa instantly analyzes your mood and provides you with appropriate guidance.",
           "menu":{
             "title": "Menu",
             "home": "Home",

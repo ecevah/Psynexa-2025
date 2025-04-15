@@ -11,16 +11,16 @@ class BlogController {
 
       // Dosya URL'lerini hazırla
       const background_url = req.files["background_image"]
-        ? `/uploads/${req.files["background_image"][0].filename}`
+        ? `/images/${req.files["background_image"][0].filename}`
         : null;
       const vocalization_url = req.files["vocalization"]
-        ? `/uploads/${req.files["vocalization"][0].filename}`
+        ? `/audios/${req.files["vocalization"][0].filename}`
         : null;
       const sound_url = req.files["sound"]
-        ? `/uploads/${req.files["sound"][0].filename}`
+        ? `/audios/${req.files["sound"][0].filename}`
         : null;
       const content_url = req.files["video"]
-        ? `/uploads/${req.files["video"][0].filename}`
+        ? `/videos/${req.files["video"][0].filename}`
         : null;
 
       const blog = await Blog.create({

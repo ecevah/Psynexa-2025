@@ -1,49 +1,49 @@
 {
   "Auth": {
-    "hero_text": "Uygulamanızı Yapay Zeka ile Güçlendirin: Daha Akıllı İçgörüler, Daha İyi Terapi.",
+    "hero_text": "Yapay Zeka ile Uygulamanızı Güçlendirin: Daha Akıllı İçgörüler, Daha İyi Terapi.",
     "having_troubles": "Sorun mu yaşıyorsunuz?",
     "get_help": "Yardım Alın",
     "signin_to_psynexa": "Psynexa'ya Giriş Yapın",
-    "signup_to_psynexa": "Psynexa'ya Kaydolun",
-    "signin_with_google": "Google ile Giriş Yap",
-    "signup_with_google": "Google ile Kaydol",
+    "signup_to_psynexa": "Psynexa'ya Kayıt Olun",
+    "signin_with_google": "Google ile Giriş Yapın",
+    "signup_with_google": "Google ile Kayıt Olun",
     "or": "veya",
-    "email_address": "E-posta adresi",
-    "password": "Şifre",
-    "first_name": "Ad",
-    "last_name": "Soyad",
-    "password_requirements": "Şifre büyük harf, küçük harf, rakam ve özel karakter içermelidir",
+    "email_address": "E-posta Adresi",
+    "password": "Parola",
+    "first_name": "İsim",
+    "last_name": "Soyisim",
+    "password_requirements": "Parola, büyük harf, küçük harf, rakam ve özel karakter içermelidir.",
     "password_too_weak": "Çok zayıf",
     "password_could_be_stronger": "Daha güçlü olabilir",
-    "password_getting_better": "Daha iyi oluyor",
-    "password_good": "İyi şifre",
-    "password_great": "Şifreniz harika. Güzel iş!",
+    "password_getting_better": "Daha iyi",
+    "password_good": "İyi parola",
+    "password_great": "Parolanız harika. İyi iş çıkarmışsınız!",
     "weak": "Zayıf",
     "fair": "Orta",
     "good": "İyi",
     "strong": "Güçlü",
-    "forgot_password": "Şifremi unuttum?",
-    "sign_in": "Giriş yap",
-    "sign_up": "Kaydol",
-    "new_user": "Yeni kullanıcı mı?",
-    "create_account": "Hesap oluştur",
+    "forgot_password": "Parolanızı mı unuttunuz?",
+    "sign_in": "Giriş Yapın",
+    "sign_up": "Kayıt Olun",
+    "new_user": "Yeni kullanıcı?",
+    "create_account": "Hesap oluşturun",
     "already_have_account": "Zaten hesabınız var mı?",
-    "terms_agreement": "Hesap oluştur'a tıklayarak, Kullanım Şartları ve Gizlilik Politikası'nı okuduğumu ve kabul ettiğimi onaylıyorum.",
+    "terms_agreement": "Hesap oluştur butonuna tıklayarak, okuduğumu ve kabul ettiğimi beyan ediyorum",
     "terms_of_use": "Kullanım Şartları",
     "privacy_policy": "Gizlilik Politikası",
     "terms_of_service": "Hizmet Şartları",
     "and": "ve",
-    "protected_by_recaptcha": "reCAPTCHA tarafından korunmaktadır ve Cuboid'in"
+    "protected_by_recaptcha": "reCAPTCHA ile korunmakta ve Cuboid tarafından yönetilmektedir."
   },
   "Template": {
-    "thisMonth": "Bu Ay",
-    "allTime": "Tüm Zamanlar",
-    "lastWeek": "Geçen Hafta",
-    "lastMonth": "Geçen Ay",
-    "lastYear": "Geçen Yıl",
-    "hours": "Saat",
-    "minutes": "Dakika",
-    "seconds": "Saniye",
+    "thisMonth": "Bu ay",
+    "allTime": "Tüm zamanlar",
+    "lastWeek": "Geçen hafta",
+    "lastMonth": "Geçen ay",
+    "lastYear": "Geçen yıl",
+    "hours": "Saatler",
+    "minutes": "Dakikalar",
+    "seconds": "Saniyeler",
     "january": "Ocak",
     "february": "Şubat",
     "march": "Mart",
@@ -60,9 +60,8 @@
     "text": "Metin"
   },
   "DashboardPage": {
-    "clientReviewNeeds": "Müşteri Gözden Geçirme İhtiyaçları",
-    "mySchedule": "Takvimim",
-    
+    "clientReviewNeeds": "Müşteri İnceleme İhtiyaçları",
+    "mySchedule": "Programım",
     "header": {
       "morning": "Günaydın",
       "afternoon": "İyi günler",
@@ -73,15 +72,15 @@
       "profile": "Profil"
     },
     "statistics": {
-      "totalUsers": "Toplam Kullanıcı",
+      "totalUsers": "Toplam Kullanıcılar",
       "activeClients": "Aktif Müşteriler",
       "monitoredUsers": "İzlenen Kullanıcılar",
-      "totalPatients": "Toplam Hasta"
+      "totalPatients": "Toplam Hastalar"
     },
     "patientTable": {
       "patient": "Hasta",
       "recentVisit": "Son Ziyaret",
-      "streak": "Süre",
+      "streak": "Seri",
       "status": "Durum",
       "statistics": "İstatistikler"
     }
@@ -89,33 +88,37 @@
   "SidebarMenu": {
     "items": {
       "dashboard": {
-        "text": "Kontrol Paneli",
-        "icon": "/call-center/aside-icon.svg"
+        "text": "Gösterge Paneli",
+        "icon": "/call-center/aside-icon.svg",
+        "link": "/dashboard"
       },
       "clients": {
         "text": "Müşteriler",
-        "icon": "/call-center/3-User.svg"
+        "icon": "/call-center/3-User.svg",
+        "link": "/client"
       }
     },
     "bottom-items": {
       "support": {
         "text": "Destek",
-        "icon": "/call-center/hugeicons_customer-support.svg"
+        "icon": "/call-center/hugeicons_customer-support.svg",
+        "link": "/support"
       },
       "logout": {
         "text": "Çıkış Yap",
-        "icon": "/call-center/logout.svg"
+        "icon": "/call-center/logout.svg",
+        "link": "/logout"
       }
     }
   },
   "Calendar": {
     "mySchedule": "Programım",
-    "todayTasks": "Bugünün Görevleri",
+    "todayTasks": "Bugünkü Görevler",
     "createEvent": {
       "title": "Etkinlik Oluştur",
       "eventTitle": "Etkinlik Başlığı",
       "description": "Açıklama",
-      "selectTime": "Saat Seçin",
+      "selectTime": "Zaman Seçin",
       "save": "Kaydet"
     }
   },
@@ -125,7 +128,7 @@
       "recentVisit": "Son Ziyaret",
       "phoneNumber": "Telefon Numarası",
       "email": "E-posta",
-      "birthday": "Doğum Tarihi",
+      "birthday": "Doğum Günü",
       "statistics": "İstatistikler",
       "profile": "Profil"
     }
@@ -135,19 +138,19 @@
     "status": "Durum",
     "active": "Aktif",
     "inactive": "Pasif",
-    "joinDate": "Katılma Tarihi",
-    "lastActive": "Son Aktiflik",
+    "joinDate": "Katılım Tarihi",
+    "lastActive": "Son Aktivite",
     "generalInfo": "Genel Bilgiler",
     "gender": "Cinsiyet",
     "dateOfBirth": "Doğum Tarihi",
     "location": "Konum",
     "language": "Dil",
-    "timezone": "Zaman Dilimi",
+    "timezone": "Saat Dilimi",
     "contactInfo": "İletişim Bilgileri",
     "phone": "Telefon",
     "email": "E-posta",
     "about": "Hakkında",
-    "yearsOld": "Yaşındadır",
+    "yearsOld": "Yaşında",
     "totalMessage": "Toplam Mesaj",
     "nexabotUsageTime": "Nexabot Kullanım Süresi",
     "appUsageTime": "Uygulama Kullanım Süresi",
@@ -177,76 +180,76 @@
     }
   },
   "NexabotAnalysis": {
-      "emotionAnalysis": "Duygu Analizi",
-      "judicialExpression": "Yargısal İfadeler",
-      "search": "Ara",
-      "searchPlaceholder": "Arama yapın...",
-      "emotions": {
-        "angry": "Kızgın",
-        "happy": "Mutlu",
-        "sad": "Üzgün",
-        "depressed": "Depresif",
-        "overjoyed": "Çok Mutlu"
-      },
-      "parameters": {
-        "frustration": "Hayal Kırıklığı",
-        "irritation": "Sinirlilik",
-        "rage": "Öfke",
-        "annoyance": "Rahatsızlık",
-        "joy": "Sevinç",
-        "contentment": "Memnuniyet",
-        "satisfaction": "Tatmin",
-        "pleasure": "Keyif",
-        "sadness": "Üzüntü",
-        "hopelessness": "Umutsuzluk",
-        "emptiness": "Boşluk",
-        "despair": "Çaresizlik",
-        "grief": "Keder",
-        "melancholy": "Melankoli",
-        "sorrow": "Acı",
-        "loneliness": "Yalnızlık",
-        "elation": "Coşku",
-        "euphoria": "Mutluluk",
-        "delight": "Neşe",
-        "excitement": "Heyecan"
-      },
-      "chatbot": {
-        "title": "Nexabot Sohbet",
-        "messagePlaceholder": "Mesajınızı yazın...",
-        "send": "Gönder"
-      },
-      "columns": {
-        "sentences": "Cümleler",
-        "expressions": "Yargısal İfadeler"
-      },
-      "sentences": {
-        "overwhelmed": "Son zamanlarda işle ilgili bunalmış hissediyorum.",
-        "pointless": "Bu günlerde her şey anlamsız geliyor.",
-        "cantFocus": "Birkaç dakikadan fazla hiçbir şeye odaklanamıyorum.",
-        "topOfWorld": "Kendimi dünyanın zirvesinde gibi hissediyorum!"
-      },
-      "expressions": {
-        "workStress": "İşle ilgili stres ve potansiyel tükenmişlik belirtileri.",
-        "depression": "Depresif düşünceler ve motivasyon kaybı göstergeleri.",
-        "attention": "Dikkat eksikliği ve konsantrasyon sorunları.",
-        "elevated": "Güçlü pozitif duygusal durum, potansiyel yükselmiş ruh hali."
-      }
+    "emotionAnalysis": "Duygu Analizi",
+    "judicialExpression": "Yargısal İfade",
+    "search": "Ara",
+    "searchPlaceholder": "Ara...",
+    "emotions": {
+      "angry": "Kızgın",
+      "happy": "Mutlu",
+      "sad": "Üzgün",
+      "depressed": "Depresif",
+      "overjoyed": "Aşırı Mutlu"
     },
+    "parameters": {
+      "frustration": "Hayal kırıklığı",
+      "irritation": "Rahatsızlık",
+      "rage": "Öfke",
+      "annoyance": "Sinirlenme",
+      "joy": "Neşe",
+      "contentment": "Memnuniyet",
+      "satisfaction": "Tatmin",
+      "pleasure": "Keyif",
+      "sadness": "Üzüntü",
+      "hopelessness": "Umutsuzluk",
+      "emptiness": "Boşluk",
+      "despair": "Çaresizlik",
+      "grief": "Keder",
+      "melancholy": "Melankoli",
+      "sorrow": "Acı",
+      "loneliness": "Yalnızlık",
+      "elation": "Coşku",
+      "euphoria": "Öfori",
+      "delight": "Keyif",
+      "excitement": "Heyecan"
+    },
+    "chatbot": {
+      "title": "Nexabot Sohbet",
+      "messagePlaceholder": "Mesajınızı yazın...",
+      "send": "Gönder"
+    },
+    "columns": {
+      "sentences": "Cümleler",
+      "expressions": "İfadeler"
+    },
+    "sentences": {
+      "overwhelmed": "Son zamanlarda işler beni bunaltıyor.",
+      "pointless": "Her şey son zamanlarda anlamsız görünüyor.",
+      "cantFocus": "Birkaç dakikadan fazla odaklanamıyorum.",
+      "topOfWorld": "Kendimi dünyanın zirvesinde hissediyorum!"
+    },
+    "expressions": {
+      "workStress": "İş stresi ve potansiyel tükenmişlik belirtileri.",
+      "depression": "Depresif düşünceler ve motivasyon kaybı belirtileri.",
+      "attention": "Dikkat eksikliği ve konsantrasyon problemleri.",
+      "elevated": "Güçlü pozitif duygusal durum, potansiyel yükseltilmiş spiritüel hal."
+    }
+  },
   "AppStatistics": {
     "emotionTracking": "Duygu Takibi",
     "emotionTrackingBar": "Duygu Takip Çubuğu",
     "testResults": "Test Sonuçları",
     "contentsData": "İçerik Verileri",
     "search": "Ara",
-    "searchPlaceholder": "Arama yapın...",
-    "filter": "Filtrele",
+    "searchPlaceholder": "Ara...",
+    "filter": "Filtre",
     "completed": "Tamamlandı",
     "title": "Filtreler",
     "apply": "Uygula",
     "reset": "Sıfırla",
-    "breathing": "Nefes Alma",
+    "breathing": "Nefes",
     "exercise": "Egzersiz",
-    "mindfulness": "Bilinç",
+    "mindfulness": "Farkındalık",
     "testName": "Test Adı",
     "category": "Kategori",
     "situation": "Durum",
@@ -260,19 +263,19 @@
     "score": "Puan",
     "status": "Durum",
     "duration": "Süre",
-    "viewDetails": "Detayları Gör",
+    "viewDetails": "Detayları Görüntüle",
     "downloadReport": "Raporu İndir",
-    "type": "Tip",
+    "type": "Tür",
     "filterPopup": {
       "title": "Filtreler",
       "apply": "Uygula",
       "reset": "Sıfırla",
       "category": "Kategori",
       "meditation": "Meditasyon",
-      "breathing": "Nefes Alma",
+      "breathing": "Nefes",
       "focus": "Odaklanma",
       "duration": "Süre",
-      "min": "Dk"
+      "min": "Dakika"
     }
   },
   "Feedbacks": {
@@ -280,15 +283,15 @@
     "botResponse": "Teşekkürler! Mesajınızı aldım ve en kısa sürede değerlendireceğim.",
     "negative": "Olumsuz",
     "positive": "Olumlu",
-    "chatTitle": "Nexabot Chat",
+    "chatTitle": "Nexabot Sohbet",
     "messagePlaceholder": "Mesajınızı yazın...",
     "send": "Gönder",
-    "feedbackExample": "Bazı durumlarda, Nexabot'un yanıtları robotik geliyor ve empati eksikliği var. İnsan terapistinin sıcaklığına veya anlayışına yaklaşamıyor.",
+    "feedbackExample": "Bazı durumlarda, Nexabot'un cevapları robotik ve empati yoksunu hissettiriyor. Bir insan terapistin sıcaklığına veya anlayışına yaklaşamıyor.",
     "chatFeedback": {
       "giveFeedback": "Geri Bildirim Ver",
-      "writeFeedback": "Geri Bildirim Yazın...",
+      "writeFeedback": "Geri bildiriminizi buraya yazın...",
       "saveFeedback": "Kaydet",
-      "thankYou": "Geri Bildirim İçin Teşekkürler",
+      "thankYou": "Geri bildiriminiz için teşekkürler",
       "like": "Beğen",
       "dislike": "Beğenme"
     },
@@ -303,156 +306,159 @@
     "feedback": "Geri Bildirim"
   },
   "HomePage": {
-    "title": "Anasayfa",
-    "about": "Hakkımızda",
+    "title": "Ana Sayfa",
+    "about": "Hakkında",
     "header": {
-      "home": "Anasayfa",
+      "home": "Ana Sayfa",
       "about": "Hakkımızda",
       "solutions": "Çözümler",
-      "faq": "S.S.S",
+      "faq": "SSS",
       "contact": "İletişim",
       "language": "Dil"
     },
     "your_personal_friend": {
-      "circle": "Kişisel Arkadaşınız",
-      "title": "Zihininize Doğru, Geleceğe Açılan Bir Köprü",
-      "description": "Psynexa ile zihninize derinlikle girin. Her gün daha dengeli ve huzurlu bir şekilde, Nexabot'un empatik desteği ve size özel önerileriyle birlikte."
+      "circle": "Duygusal dostunuz",
+      "title": "Bir fincan kahve fiyatına yargısız bir yapay zeka arkadaşı",
+      "description": "Sohbet edin, konuşun veya hatta görüntülü arama yapın — verileriniz güvende kalırken Nexa ile istediğiniz şekilde bağlantı kurun."
     },
     "personal_mental_companion": {
-      "circle": "Kişisel Zihinsel Arkadaşınız",
-      "title": "Zihininize Doğru, Geleceğe Açılan Bir Köprü",
-      "description": "Psynexa'nın empatik AI desteği ve özel zihinsel sağlık aracılarıyla dengeli ve huzurlu bir şekilde deneyimleyin."
+      "circle": "Kişisel Zihinsel Arkadaş",
+      "title": "Psynexa nedir, ne işe yarar?",
+      "description": "Sohbet edin, konuşun veya hatta görüntülü arama yapın — verileriniz güvende kalırken Nexa ile istediğiniz şekilde bağlantı kurun."
     },
     "enjoy_psynexa": {
-      "circle": "Psynexa'yı İzle",
+      "circle": "Psynexa'nın Tadını Çıkarın",
       "title": "Neden Psynexa?",
-      "description": "Psynexa'nın empatik AI desteği ve özel zihinsel sağlık aracılarıyla dengeli ve huzurlu bir şekilde deneyimleyin."
+      "description": "Psynexa, benzersiz ihtiyaçlarınızı karşılamak için ileri teknolojiyi kişisel bir yaklaşımla harmanlıyor. Günlük yaşamınızı ve genel deneyiminizi iyileştirmek için pratik araçlar, dikkat çekici özellikler ve kişiselleştirilmiş destek sunuyor."
     },
     "instant_answers": {
-      "circle": "Anında Cevaplar",
-      "title": "Sıkça Sorulan Sorular",
+      "circle": "Huzurla nefes alın, stresi verin",
+      "title": "Kendinizi sıfırlamak için bir an durun — rehberli nefes egzersizimiz, sadece birkaç dakikada rahatlamanıza, yeniden odaklanmanıza ve kendinizle bağlantı kurmanıza yardımcı olur.",
       "description": ""
     },
     "exhale_card": {
-        "increase": "Enerjinizi Arttırın",
-        "calmness": "Uzun nefes alarak zihin ve bedenine huzur getirin",
-        "breathly": "Nefes Alın",
-        "hold": "Bekle",
-        "exhale": "Nefes Verin",
-        "hold_breath": "Bekle",
-        "seconds": "saniye"
+      "increase": "Enerjinizi Artırın",
+      "calmness": "Uzun nefeslerle zihin ve bedene sakinlik davet edin",
+      "breathly": "Nefesli",
+      "hold": "Tut",
+      "exhale": "Nefes verin",
+      "hold_breath": "tut",
+      "seconds": "saniye"
+    },
+    "mini-nexabot-logo": {
+      "bold": "Merhaba, ben Nexabot!",
+      "light": "senin kişisel arkadaşın. Nasılsın?"
+    },
+    "mood_tracker_card": {
+      "title": "Haftalık Duygu Takibi",
+      "weekly_mood": "Haftalık",
+      "mon": "Pzt",
+      "tue": "Sal",
+      "wed": "Çar",
+      "thu": "Per",
+      "fri": "Cum",
+      "sat": "Cmt",
+      "sun": "Paz"
+    },
+    "meditation_card": {
+      "title": "Stres Yönetimi Artık Çok Kolay"
+    },
+    "chatbot_card": {
+      "title-1": "Nexa: ",
+      "title-2": "Haydi düşüncelerimizi paylaşalım.",
+      "title-3": "",
+      "button-1": "Şimdi ne olduğunu hayal edebiliyor musun?",
+      "button-2": "Erkek arkadaşımla ayrıldım... Ne hissedeceğimi bilemiyorum.",
+      "button-3": "Tekrar anahtarlarını kim unutmuş dersin?",
+      "button-4": "Arkadaş Ol",
+      "message-card-bold": "Nexabot'a hoş geldiniz!",
+      "message-card-light": "Nasılsın! Ben Nexa, senin kişisel arkadaşınım. Bana sormak istediğin belirli bir soru var mı?",
+      "chinese-card": "Bugün biraz karışık hissediyorum ve çözüm bulmam için yardıma ihtiyacım var.",
+      "message-input-card": "Sohbet havasında mısın? Ben de öyleyim. Haydi sohbet edelim! :)",
+      "not-web": "Web için kullanıma uygun değil, mobil uygulamayı indirin."
+    },
+    "mockup-card": {
+      "mini-nexabot-logo-bold": "",
+      "mini-nexabot-logo-light": "Yukarıda nasılsın diye sormuştum. Kaçırdın mı?",
+      "nexabot-card-title": "Her Zaman Taze Anılar!",
+      "nexabot-card-description": "Hey, yine ben, Nexa! İşleri taze tutmak için üç tür anıya sahibim ve her konuda — ciddi ya da eğlenceli — sohbet etmek için buradayım. Nasıl yardımcı olabileceğimi bana söyle yeter.",
+      "voice-text-card-title": "Ses ve Görüntülü Arama Özellikleri",
+      "voice-text-card-description": "Arkadaşlarınla dışarıda mısın fakat anı paylaşmak mı istiyorsun? Bana ara, gülüşünü görmek ve her zaman konuşmak için buradayım!",
+      "meditation-card-title": "Meditasyon ve Sesli Blog Dinleme",
+      "meditation-card-description": "Zihninizi yatıştırmak ve ruhunuzu yükseltmek için kişiselleştirilmiş meditasyon seanslarına ve ilham verici sesli bloglara kendinizi kaptırın."
+    },
+    "faq": {
+      "item1": {
+        "title": "Psynexa nedir ve nasıl çalışır?",
+        "content": "Psynexa, yapay zeka destekli bir uygulama olarak mental sağlık desteği sunar. Kullanıcıların duygusal durumlarını analiz eder, kişiye özel öneriler sunar ve meditasyon ile nefes egzersizleri gibi tekniklerle mental sağlığı destekler. Kullanıcı dostu arayüzü, günlük ruh halinizi takip etmenize ve düzenli uygulamalarla zihinsel dayanıklılık kazanmanıza olanak tanır."
       },
-      "mini-nexabot-logo": {
-        "bold": "Merhaba Ben Nexabot!",
-        "light": "Kişisel arkadaşınız. Nasılsınız?"
+      "item2": {
+        "title": "Psynexa ücretli mi?",
+        "content": "Psynexa, hem ücretsiz hem de premium özellikler sunar. Temel özellikler ücretsizken, daha gelişmiş özelliklere ve kişiselleştirilmiş içeriğe premium abonelik planımız aracılığıyla erişebilirsiniz."
       },
-      "mood_tracker_card": {
-        "title": "Haftalık Duygu Takibi",
-        "weekly_mood": "Haftalık",
-        "mon": "Paz",
-        "tue": "Sal",
-        "wed": "Çrş",
-        "thu": "Prş",
-        "fri": "Cum",
-        "sat": "Cmt",
-        "sun": "Paz"
+      "item3": {
+        "title": "Verilerim güvende mi?",
+        "content": "Kullanıcı gizliliği ve veri güvenliği en önemli önceliklerimizdir. Tüm verileriniz şifrelenmekte ve güvenli sunucularda saklanmaktadır. Kişisel bilgilerinizi hiçbir zaman üçüncü taraflarla paylaşmıyor ve en güncel güvenlik protokollerini uyguluyoruz."
       },
-      "meditation_card": {
-        "title": "Basit Stres Yönetimi"
+      "item4": {
+        "title": "Psynexa'yı kimler kullanabilir?",
+        "content": "Psynexa, mental sağlığını iyileştirmek veya korumak isteyen herkes için tasarlanmıştır. Stres yönetimi, anksiyete azaltma veya genel ruh sağlığı desteği arayan herkes tarafından kullanılabilir."
       },
-      "chatbot_card": {
-        "title-1": "Bizimle konuşun",
-        "title-2": "Nexabot",
-        "title-3": "Şimdi!",
-        "button-1": "Konuş",
-        "button-2": "Sesli Konuş",
-        "button-3": "Öneriler Al",
-        "button-4": "Arkadaş Ol",
-        "message-card-bold": "Merhaba Ben Nexabot!",
-        "message-card-light": "Nasılsınız? Ben Nexabot, kişisel arkadaşınız. Özel bir soru mu var?",
-        "chinese-card":"Bugün biraz kafam karışık ve yardım almak istiyorum.",
-        "message-input-card":"Mesajınızı yazın...",
-        "not-web":"Web için kullanılamaz, mobil uygulama indirin."
+      "item5": {
+        "title": "Nasıl başlayabilirim?",
+        "content": "Başlamak için, Psynexa uygulamasını indirin ve bir hesap oluşturun. Kişiselleştirilmiş deneyiminiz için kısa bir değerlendirme yapılacak ve uygulama size özelleştirilmiş öneriler sunmaya başlayacaktır."
+      }
+    },
+    "triple": {
+      "title": "Tekrar merhaba — sadece son bir şey!",
+      "description-1": "Bunu okumak için zaman ayırdığınız için gerçekten sevindim! Kısa olacağına söz veriyorum.",
+      "description-2": "Her sohbetimizde sizi daha iyi anlamama yardımcı olan üç farklı anı türüm var. Bu anılar, size daha yakın olmamı ve daha kişiselleştirilmiş bir deneyim sunmamı sağlıyor.",
+      "description-3": "Konuşmalarımız sırasında, her sohbetten öğrenerek ihtiyaçlarınıza uyum sağlıyor ve kendimi geliştiriyorum. Yani, rahat hissettiğiniz her şeyi paylaşabilirsiniz! Ne kadar çok bilgi sahibi olursam, size o kadar iyi destek olabilirim. Her gün, zihniyetinizi biraz daha iyi anlıyorum ve sadece sizin için burada, dinleyip öğreniyorum.",
+      "description-4": "Amacım basit: Yardım etmek için buradayım.",
+      "button": "Uygulamaları Keşfedin"
+    },
+    "grid-card": {
+      "grid-1-title": "Gizliliğinizi ve Güvenliğinizi Koruma",
+      "grid-1-description": "Verileriniz en yüksek standartlarla korunur, böylece duygusal yolculuğunuz gizli ve güvende kalır.",
+      "grid-2-title": "Meditasyon ve Test Özellikleri",
+      "grid-2-description": "Rehberli meditasyonlara katılın ve zihinsel sağlığınızı daha iyi anlamak ve yönetmek için bilgilendirici testlere girin.",
+      "grid-3-title": "Günlük, Haftalık ve Aylık Duygu Takibi",
+      "grid-3-description": "Duygularınızı zahmetsizce takip edin ve sağlığınız hakkında daha iyi bir görüş elde etmek için bilgilendirici eğilimleri görün.",
+      "grid-4-title": "Rahatlatıcı Nefes Egzersizi",
+      "grid-4-description": "İhtiyacınız olduğunda sakinlik ve odaklanma elde etmenize yardımcı olan, özel nefes egzersizlerini uygulayabileceğiniz ayrılmış bir alan."
+    },
+    "download-card": {
+      "title": "Sınırsız, yargısız sohbetlerin keyfini çıkarmak için sadece bir fincan kahve kadar ödemeniz yeterli. Bugün Psynexa'yı indirin!",
+      "description": ""
+    },
+    "footer-card": {
+      "mail-card": {
+        "title": "Bültenimize Katılın",
+        "description": "Lansmanımızı ilk duyan siz olun",
+        "email": "E-postanızı girin"
       },
-      "mockup-card":{
-        "mini-nexabot-logo-bold":"Merhaba Ben Nexabot!",
-        "mini-nexabot-logo-light":"Kişisel arkadaşınız. Nasılsınız?",
-        "nexabot-card-description":"Nexabot duygularınızı analiz eder, empatik destek sunar ve size özel öneriler sunarak gününüzü geçirmenize yardımcı olur.",
-        "voice-text-card-title":"Sesli ve Metin İle İletişim",
-        "voice-text-card-description":"Sesli veya metin ile Nexabot ile konuşun ve size özel öneriler ve gözden kaçan ayrıntıları alın.",
-        "meditation-card-title":"Meditasyon ve Sesli Blog Dinleme",
-        "meditation-card-description":"Kişiselleştirilmiş meditasyon oturumları ve ilham verici sesli bloglarla zihninizi rahatlatın ve ruhunuzu yükseltin."
-      },
-      "faq": {
-        "item1": {
-          "title": "Psynexa nedir ve nasıl çalışır?",
-          "content": "Psynexa, ruh sağlığı desteği sunan yapay zeka destekli bir uygulamadır. Kullanıcıların duygusal durumlarını analiz eder, kişiselleştirilmiş tavsiyeler sunar ve meditasyon, nefes egzersizleri gibi farklı tekniklerle zihinsel sağlığınızı destekler. Kullanıcı dostu arayüzü sayesinde günlük ruh halinizi takip edebilir, düzenli uygulamalarla zihinsel dayanıklılığınızı artırabilirsiniz."
+      "footer-card": {
+        "description": "Gelişmiş üretken yapay zeka teknolojisiyle donatılan Nexa, ruh halinizi anında analiz eder ve size uygun rehberlik sunar.",
+        "menu": {
+          "title": "Menü",
+          "home": "Ana Sayfa",
+          "about": "Hakkında",
+          "solutions": "Çözümler",
+          "faq": "SSS",
+          "contact": "İletişim"
         },
-        "item2": {
-          "title": "Psynexa ücretli mi?",
-          "content": "Psynexa'nın hem ücretsiz hem de premium özellikleri bulunmaktadır. Temel özellikler ücretsiz olarak sunulurken, daha gelişmiş özellikler ve kişiselleştirilmiş içerikler premium abonelik planımızla erişilebilir durumdadır."
+        "info": {
+          "title": "Bilgi",
+          "help": "Yardım Merkezi",
+          "blog": "Blog",
+          "terms": "Hizmet Şartları",
+          "privacy": "Gizlilik Politikası"
         },
-        "item3": {
-          "title": "Verilerim güvende mi?",
-          "content": "Kullanıcı gizliliği ve veri güvenliği bizim için en büyük önceliktir. Tüm verileriniz şifrelenir ve güvenli sunucularda saklanır. Kişisel bilgilerinizi kesinlikle üçüncü taraflarla paylaşmıyoruz ve en son güvenlik protokollerini uyguluyoruz."
+        "app-card": {
+          "title": "Uygulamayı İndirin"
         },
-        "item4": {
-          "title": "Psynexa'yı kimler kullanabilir?",
-          "content": "Psynexa, zihinsel sağlığını iyileştirmek veya korumak isteyen herkes için tasarlanmıştır. Yaş sınırı olmaksızın, stres yönetimi, anksiyete azaltma veya genel zihinsel refah için destek arayan herkes tarafından kullanılabilir."
-        },
-        "item5": {
-          "title": "Nasıl başlayabilirim?",
-          "content": "Başlamak için Psynexa uygulamasını indirmeniz ve bir hesap oluşturmanız yeterlidir. Daha sonra kişiselleştirilmiş deneyiminiz için kısa bir değerlendirme yapılacak ve uygulama size özel öneriler sunmaya başlayacaktır."
-        }
-      },
-      "triple": {
-        "title": "Zihninize Dokunan ve Geleceğe Açılan Bir Köprü",
-        "description-1": "Psynexa ile zihninizin derinliklerine yolculuk yapın. Nexabot'un empatik desteği ve size özel önerileriyle her günü daha dengeli ve huzurlu bir şekilde karşılayın.",
-        "description-2": "Psynexa ile zihninizin derinliklerine yolculuk yapın. Nexabot'un empatik desteği ve size özel önerileriyle her günü daha dengeli ve huzurlu bir şekilde karşılayın.",
-        "button": "Uygulamaları Keşfedin"
-      },
-      "grid-card":{
-        "grid-1-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
-        "grid-1-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
-        "grid-2-title": "Luctus vitae pretium lorem luctus vitae pretium lorem luctus",
-        "grid-2-description": "Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed Lorem ipsum dolor sit amet consectetur. Luctus vitae pretium lorem tellus sed",
-        "grid-3-title": "Günlük, Haftalık ve Aylık Duygu Takibi",
-        "grid-3-description": "Duygu takibi kolayca yapın ve sağlığınız hakkında daha iyi bir perspektif elde edin.",
-        "grid-4-title": "Rahatlatıcı Nefes Alma Egzersizi",
-        "grid-4-description": "Her zaman rahatlama ve odaklanma için uygun bir alan."
-      },
-      "download-card":{
-        "title": "Zihninize Dokunan ve Geleceğe Açılan Bir Köprü",
-        "description": "Psynexa ile zihninizin derinliklerine yolculuk yapın. Nexabot'un empatik desteği ve size özel önerileriyle her günü daha dengeli ve huzurlu bir şekilde karşılayın."
-      },
-      "footer-card":{
-        "mail-card":{
-          "title": "Bizimle Haberdar Olun",
-          "description": "İlk sen haberdar olun",
-          "email": "E-posta adresinizi girin"
-        },
-        "footer-card":{
-          "description": "Gelişmiş üretken yapay zeka teknolojisi ile donatılmış olan Nexabot, ruh halinizi anında analiz eder ve size uygun rehberlik sağlar.",
-          "menu":{
-            "title": "Menü",
-            "home": "Anasayfa",
-            "about": "Hakkımızda",
-            "solutions": "Çözümler",
-            "faq": "S.S.S",
-            "contact": "İletişim"
-          },
-          "info":{
-            "title": "Bilgiler",
-            "help": "Yardım Merkezi",
-            "blog": "Blog",
-            "terms": "Hizmet Sözleşmesi",
-            "privacy": "Gizlilik Politikası"
-          },
-          "app-card":{
-            "title": "Uygulamayı İndirin"
-          },
-          "copyright": "Psynexa tüm hakları korunmaktadır 2024"
-        }
+        "copyright": "Psynexa, tüm hakları korunur 2024"
       }
     }
   }
+}

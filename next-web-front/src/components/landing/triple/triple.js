@@ -74,10 +74,22 @@ const Triple = () => {
             {t("description-1")}
           </div>
           <div
-            className="lg:max-w-[450px] xl:max-w-[520px] text-white text-[17px] mb-[30px] xl:mb-[50px]"
+            className="lg:max-w-[450px] xl:max-w-[520px] text-white text-[17px] mb-[24px]"
             data-aos="fade-left"
           >
             {t("description-2")}
+          </div>
+          <div
+            className="lg:max-w-[450px] xl:max-w-[520px] text-white text-[17px] mb-[24px]"
+            data-aos="fade-left"
+          >
+            {t("description-3")}
+          </div>
+          <div
+            className="lg:max-w-[450px] xl:max-w-[520px] text-white text-[17px] mb-[30px] xl:mb-[50px]"
+            data-aos="fade-left"
+          >
+            {t("description-4")}
           </div>
           <div
             className="flex flex-row gap-[16px] px-[24px] py-[15px] rounded-full bg-black w-fit"

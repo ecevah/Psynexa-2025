@@ -36,6 +36,7 @@ const restrictionsRoutes = require("./routes/restrictionsRoutes");
 const testJwtBenchRoutes = require("./routes/testJwtBench");
 const iterationMeditationRoutes = require("./routes/iterationMeditationRoutes");
 const iterationMeditationItemRoutes = require("./routes/iterationMeditationItemRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 
 const { apiLimiter } = require("./middleware/rateLimiter");
 const logMiddleware = require("./middleware/logMiddleware");
@@ -59,14 +60,28 @@ require("./models/associations");
 
 // Middleware
 app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(
+  express.json({
+    limit: "10mb",
+    verify: (req, res, buf) => {
+      req.rawBody = buf; // Buffer olarak ham veriyi sakla
+    },
+  })
+);
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 app.use(
   express.static(path.join(__dirname, "public"), {
     index: false,
   })
 );
+
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    index: false,
+  })
+);
+
 app.use(cors());
 app.set("trust proxy", true);
 app.use(passport.initialize());
@@ -104,6 +119,7 @@ app.use("/api/restrictions", restrictionsRoutes);
 app.use("/api/testjwtbench", testJwtBenchRoutes);
 app.use("/api/iteration-meditations", iterationMeditationRoutes);
 app.use("/api/iteration-meditation-items", iterationMeditationItemRoutes);
+app.use("/api/search", searchRoutes);
 
 // Swagger UI
 //app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

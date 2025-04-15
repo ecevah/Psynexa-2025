@@ -30,6 +30,7 @@ const storage = multer.diskStorage({
       switch (file.fieldname) {
         case "photo":
         case "background_image":
+        case "test_image":
           uploadPath = "public/images";
           break;
         case "pdf":
@@ -109,6 +110,7 @@ const fileFilter = (req, file, cb) => {
   switch (file.fieldname) {
     case "photo":
     case "background_image":
+    case "test_image":
       if (!file.mimetype.startsWith("image/")) {
         return cb(new Error("Sadece resim dosyaları yüklenebilir!"));
       }
